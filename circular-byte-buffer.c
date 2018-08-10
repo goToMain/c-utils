@@ -1,6 +1,6 @@
 /******************************************************************************
 
-                  Copyright (c) 2017 Siddharth Chandrasekaran
+                  Copyright (c) 2018 EmbedJournal
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 
     Author : Siddharth Chandrasekaran
     Email  : siddharth@embedjournal.com
-    Date   : Sun Aug  5 09:42:31 IST 2017
+    Date   : Sun Aug  5 09:42:31 IST 2018
 
 ******************************************************************************/
 
