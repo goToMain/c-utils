@@ -38,12 +38,12 @@ typedef struct {
 } circ_bbuf_t;
 
 #define CIRC_BBUF_DEF(x,y)                \
-    uint8_t x##_data_space[y];            \
+    uint8_t x##_data_space[y+1];          \
     circ_bbuf_t x = {                     \
         .buffer = x##_data_space,         \
         .head = 0,                        \
         .tail = 0,                        \
-        .maxlen = y                       \
+        .maxlen = y+1                     \
     }
 
 /*
@@ -61,5 +61,11 @@ int circ_bbuf_pop(circ_bbuf_t *c, uint8_t *data);
  * -1 - Out of space
  */
 int circ_bbuf_push(circ_bbuf_t *c, uint8_t data);
+
+/*
+ * Method: circ_bbuf_free_space
+ * Returns: number of bytes available
+ */
+int circ_bbuf_free_space(circ_bbuf_t *c);
 
 #endif /* __CIRCULAR_BYTE_BUFFER_H_ */
