@@ -32,8 +32,8 @@
 
 typedef struct {
     void * const buffer;
-    uint16_t head;
-    uint16_t tail;
+    uint16_t push_count;
+    uint16_t pop_count;
     uint16_t const size;
     uint16_t const element_size;
 } circ_gbuf_t;
@@ -42,8 +42,8 @@ typedef struct {
     t x ## _circ_gbuf_data[s];                 \
     circ_gbuf_t x = {                          \
         .buffer = x ## _circ_gbuf_data,        \
-        .head =0,                              \
-        .tail =0,                              \
+        .push_count = 0,                       \
+        .pop_count = 0,                        \
         .size = s ,                            \
         .element_size = sizeof(t)              \
     };

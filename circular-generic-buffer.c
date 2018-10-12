@@ -28,7 +28,7 @@
 
 #include <string.h>
 
-#include "circular-generic-buffer.h"
+#include "circular-generic-buffer-count.h"
 
 static inline void zero_pad(char *s,int len)
 {
@@ -39,49 +39,42 @@ static inline void zero_pad(char *s,int len)
 
 int circ_gbuf_pop(circ_gbuf_t *circ_buf, void *elem, int read_only)
 {
-    // if the head isn't ahead of the tail, we don't have any data
-    if (circ_buf->head == circ_buf->tail) {
+    char *tail;
+
+    if (circ_buf->pop_count >= circ_buf->push_count)
         return -1;    // quit with an error
-    } else {
-        char *tail=circ_buf->buffer + (circ_buf->tail*circ_buf->element_size);
-        if (elem)
-            memcpy(elem, tail, circ_buf->element_size);
-        if (!read_only) {
-            *tail=0;
-            zero_pad(tail , circ_buf->element_size);
-            circ_buf->tail = (circ_buf->tail + 1);
-            if (circ_buf->tail ==  circ_buf->size)
-                circ_buf->tail =0;        // Avoid division
-        }
-        return 0;
+
+    tail = circ_buf->buffer + ((circ_buf->pop_count%circ_buf->size)
+                                * circ_buf->element_size);
+
+    if (elem)
+        memcpy(elem, tail, circ_buf->element_size);
+
+    if (!read_only) {
+        *tail=0;
+        zero_pad(tail , circ_buf->element_size);
+        circ_buf->pop_count++;
     }
+    return 0;
 }
 
 int circ_gbuf_push(circ_gbuf_t *circ_buf, void *elem)
 {
-    uint16_t next = (circ_buf->head+1);
+    char *head;
 
-    if (next ==  circ_buf->size)
-        next = 0;
-    if (next == circ_buf->tail) {
-        // next position is equal to the tail of the buffer so it is full.
-        // silent discard
+    if ((circ_buf->push_count - circ_buf->pop_count) >=  circ_buf->size)
         return -1;
-    } else {
-        memcpy(circ_buf->buffer+circ_buf->head*circ_buf->element_size, elem,
-                circ_buf->element_size);
-        circ_buf->head = next;    // update the next value to the head location
-        return 0;
-    }
+
+    head = circ_buf->buffer + ( (circ_buf->push_count % circ_buf->size)
+                                * circ_buf->element_size );
+    memcpy(head, elem, circ_buf->element_size);
+    circ_buf->push_count++;
+    return 0;
 }
 
 int circ_gbuf_free_space(circ_gbuf_t *circBuf)
 {
-    int freeSpace;
-    freeSpace = circBuf->tail - circBuf->head;
-    if (freeSpace <= 0)
-        freeSpace += circBuf->size;
-    return freeSpace;
+    return circBuf->size - (circBuf->pop_count - circBuf->push_count);
 }
 
 #ifdef C_UTILS_TESTING
@@ -128,7 +121,7 @@ int main()
         }
     }
 
-    printf("Test Passed\n");
+    printf("Test Passed %d %d\n", my_circ_buf.pop_count, my_circ_buf.push_count);
 
     return 0;
 }
