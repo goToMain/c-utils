@@ -28,7 +28,7 @@
 
 #include <string.h>
 
-#include "circular-generic-buffer-count.h"
+#include "circular-generic-buffer.h"
 
 static inline void zero_pad(char *s,int len)
 {
