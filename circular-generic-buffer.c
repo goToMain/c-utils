@@ -30,13 +30,6 @@
 
 #include "circular-generic-buffer.h"
 
-static inline void zero_pad(char *s,int len)
-{
-    int i;
-    for(i=strnlen(s,len); i<len; i++)
-        s[i] = 0;
-}
-
 int circ_gbuf_pop(circ_gbuf_t *circ_buf, void *elem, int read_only)
 {
     char *tail;
