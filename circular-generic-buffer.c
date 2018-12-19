@@ -44,15 +44,16 @@ int circ_gbuf_pop(circ_gbuf_t *circ_buf, void *elem, int read_only)
     if (circ_buf->pop_count >= circ_buf->push_count)
         return -1;    // quit with an error
 
-    tail = circ_buf->buffer + ((circ_buf->pop_count%circ_buf->size)
+    tail = circ_buf->buffer + ( (circ_buf->pop_count % circ_buf->size)
                                 * circ_buf->element_size);
 
     if (elem)
         memcpy(elem, tail, circ_buf->element_size);
 
     if (!read_only) {
-        *tail=0;
-        zero_pad(tail , circ_buf->element_size);
+#ifdef CRICBUF_CLEAN_ON_POP
+        memset(tail, 0, circ_buf->element_size);
+#endif
         circ_buf->pop_count++;
     }
     return 0;

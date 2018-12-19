@@ -30,6 +30,11 @@
 
 #include <stdint.h>
 
+// Macro Switches
+
+// uncomment to zero element space in XX_circ_gbuf_data after a pop.
+// #define CRICBUF_CLEAN_ON_POP
+
 typedef struct {
     void * const buffer;
     uint16_t push_count;
