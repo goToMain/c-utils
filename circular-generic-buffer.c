@@ -41,7 +41,7 @@ int circ_gbuf_pop(circ_gbuf_t *circ_buf, void *elem, int read_only)
 {
     char *tail;
 
-    if (circ_buf->pop_count >= circ_buf->push_count)
+    if ((circ_buf->push_count - circ_buf->pop_count) == 0)
         return -1;    // quit with an error
 
     tail = circ_buf->buffer + ( (circ_buf->pop_count % circ_buf->size)
@@ -55,6 +55,8 @@ int circ_gbuf_pop(circ_gbuf_t *circ_buf, void *elem, int read_only)
         memset(tail, 0, circ_buf->element_size);
 #endif
         circ_buf->pop_count++;
+        if (circ_buf->pop_count >= (2*circ_buf->size))
+            circ_buf->pop_count = 0;
     }
     return 0;
 }
@@ -70,6 +72,8 @@ int circ_gbuf_push(circ_gbuf_t *circ_buf, void *elem)
                                 * circ_buf->element_size );
     memcpy(head, elem, circ_buf->element_size);
     circ_buf->push_count++;
+    if (circ_buf->push_count >= (2*circ_buf->size))
+        circ_buf->push_count = 0;
     return 0;
 }
 
