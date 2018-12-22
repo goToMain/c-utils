@@ -68,6 +68,12 @@ typedef struct {
         return circ_gbuf_pop(&x,pt,1);         \
     }
 
+#define CIRC_GBUF_RESET(x)                     \
+    do {                                       \
+        x.push_count = 0;                      \
+        x.pop_count = 0;                       \
+    } while(0)
+
 #define CIRC_GBUF_PUSH(x,y) x ## _push_refd(y)
 #define CIRC_GBUF_PEEK(x,y) x ## _peek_refd(y)
 #define CIRC_GBUF_POP(x,y) x ## _pop_refd(y)
