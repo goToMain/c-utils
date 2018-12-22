@@ -32,13 +32,18 @@
 
 int circ_gbuf_pop(circ_gbuf_t *circ_buf, void *elem, int read_only)
 {
+    int total;
     char *tail;
 
-    if ((circ_buf->push_count - circ_buf->pop_count) == 0)
-        return -1;    // quit with an error
+    total = circ_buf->push_count - circ_buf->pop_count;
+    if (total < 0)
+        total += (2 * circ_buf->size);
 
-    tail = circ_buf->buffer + ( (circ_buf->pop_count % circ_buf->size)
-                                * circ_buf->element_size);
+    if (total == 0)
+        return -1; // Empty
+
+    tail = circ_buf->buffer + ((circ_buf->pop_count % circ_buf->size)
+                                            * circ_buf->element_size);
 
     if (elem)
         memcpy(elem, tail, circ_buf->element_size);
@@ -56,10 +61,15 @@ int circ_gbuf_pop(circ_gbuf_t *circ_buf, void *elem, int read_only)
 
 int circ_gbuf_push(circ_gbuf_t *circ_buf, void *elem)
 {
+    int total;
     char *head;
 
-    if ((circ_buf->push_count - circ_buf->pop_count) >=  circ_buf->size)
-        return -1;
+    total = circ_buf->push_count - circ_buf->pop_count;
+    if (total < 0)
+        total += (2 * circ_buf->size);
+
+    if (total >=  circ_buf->size)
+        return -1; // Full
 
     head = circ_buf->buffer + ( (circ_buf->push_count % circ_buf->size)
                                 * circ_buf->element_size );
@@ -70,9 +80,15 @@ int circ_gbuf_push(circ_gbuf_t *circ_buf, void *elem)
     return 0;
 }
 
-int circ_gbuf_free_space(circ_gbuf_t *circBuf)
+int circ_gbuf_free_space(circ_gbuf_t *circ_buf)
 {
-    return circBuf->size - (circBuf->pop_count - circBuf->push_count);
+    int total;
+
+    total = circ_buf->push_count - circ_buf->pop_count;
+    if (total < 0)
+        total += (2 * circ_buf->size);
+
+    return circ_buf->size - total;
 }
 
 #ifdef C_UTILS_TESTING
