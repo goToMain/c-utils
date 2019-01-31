@@ -30,7 +30,7 @@
 
 #include "circular-generic-buffer.h"
 
-int circ_gbuf_pop(circ_gbuf_t *circ_buf, void *elem, int read_only)
+int __circ_gbuf_pop(circ_gbuf_t *circ_buf, void *elem, int read_only)
 {
     int total;
     char *tail;
@@ -59,7 +59,7 @@ int circ_gbuf_pop(circ_gbuf_t *circ_buf, void *elem, int read_only)
     return 0;
 }
 
-int circ_gbuf_push(circ_gbuf_t *circ_buf, void *elem)
+int __circ_gbuf_push(circ_gbuf_t *circ_buf, void *elem)
 {
     int total;
     char *head;
@@ -80,7 +80,7 @@ int circ_gbuf_push(circ_gbuf_t *circ_buf, void *elem)
     return 0;
 }
 
-int circ_gbuf_free_space(circ_gbuf_t *circ_buf)
+int __circ_gbuf_free_space(circ_gbuf_t *circ_buf)
 {
     int total;
 

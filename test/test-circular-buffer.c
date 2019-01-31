@@ -17,7 +17,7 @@ int test_boundary()
     int i, iter=0, next_write=0, next_read=0;
     struct test_struct s;
 
-    CIRC_GBUF_RESET(test_cb);
+    CIRC_GBUF_FLUSH(test_cb);
 
     do {
         for (i=0; i<3; i++) {
@@ -61,7 +61,7 @@ int test_probabilistic()
     int done_writing = 0;
     int done_reading = 0;
 
-    CIRC_GBUF_RESET(test_cb);
+    CIRC_GBUF_FLUSH(test_cb);
     srand(time(NULL));
 
     while (1) {
