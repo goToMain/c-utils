@@ -28,7 +28,7 @@
 
 #include <string.h>
 
-#include "circular-generic-buffer.h"
+#include "circbuf.h"
 
 int __circ_gbuf_pop(circ_gbuf_t *circ_buf, void *elem, int read_only)
 {
@@ -42,7 +42,7 @@ int __circ_gbuf_pop(circ_gbuf_t *circ_buf, void *elem, int read_only)
     if (total == 0)
         return -1; // Empty
 
-    tail = circ_buf->buffer + ((circ_buf->pop_count % circ_buf->size)
+    tail = (char *)circ_buf->buffer + ((circ_buf->pop_count % circ_buf->size)
                                             * circ_buf->element_size);
 
     if (elem)
@@ -71,7 +71,7 @@ int __circ_gbuf_push(circ_gbuf_t *circ_buf, void *elem)
     if (total >=  circ_buf->size)
         return -1; // Full
 
-    head = circ_buf->buffer + ( (circ_buf->push_count % circ_buf->size)
+    head = (char *)circ_buf->buffer + ( (circ_buf->push_count % circ_buf->size)
                                 * circ_buf->element_size );
     memcpy(head, elem, circ_buf->element_size);
     circ_buf->push_count++;
@@ -90,54 +90,3 @@ int __circ_gbuf_free_space(circ_gbuf_t *circ_buf)
 
     return circ_buf->size - total;
 }
-
-#ifdef C_UTILS_TESTING
-/* To test this module,
- * $ gcc -Wall -DC_UTILS_TESTING circular-generic-buffer.c
- * $ ./a.out
-*/
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
-struct my_struct {
-    int a;
-    char b;
-    float c;
-};
-
-CIRC_GBUF_DEF(struct my_struct, my_circ_buf, 32);
-
-int main()
-{
-    int i;
-    struct my_struct a[20];
-
-    srand(time(NULL));
-
-    for (i=0; i<10; i++) {
-        a[i].a = rand();
-        if (CIRC_GBUF_PUSH(my_circ_buf, &a[i])) {
-            printf("Out of space in CB at %d\n", i);
-            return -1;
-        }
-    }
-
-    for (i=0; i<10; i++) {
-        if (CIRC_GBUF_POP(my_circ_buf, &a[10 + i])) {
-            printf("CB is empty at %d\n", i);
-            return -1;
-        }
-        if (a[10 + i].a != a[i].a) {
-            printf("Invalid data at %d\n", 10 + i);
-            return -1;
-        }
-    }
-
-    printf("Test Passed %d %d\n", my_circ_buf.pop_count, my_circ_buf.push_count);
-
-    return 0;
-}
-
-#endif

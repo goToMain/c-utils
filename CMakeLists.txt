@@ -4,15 +4,24 @@ project(CUtils)
 set(CUTILS_VERSION_MAJOR 1)
 set(CUTILS_VERSION_MINOR 0)
 
-include_directories("${PROJECT_SOURCE_DIR}")
-include_directories("${PROJECT_SOURCE_DIR}/test")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-set(TEST_DIR "${PROJECT_SOURCE_DIR}/test")
-set(SRC_DIR "${PROJECT_SOURCE_DIR}")
+include_directories(${PROJECT_SOURCE_DIR}/src)
+include_directories(${PROJECT_SOURCE_DIR}/test)
 
-set(TEST_SRC "${TEST_DIR}/test.c"
-             "${SRC_DIR}/circular-generic-buffer.c"
-             "${TEST_DIR}/test-circular-buffer.c")
+set(TEST_DIR ${PROJECT_SOURCE_DIR}/test)
+set(SRC_DIR  ${PROJECT_SOURCE_DIR}/src)
+set(SAMPLE_DIR ${PROJECT_SOURCE_DIR}/sample)
+
+set(TEST_SRC ${TEST_DIR}/test.c)
+
+# circular Buffers
+set(MOD_SRC ${SRC_DIR}/circbuf.c)
+set(SAMPLE_CB_SRC ${MOD_SRC} ${SAMPLE_DIR}/sample-circbuf.c)
+add_executable(sample_circbuf ${SAMPLE_CB_SRC})
+
+set(TEST_SRC ${TEST_SRC} ${MOD_SRC} ${TEST_DIR}/test-circbuf.c)
 
 add_executable(test_cutils ${TEST_SRC})
-

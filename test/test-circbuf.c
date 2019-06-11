@@ -3,7 +3,7 @@
 #include <time.h>
 
 #include "test.h"
-#include "circular-generic-buffer.h"
+#include "circbuf.h"
 
 struct test_struct {
     int a;
