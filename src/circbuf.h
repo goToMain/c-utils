@@ -71,15 +71,15 @@ int __circ_gbuf_free_space(circ_gbuf_t *circ_gbuf);
  */
 #define CIRC_GBUF_DEF(type, buf, size)            \
     __CIRC_GBUF_V_DEF(type, buf, size)            \
-    inline int buf ## _push_refd(type *pt)        \
+    int buf ## _push_refd(type *pt)               \
     {                                             \
         return __circ_gbuf_push(&buf, pt);        \
     }                                             \
-    inline int buf ## _pop_refd(type *pt)         \
+    int buf ## _pop_refd(type *pt)                \
     {                                             \
         return __circ_gbuf_pop(&buf, pt, 0);      \
     }                                             \
-    inline int buf ## _peek_refd(type *pt)        \
+    int buf ## _peek_refd(type *pt)               \
     {                                             \
         return __circ_gbuf_pop(&buf, pt, 1);      \
     }
