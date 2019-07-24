@@ -7,10 +7,10 @@
  *
  * Usage example:
  *   char dest[32];
- *   char *src = "hello,world,test,prog"
+ *   char *src = "hello,world,test,prog";
  *   char *p = cut_string(src, dest, 32, ',', 1);
  *   dest == "world"
- *   charPtr == "test,prog"
+ *   p == ",test,prog"
  *
  * WARNING! Null returned if we go past the end
  */
@@ -42,5 +42,5 @@ char *cut_string(const char *src, char *dest, int dest_maxlen, char delim, int o
     }
     SAFESET_target(j,0);
 
-    return src + i;
+    return (char *)src;
 }

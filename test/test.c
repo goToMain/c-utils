@@ -10,9 +10,11 @@
 char date_time[DATE_TIME_STR_LEN];
 
 void do_test_circular_buffer(test_result_t *result);
+void do_test_cut_string(test_result_t *result);
 
 test_module_t c_utils_test_modules[] = {
     {"Circular Buffers", do_test_circular_buffer },
+    {"Cut String", do_test_cut_string },
     {NULL, NULL}
 };
 
@@ -36,6 +38,7 @@ char *time_string(time_t *t)
 
 int main(char *argc, char *argv[])
 {
+    int g_test_result = 0;
     int i=0, total_pass, total_exec;
     time_t start_time, end_time;
     test_module_t *tm;
@@ -56,6 +59,7 @@ int main(char *argc, char *argv[])
         tm++;
     }
     test.end_time = time(NULL);
+    g_test_result = (test.total == test.pass) ? 0 : -1;
 
     // Test summary
     printf("------------------------------------------\n");
@@ -65,6 +69,7 @@ int main(char *argc, char *argv[])
     printf("End Time:   %s\n", time_string(&test.end_time));
     printf("Executed: %d\n", test.total);
     printf("Sucessful: %d\n", test.pass);
-    printf("Resut: %s\n\n", (test.total == test.pass) ? "PASS" : "FAIL");
-    return 0;
+    printf("Resut: %s\n\n", g_test_result ? "FAIL" : "PASS");
+
+    return g_test_result;
 }

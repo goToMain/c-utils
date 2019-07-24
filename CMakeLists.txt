@@ -18,10 +18,13 @@ set(SAMPLE_DIR ${PROJECT_SOURCE_DIR}/sample)
 set(TEST_SRC ${TEST_DIR}/test.c)
 
 # circular Buffers
-set(MOD_SRC ${SRC_DIR}/circbuf.c)
+set(MOD_SRC ${SRC_DIR}/circbuf.c
+            ${SRC_DIR}/cut_string.c)
+
 set(SAMPLE_CB_SRC ${MOD_SRC} ${SAMPLE_DIR}/sample-circbuf.c)
 add_executable(sample_circbuf ${SAMPLE_CB_SRC})
 
-set(TEST_SRC ${TEST_SRC} ${MOD_SRC} ${TEST_DIR}/test-circbuf.c)
+set(TEST_SRC ${TEST_SRC} ${MOD_SRC} ${TEST_DIR}/test-circbuf.c
+                                    ${TEST_DIR}/test_cut_string.c)
 
 add_executable(test_cutils ${TEST_SRC})

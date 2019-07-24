@@ -1,8 +1,9 @@
 #ifndef _TEST_H_
 #define _TEST_H_
 
-#define mod_printf(fmt, ...) fprintf(stdout,"  - "fmt"\n", ## __VA_ARGS__)
+#include <time.h>
 
+#define mod_printf(fmt, ...) fprintf(stdout,"  - "fmt"\n", ## __VA_ARGS__)
 
 typedef struct
 {
