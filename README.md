@@ -11,6 +11,8 @@ The following methods/utils are available in this repo:
 * Circular Buffers - A data-type agnostic circular buffer implementation read
   more [here][1].
 * Hexdump - A `hexdump -c` output equivalent method to inspect buffers.
+* String Library - A string library for some common use cases where pasing
+  char pointer, and length around looks ugly.
 
 ## How to use this repo?
 

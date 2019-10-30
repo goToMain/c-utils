@@ -15,13 +15,35 @@ set(TEST_DIR ${PROJECT_SOURCE_DIR}/test)
 set(SRC_DIR  ${PROJECT_SOURCE_DIR}/src)
 set(SAMPLE_DIR ${PROJECT_SOURCE_DIR}/sample)
 
-set(TEST_SRC ${TEST_DIR}/test.c)
+# Samples
 
-# circular Buffers
-set(MOD_SRC ${SRC_DIR}/circbuf.c)
-set(SAMPLE_CB_SRC ${MOD_SRC} ${SAMPLE_DIR}/sample-circbuf.c)
-add_executable(sample_circbuf ${SAMPLE_CB_SRC})
+## circular Buffers
+set(SAMPLE_SRC
+	${SRC_DIR}/circbuf.c
+	${SAMPLE_DIR}/sample-circbuf.c
+)
+add_executable(sample_circbuf ${SAMPLE_SRC})
 
-set(TEST_SRC ${TEST_SRC} ${MOD_SRC} ${TEST_DIR}/test-circbuf.c)
+## String
+set(SAMPLE_SRC
+	${SRC_DIR}/strlib.c
+	${SAMPLE_DIR}/sample-strlib.c
+)
+add_executable(sample_strlib ${SAMPLE_SRC})
 
-add_executable(test_cutils ${TEST_SRC})
+
+# Tests
+
+set(MOD_SRC
+	${SRC_DIR}/circbuf.c
+	${SRC_DIR}/strlib.c
+)
+
+set(TEST_SRC
+	${TEST_DIR}/test.c
+	${TEST_DIR}/test-circbuf.c
+	${TEST_DIR}/test-strlib.c
+)
+
+add_executable(test_cutils ${TEST_SRC} ${MOD_SRC})
+

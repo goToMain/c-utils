@@ -10,9 +10,11 @@
 char date_time[DATE_TIME_STR_LEN];
 
 void do_test_circular_buffer(test_result_t *result);
+void do_test_strlib(test_result_t *result);
 
 test_module_t c_utils_test_modules[] = {
     {"Circular Buffers", do_test_circular_buffer },
+    {"String Library", do_test_strlib },
     {NULL, NULL}
 };
 
