@@ -4,8 +4,8 @@
  * spdx-license-identifier: mit
  */
 
-#ifndef __CIRCULAR_GENERIC_BUFFER_H_
-#define __CIRCULAR_GENERIC_BUFFER_H_
+#ifndef _UTIL_CIRCBUF_H_
+#define _UTIL_CIRCBUF_H_
 
 #include <stdint.h>
 
@@ -117,4 +117,4 @@ int __circ_gbuf_free_space(circ_gbuf_t *circ_gbuf);
  */
 #define CIRC_GBUF_FS(buf)                     __circ_gbuf_free_space(&buf)
 
-#endif
+#endif /* _UTIL_CIRCBUF_H_ */

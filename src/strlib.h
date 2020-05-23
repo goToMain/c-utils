@@ -4,8 +4,10 @@
  * SPDX-License-Identifier: MIT
  */
 
-#ifndef _STRLIB_H_
-#define _STRLIB_H_
+#ifndef _UTIL_STRLIB_H_
+#define _UTIL_STRLIB_H_
+
+#include <stddef.h>
 
 typedef struct {
 	char *buf;
@@ -98,4 +100,4 @@ int str_copy(string_t *s, const char *mode, const char *str, size_t len);
 #define str_const_copy(s, str)		str_copy(s, "c", str, strlen(s))
 #define str_const_append(s, str)	str_copy(s, "a", str, strlen(str))
 
-#endif
+#endif /* _UTIL_STRLIB_H_ */
