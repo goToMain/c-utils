@@ -4,8 +4,11 @@
  * SPDX-License-Identifier: MIT
  */
 
-#ifndef _HEX_DUMP_UTIL_H_
-#define _HEX_DUMP_UTIL_H_
+#ifndef _UTIL_HEXDUMP_H_
+#define _UTIL_HEXDUMP_H_
+
+#include <stdint.h>
+#include <unistd.h>
 
 /**
  * Description:
@@ -21,4 +24,4 @@
  */
 void hexdump(const char *head, const uint8_t *data, size_t len);
 
-#endif
+#endif /* _UTIL_HEXDUMP_H_ */
