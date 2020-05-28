@@ -65,3 +65,23 @@ int safe_atoi(const char *a, int *i)
 	*i = val;
 	return 0;
 }
+
+int trim_suffix(char *str, const char *suffix)
+{
+	int i, j;
+
+	if (!str || !suffix)
+		return -1;
+
+	i = strlen(str);
+	j = strlen(suffix);
+
+	if (j > i)
+		return -1;
+
+	while (i > 0 && str[i-1] == suffix[j-1]) {
+		i--; j--;
+	}
+
+	return str[i] = 0;
+}
