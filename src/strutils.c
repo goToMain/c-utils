@@ -79,7 +79,7 @@ int trim_suffix(char *str, const char *suffix)
 	if (j > i)
 		return -1;
 
-	while (i > 0 && str[i-1] == suffix[j-1]) {
+	while (j > 0 && str[i-1] == suffix[j-1]) {
 		i--; j--;
 	}
 
