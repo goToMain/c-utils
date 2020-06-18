@@ -30,6 +30,7 @@ int atohstr(char *hstr, const uint8_t *arr, const int arr_len)
 		hstr[(i * 2) + 0] = int2hex(arr[i] >> 4);
 		hstr[(i * 2) + 1] = int2hex(arr[i]);
 	}
+	hstr[i * 2] = '\0';
 
 	return 0;
 }
