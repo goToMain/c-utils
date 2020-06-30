@@ -67,6 +67,13 @@ int safe_atoi(const char *a, int *i)
 	return 0;
 }
 
+char *safe_strncpy(char* dest, const char* src, size_t size)
+{
+    strncpy(dest, src, size - 1);
+    dest[size - 1] = '\0';
+    return dest;
+}
+
 int trim_suffix(char *str, const char *suffix)
 {
 	int i, j;
@@ -84,5 +91,36 @@ int trim_suffix(char *str, const char *suffix)
 		i--; j--;
 	}
 
-	return str[i] = 0;
+	return str[i] = '\0';
+}
+
+void rstrip(char *str)
+{
+	int i;
+
+	i = strlen(str);
+	while (str[--i] == ' ')
+		str[i] = '\0';
+}
+
+void lstrip(char *str)
+{
+	int i = 0, j = 0;
+
+	while (str[i] && str[i] == ' ')
+		i++;
+
+	while (i && str[i]) {
+		str[j] = str[i];
+		i++; j++;
+	}
+
+	if (j != 0)
+		str[j] = '\0';
+}
+
+void strip(char *str)
+{
+	lstrip(str);
+	rstrip(str);
 }

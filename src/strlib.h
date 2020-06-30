@@ -83,7 +83,7 @@ int str_printf(string_t *s, const char *mode, const char *fmt, ...);
  * 	Use `mode` as defined above in "String Ops Modes" section.
  *
  * Example:
- * 	str_copyf(&my_string, "c", "Hello", 5);
+ * 	str_copy(&my_string, "c", "Hello", 5);
  * 	// now, my_string == "Hello"
  * 	str_copy(&my_string, "a", " World", 6);
  * 	// now, my_string == "Hello World"

@@ -43,4 +43,3 @@ int str_copy(string_t *s, const char *mode, const char *str, size_t len)
 	s->buf[s->len] = 0;
 	return len;
 }
-
