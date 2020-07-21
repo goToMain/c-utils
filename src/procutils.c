@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#include "procutils.h"
+#include <utils/procutils.h>
 
 int read_pid(const char *file, int *pid)
 {

@@ -10,7 +10,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "arg_parser.h"
+#include <utils/arg_parser.h>
 
 #define is_lower_alpha(x) (x >= 97 && x <= 122)
 

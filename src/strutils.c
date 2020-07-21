@@ -4,7 +4,9 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "strutils.h"
+#include <stdlib.h>
+
+#include <utils/strutils.h>
 
 static inline int hex2int(char ch)
 {

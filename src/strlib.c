@@ -7,7 +7,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
-#include "strlib.h"
+
+#include <utils/strlib.h>
 
 int str_printf(string_t *s, const char *mode, const char *fmt, ...)
 {

@@ -25,7 +25,7 @@ void test_execute(test_t *t, test_module_t *tm)
     printf("Testing '%s'\n", tm->name);
     tm->runner(&result);
     mod_printf("Result: name:'%s' total:%d pass:%d\n",
-            tm->name, result.total, result.pass);
+               tm->name, result.total, result.pass);
     t->pass += result.pass;
     t->total += result.total;
 }
@@ -36,7 +36,7 @@ char *time_string(time_t *t)
     return date_time;
 }
 
-int main(char *argc, char *argv[])
+int main(int argc, char *argv[])
 {
     int i=0, total_pass, total_exec;
     time_t start_time, end_time;

@@ -1,15 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
+
+#include <utils/strlib.h>
 
 #include "test.h"
-#include "strlib.h"
 
 GLOBAL_STRING_DEF(test_str, 8);
 
-int test_print_info_string(const char *msg, string_t *s)
+void test_print_info_string(const char *msg, string_t *s)
 {
-	printf("\t[%s] s->len: %d s->max_len: %d s->buf: %s\n",
+	printf("\t[%s] s->len: %zu s->max_len: %zu s->buf: %s\n",
 		msg, s->len, s->max_len, s->buf);
 }
 
@@ -86,6 +88,6 @@ void do_test_strlib(test_result_t *result)
 	if (test_str_copy() == 0) pass++; total++;
 	if (test_str_printf() == 0) pass++; total++;
 
-	result->pass += pass;
-	result->total += total;
+	result->pass = pass;
+	result->total = total;
 }

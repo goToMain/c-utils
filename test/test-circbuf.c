@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include <utils/circbuf.h>
+
 #include "test.h"
-#include "circbuf.h"
 
 struct test_struct {
     int a;
@@ -99,6 +100,6 @@ void do_test_circular_buffer(test_result_t *result)
     if (test_boundary() == 0) pass++; total++;
     if (test_probabilistic() == 0) pass++; total++;
 
-    result->pass += pass;
-    result->total += total;
+    result->pass = pass;
+    result->total = total;
 }

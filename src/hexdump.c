@@ -6,13 +6,16 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <ctype.h>
+
+#include <utils/hexdump.h>
 
 void hexdump(const char *head, const uint8_t *data, size_t len)
 {
 	int i;
 	char str[16];
 
-	printf("%s [%d] =>\n    0000  %02x ", head, len, data[0]);
+	printf("%s [%zu] =>\n    0000  %02x ", head, len, data[0]);
 	str[0] = isprint(data[0]) ? data[0] : '.';
 	for (i = 1; i < len; i++) {
 		if ((i & 0x0f) == 0) {

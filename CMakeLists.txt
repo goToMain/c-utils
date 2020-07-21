@@ -1,49 +1,40 @@
-cmake_minimum_required(VERSION 2.6)
-project(CUtils)
+#
+#  Copyright (c) 2019 Siddharth Chandrasekaran <siddharth@embedjournal.com>
+#
+#  SPDX-License-Identifier: Apache-2.0
+#
 
-set(CUTILS_VERSION_MAJOR 1)
-set(CUTILS_VERSION_MINOR 0)
+cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
+project(CUtils VERSION 0.1.0 LANGUAGES C)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-include_directories(${PROJECT_SOURCE_DIR}/src)
-include_directories(${PROJECT_SOURCE_DIR}/test)
+# Public headers
+include_directories(${CMAKE_SOURCE_DIR}/include)
 
-set(TEST_DIR ${PROJECT_SOURCE_DIR}/test)
-set(SRC_DIR  ${PROJECT_SOURCE_DIR}/src)
-set(SAMPLE_DIR ${PROJECT_SOURCE_DIR}/sample)
-
-# Samples
-
-## circular Buffers
-set(SAMPLE_SRC
-	${SRC_DIR}/circbuf.c
-	${SAMPLE_DIR}/sample-circbuf.c
+# libutils.a
+set(LIB_UTILS utils)
+file(GLOB LIB_UTILS_SRC ${CMAKE_SOURCE_DIR}/src/*.c)
+file(GLOB LIB_UTILS_INC ${CMAKE_SOURCE_DIR}/include/utils/*.h)
+add_library(${LIB_UTILS} STATIC ${LIB_UTILS_SRC})
+set_target_properties(${LIB_UTILS} PROPERTIES
+	PUBLIC_HEADER "${LIB_UTILS_INC}"
 )
-add_executable(sample_circbuf ${SAMPLE_SRC})
-
-## String
-set(SAMPLE_SRC
-	${SRC_DIR}/strlib.c
-	${SAMPLE_DIR}/sample-strlib.c
-)
-add_executable(sample_strlib ${SAMPLE_SRC})
-
-
-# Tests
-
-set(MOD_SRC
-	${SRC_DIR}/circbuf.c
-	${SRC_DIR}/strlib.c
+install(
+	TARGETS ${LIB_UTILS}
+	DESTINATION ${CMAKE_INSTALL_DIR}/lib
+	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_DIR}/include/utils/
 )
 
-set(TEST_SRC
-	${TEST_DIR}/test.c
-	${TEST_DIR}/test-circbuf.c
-	${TEST_DIR}/test-strlib.c
+# check target
+set(TEST_BIN test-utils)
+file(GLOB TEST_SRC ${CMAKE_SOURCE_DIR}/test/*.c)
+add_executable(${TEST_BIN} ${TEST_SRC})
+target_link_libraries(${TEST_BIN} ${LIB_UTILS})
+add_custom_target(check
+	COMMAND ${CMAKE_BINARY_DIR}/bin/${TEST_BIN}
+	COMMAND rm ${CMAKE_BINARY_DIR}/bin/${TEST_BIN}
+	DEPENDS ${TEST_BIN}
 )
-
-add_executable(test_cutils ${TEST_SRC} ${MOD_SRC})
-

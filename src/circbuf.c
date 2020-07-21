@@ -6,7 +6,7 @@
 
 #include <string.h>
 
-#include "circbuf.h"
+#include <utils/circbuf.h>
 
 int __circ_gbuf_pop(circ_gbuf_t *circ_buf, void *elem, int read_only)
 {
