@@ -9,6 +9,7 @@
 #include <getopt.h>
 #include <string.h>
 #include <unistd.h>
+#include <assert.h>
 
 #include <utils/arg_parser.h>
 
@@ -30,7 +31,7 @@ void ap_print_help(struct ap_option *ap_opts, int exit_code)
 	if (ap_app_name && exit_code == 0)
 		printf("%s - %s\n", ap_app_name, ap_app_desc);
 
-	printf("\nUsage:  %s [OPTIONS...] <COMMAND> [CMD_ARGS[0] ...]\n"
+	printf("\nUsage: %s [OPTIONS...] <COMMAND> [CMD_ARGS[0] ...]\n"
 	       "\nOPTIONS:\n", ap_app_name);
 
 	ap_opt = ap_opts;
@@ -40,7 +41,8 @@ void ap_print_help(struct ap_option *ap_opts, int exit_code)
 			continue;
 		}
 
-		if (ap_opt->type == AP_TYPE_BOOL) {
+		if (ap_opt->type == AP_TYPE_BOOL ||
+		    ap_opt->type == AP_TYPE_BOOL_HANDLER) {
 			snprintf(opt_str, 64, "%s", ap_opt->long_name);
 		} else {
 			snprintf(opt_str, 64, "%s <%s>",
@@ -84,6 +86,7 @@ int ap_parse(int argc, char *argv[], struct ap_option *ap_opts, void *data)
 	struct ap_option *ap_opt;
 	int i, c, ret, *ival, pid;
 	int opts_len = 0, cmd_len = 0, opt_idx = 0, olen = 0, do_fork = 0;
+	int ap_opts_len = 0;
 
 	ap_opt = ap_opts;
 	while (ap_opt->short_name != '\0') {
@@ -91,10 +94,11 @@ int ap_parse(int argc, char *argv[], struct ap_option *ap_opts, void *data)
 			opts_len++;
 		else
 			cmd_len++;
+		ap_opts_len++;
 		ap_opt++;
 	}
 
-	opts = malloc(sizeof (struct option) * opts_len + 3);
+	opts = malloc(sizeof (struct option) * (opts_len + 3));
 	if (opts == NULL) {
 		printf("Error: alloc error\n");
 		exit(-1);
@@ -109,35 +113,45 @@ int ap_parse(int argc, char *argv[], struct ap_option *ap_opts, void *data)
 		}
 		opt = opts + i++;
 		opt->name = ap_opt->long_name;
-		if (ap_opt->type == AP_TYPE_BOOL) {
+		if (ap_opt->type == AP_TYPE_BOOL ||
+		    ap_opt->type == AP_TYPE_BOOL_HANDLER) {
 			opt->has_arg = no_argument;
-			olen += snprintf(ostr + olen, 128 - olen,
-			                 "%c", ap_opt->short_name);
+			assert(olen + 2 < 128);
+			ostr[olen++] = ap_opt->short_name;
 		} else {
 			opt->has_arg = required_argument;
-			olen += snprintf(ostr + olen, 128 - olen,
-			                 "%c:", ap_opt->short_name);
+			assert(olen + 3 < 128);
+			ostr[olen++] = ap_opt->short_name;
+			ostr[olen++] = ':';
 		}
 		opt->flag = 0;
 		opt->val = ap_opt->short_name;
 		ap_opt++;
 	}
 
-	/* add help option */
+	assert(olen + 4 < 128);
+
+	/* add help and other default options */
 	opt = opts + i + 0;
 	opt->name = "help";
 	opt->val = 'h';
+	ostr[olen++] = 'h';
+
 	opt = opts + i + 1;
 	opt->name = "quite";
 	opt->val = 'q';
+	ostr[olen++] = 'q';
+
 	opt = opts + i + 2;
 	opt->val = 'f';
-	snprintf(ostr + olen, 128 - olen, "hqf");
+	ostr[olen++] = 'f';
+
+	ostr[olen] = '\0';
 
 	while ((c = getopt_long(argc, argv, ostr, opts, &opt_idx)) >= 0) {
 
 		/* find c in ap_opt->short_name */
-		for (i = 0; i < opts_len && c != ap_opts[i].short_name; i++);
+		for (i = 0; i < ap_opts_len && c != ap_opts[i].short_name; i++);
 
 		if (c == 'h')
 			ap_print_help(ap_opts, 0);
@@ -166,8 +180,11 @@ int ap_parse(int argc, char *argv[], struct ap_option *ap_opts, void *data)
 			ival = (int *)((char *)data + ap_opts[i].offset);
 			*ival = atoi(optarg);
 			break;
+		case AP_TYPE_BOOL_HANDLER:
+			ap_opts[i].bool_handler();
+			exit(0);
 		default:
-			printf("Error: invalid arg type\n");
+			printf("Error: invalid arg type %d\n", ap_opts[i].type);
 			exit(-1);
 		}
 		if (ap_opts[i].validator) {
