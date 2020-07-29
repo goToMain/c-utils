@@ -20,7 +20,7 @@ int str_printf(string_t *s, const char *mode, const char *fmt, ...)
 	ret = vsnprintf(s->buf + start, s->max_len - start, fmt, args);
 	va_end(args);
 
-	if ((start + ret) >= s->max_len)
+	if ((start + ret) >= (int)s->max_len)
 		return -1;
 
 	s->len = start + ret;

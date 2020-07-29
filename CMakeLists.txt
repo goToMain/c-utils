@@ -18,11 +18,6 @@ file(GLOB LIB_UTILS_INC ${CMAKE_CURRENT_SOURCE_DIR}/include/utils/*.h)
 add_library(${LIB_UTILS} STATIC ${LIB_UTILS_SRC})
 target_include_directories(${LIB_UTILS} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set_target_properties(${LIB_UTILS} PROPERTIES PUBLIC_HEADER "${LIB_UTILS_INC}")
-install(
-	TARGETS ${LIB_UTILS}
-	DESTINATION ${CMAKE_INSTALL_DIR}/lib
-	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_DIR}/include/utils/
-)
 
 # check target
 set(TEST_BIN test-utils)
