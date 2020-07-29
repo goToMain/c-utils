@@ -34,7 +34,7 @@ file(GLOB TEST_SRC ${CMAKE_SOURCE_DIR}/tests/*.c)
 add_executable(${TEST_BIN} ${TEST_SRC})
 target_link_libraries(${TEST_BIN} ${LIB_UTILS})
 set_target_properties(${TEST_BIN} PROPERTIES EXCLUDE_FROM_ALL TRUE)
-add_custom_target(check
+add_custom_target(check_utils
 	COMMAND ${CMAKE_BINARY_DIR}/bin/${TEST_BIN}
 	COMMAND rm ${CMAKE_BINARY_DIR}/bin/${TEST_BIN}
 	DEPENDS ${TEST_BIN}
