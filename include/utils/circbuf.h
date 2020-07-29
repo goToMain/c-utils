@@ -1,7 +1,7 @@
 /*
- * copyright (c) 2019 embedjournal
+ * Copyright (c) 2020 Siddharth Chandrasekaran <siddharth@embedjournal.com>
  *
- * spdx-license-identifier: mit
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #ifndef _UTIL_CIRCBUF_H_

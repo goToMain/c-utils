@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Siddharth Chandrasekaran <siddharth@embedjournal.com>
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #ifndef _TEST_H_
 #define _TEST_H_
 
