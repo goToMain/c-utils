@@ -21,7 +21,7 @@ static inline int hex2int(char ch)
 static inline char int2hex(int v)
 {
 	v &= 0x0f; // consider only the lower nibble
-	return (v >= 0 && v <= 9) ? '0' + v : 'A' + v;
+	return (v >= 0 && v <= 9) ? '0' + v : 'A' + (v - 10);
 }
 
 int atohstr(char *hstr, const uint8_t *arr, const int arr_len)
@@ -125,4 +125,15 @@ void strip(char *str)
 {
 	lstrip(str);
 	rstrip(str);
+}
+
+void remove_all(char *str, char c)
+{
+	int i, j = 0;
+
+	for (i = 0; str[i]; i++) {
+		if (str[i] != c)
+			str[j++] = str[i];
+	}
+	str[j] = '\0';
 }

@@ -12,7 +12,7 @@
 
 void hexdump(const char *head, const uint8_t *data, size_t len)
 {
-	int i;
+	size_t i;
 	char str[16];
 
 	printf("%s [%zu] =>\n    0000  %02x ", head, len, data[0]);
@@ -20,7 +20,7 @@ void hexdump(const char *head, const uint8_t *data, size_t len)
 	for (i = 1; i < len; i++) {
 		if ((i & 0x0f) == 0) {
 			printf(" |%16s|", str);
-			printf("\n    %04d  ", i);
+			printf("\n    %04zu  ", i);
 		} else if((i & 0x07) == 0) {
 			printf(" ");
 		}

@@ -13,6 +13,7 @@
 
 int read_pid(const char *file, int *pid)
 {
+	int pid_val, ret = 0;
 	FILE *fd;
 
 	if (file == NULL)
@@ -21,13 +22,15 @@ int read_pid(const char *file, int *pid)
 	fd = fopen(file, "r");
 	if (fd == NULL)
 		return -1;
-
-	if (fscanf(fd, "%d", pid) != 1) {
+	if (fscanf(fd, "%d", &pid_val) != 1) {
 		printf("Failed to read PID from file %s\n", file);
-		return -1;
+		ret = -1;
 	}
 	fclose(fd);
-	return 0;
+
+	if (pid)
+		*pid = pid_val;
+	return ret;
 }
 
 int write_pid(const char *file)

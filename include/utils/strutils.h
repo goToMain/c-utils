@@ -64,4 +64,12 @@ void rstrip(char *str);
 void lstrip(char *str);
 void strip(char *str);
 
+/**
+ * @brief Remove all occurrence of of c in str
+ *
+ * @param str source string
+ * @param c char to be removed
+ */
+void remove_all(char *str, char c);
+
 #endif /* _UTIL_STRUTIL_H_ */
