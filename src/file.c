@@ -45,7 +45,7 @@ int file_read_all(FILE *in, char **dataptr, size_t *sizeptr)
 		}
 		n = fread(data + used, 1, chunk_size, in);
 		used += n;
-		if (n < READALL_CHUNK) {
+		if (n < chunk_size) {
 			break;
 		}
 		chunk_size *= 2; /* exponential read */
