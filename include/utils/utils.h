@@ -32,7 +32,9 @@
 #define ARRAY_BASE(ptr, type, offset) \
 	((char *)(ptr)) - ((sizeof(type)) * offset)
 
+#define OFFSET_OF(type, field) (size_t)(&((type *)(0))->field)
+
 #define CONTAINER_OF(ptr, type, field) \
-        ((type *)(((char *)(ptr)) - offsetof(type, field)))
+        ((type *)(((char *)(ptr)) - OFFSET_OF(type, field)))
 
 #endif /* _UTILS_UTILS_H_ */
