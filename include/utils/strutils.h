@@ -72,4 +72,17 @@ void strip(char *str);
  */
 void remove_all(char *str, char c);
 
+/**
+ * @brief Splits `buf` by `sep` (as defined in strtok) into char **
+ * and adds tailing NULL pointer into `tokens`
+ *
+ * @param buf source string
+ * @param sep array of chars that mark separation in `buf` (see strtok(3)).
+ * @param tokens allocated array of char ptrs. Must be freed by caller.
+ *
+ * @return -1 on errors
+ * @return  0 on success
+ */
+int split_string(char *buf, char *sep, char ***tokens);
+
 #endif /* _UTIL_STRUTIL_H_ */

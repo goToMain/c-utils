@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Siddharth Chandrasekaran <siddharth@embedjournal.com>
+ * Copyright (c) 2020 Siddharth Chandrasekaran <siddharth@embedjournal.com>
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -8,17 +8,17 @@
 #ifndef _UTILS_LIST_H_
 #define _UTILS_LIST_H_
 
+typedef struct node_s node_t;
 struct node_s {
-	struct node_s *next;
-	struct node_s *prev;
+	node_t *next;
+	node_t *prev;
 };
 
 struct list_s {
-	struct node_s *head;
-	struct node_s *tail;
+	node_t *head;
+	node_t *tail;
 };
 
-typedef struct node_s node_t;
 typedef struct list_s list_t;
 
 void list_init(list_t *list);

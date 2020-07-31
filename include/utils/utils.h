@@ -37,4 +37,11 @@
 #define CONTAINER_OF(ptr, type, field) \
         ((type *)(((char *)(ptr)) - OFFSET_OF(type, field)))
 
+/**
+ * @brief Check p to be not NULL before calling free()
+ *
+ * @param p pointer to be free-ed
+ */
+void safe_free(void *p);
+
 #endif /* _UTILS_UTILS_H_ */
