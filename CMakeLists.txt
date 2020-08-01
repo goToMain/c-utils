@@ -23,7 +23,7 @@ target_link_libraries(${TEST_BIN} ${LIB_UTILS})
 target_include_directories(${TEST_BIN} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set_target_properties(${TEST_BIN} PROPERTIES EXCLUDE_FROM_ALL TRUE)
 add_custom_target(check_utils
-	COMMAND ${CMAKE_BINARY_DIR}/bin/${TEST_BIN}
-	COMMAND rm ${CMAKE_BINARY_DIR}/bin/${TEST_BIN}
+	COMMAND ${CMAKE_BINARY_DIR}/${TEST_BIN}
+	COMMAND rm ${CMAKE_BINARY_DIR}/${TEST_BIN}
 	DEPENDS ${TEST_BIN}
 )
