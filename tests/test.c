@@ -44,8 +44,6 @@ char *time_string(time_t *t)
 
 int main(int argc, char *argv[])
 {
-    int i=0, total_pass, total_exec;
-    time_t start_time, end_time;
     test_module_t *tm;
     test_t test;
 

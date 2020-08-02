@@ -8,8 +8,12 @@
 #define _UTIL_STRLIB_H_
 
 #include <stddef.h>
+#include <stdint.h>
+
+#define STRING_ALLOCATED      0x00000001
 
 typedef struct {
+	uint32_t flags;
 	char *buf;
 	size_t len;
 	size_t max_len;

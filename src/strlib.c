@@ -17,6 +17,7 @@ void string_create(string_t *s, const char *buf, size_t len)
 	s->buf = safe_zalloc(sizeof(char) * (len + 1));
 	s->len = 0;
 	s->max_len = len;
+	s->flags = STRING_ALLOCATED;
 	if (buf != NULL) {
 		memcpy(s->buf, buf, len);
 		s->len = len;
@@ -27,6 +28,9 @@ void string_create(string_t *s, const char *buf, size_t len)
 int string_resize(string_t *s, size_t new_len)
 {
 	char *temp;
+
+	if (!(s->flags & STRING_ALLOCATED))
+		return -1;
 
 	temp = realloc(s->buf, new_len + 1);
 	if (temp == NULL) {
@@ -43,8 +47,10 @@ int string_resize(string_t *s, size_t new_len)
 
 void string_destroy(string_t *s)
 {
-	safe_free(s->buf);
+	if (s->flags & STRING_ALLOCATED)
+		safe_free(s->buf);
 	s->buf = NULL;
+	s->flags = 0;
 	s->len = 0;
 	s->max_len = 0;
 }
@@ -82,7 +88,7 @@ int string_copy(string_t *s, const char *mode, const char *str, size_t len)
 	memcpy(s->buf + start, str, len);
 	s->len = start + len;
 	s->buf[s->len] = '\0';
-	return 0;
+	return len;
 }
 
 int string_merge(string_t *primary, string_t *secondary)
