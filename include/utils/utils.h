@@ -44,4 +44,12 @@
  */
 void safe_free(void *p);
 
+/**
+ * @brief Allocates a zero initialized chunk of memory and exit()'s on failures
+ * so a check on the return of this mehtod is not needed.
+ *
+ * @return Allocated pointer that must be free-ed.
+ */
+void *safe_zalloc(size_t size);
+
 #endif /* _UTILS_UTILS_H_ */

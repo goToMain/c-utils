@@ -65,3 +65,78 @@ int list_popleft(list_t *list, node_t **node)
 	}
 	return 0;
 }
+
+void list_remove_node(list_t *list, node_t *node)
+{
+	if (node->prev == NULL) {
+		/* remove head */
+		list->head = node->next;
+		if (list->head == NULL)
+			list->tail = NULL;
+		else
+			list->head->prev = NULL;
+	}
+	else if (node->next == NULL) {
+		/* remove tail */
+		list->tail = node->prev;
+		if (list->tail == NULL)
+			list->head = NULL;
+		else
+			list->tail->next = NULL;
+	}
+	else {
+		/* remove in-between */
+		node->next->prev = node->prev;
+		node->prev->next = node->next;
+	}
+}
+
+void list_insert_node(list_t *list, node_t *after, node_t *new)
+{
+	node_t *next;
+	
+	if (after == NULL) { /* insert at head */
+		next = list->head;
+		list->head = new;
+	} else {
+		next = after->next;
+		after->next = new;
+	}
+	new->prev = after;
+	new->next = next;
+	next->prev = new;
+}
+
+void list_insert_nodes(list_t *list, node_t *after, list_t *nodes)
+{
+	node_t *next;
+	
+	if (!nodes->head || !nodes->tail) {
+		/* Invalid input */
+		return;
+	}
+
+	if (list->head == NULL) {
+		/* If list is empry, the nodes becomes the list */
+		list->head = nodes->head;
+		list->tail = nodes->tail;
+		return;
+	}
+
+	if (after == NULL) {
+		/* if 'after' node is not given prepend the nodes to list */
+		nodes->tail->next = list->head;
+		list->head->prev = nodes->tail;
+		list->head = nodes->head;
+		return;
+	}
+
+	/* insert nodes into list after the 'after' node */
+	next = after->next;
+	after->next = nodes->head;
+	nodes->head->prev = after;
+	if (next) {
+		next->prev = nodes->tail;
+		nodes->tail->next = next;
+	}
+}

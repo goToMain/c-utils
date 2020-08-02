@@ -27,4 +27,8 @@ void list_appendleft(list_t *list, node_t *node);
 int list_pop(list_t *list, node_t **node);
 int list_popleft(list_t *list, node_t **node);
 
+void list_remove_node(list_t *list, node_t *node);
+void list_insert_node(list_t *list, node_t *after, node_t *new);
+void list_insert_nodes(list_t *list, node_t *after, list_t *nodes);
+
 #endif /* _UTILS_LIST_H_ */

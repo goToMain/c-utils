@@ -7,6 +7,7 @@
 #include <stdlib.h>
 
 #include <utils/strutils.h>
+#include <utils/utils.h>
 
 static inline int hex2int(char ch)
 {
@@ -140,7 +141,7 @@ void remove_all(char *str, char c)
 
 int split_string(char *buf, char *sep, char ***tokens)
 {
-	char *tok, *rest, *temp, **toks = NULL;
+	char *tok, *rest, **temp, **toks = NULL;
 	size_t length = 0, size = 0;
 	int chunk = 16;
 
@@ -149,9 +150,10 @@ int split_string(char *buf, char *sep, char ***tokens)
 		if (length >= size) {
 			temp = realloc(toks, sizeof(char *) * (size + chunk));
 			if (temp == NULL) {
+				safe_free(toks);
 				return -1;
 			}
-			toks = (char **)temp;
+			toks = temp;
 			size += chunk;
 			chunk <<= 2;
 		}
@@ -164,9 +166,10 @@ int split_string(char *buf, char *sep, char ***tokens)
 	}
 	temp = realloc(toks, sizeof(char *) * (length + 1));
 	if (temp == NULL) {
+		safe_free(toks);
 		return -1;
 	}
-	toks = (char **)temp;
+	toks = temp;
 	toks[length] = NULL;
 	*tokens = toks;
 	return 0;
