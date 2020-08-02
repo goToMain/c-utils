@@ -70,10 +70,10 @@ typedef struct {
  * 	Use `mode` as defined above in "String Ops Modes" section.
  *
  * Example:
- * 	str_printf(&my_string, "c", "Age: %d\n", 28);
+ * 	string_printf(&my_string, "c", "Age: %d\n", 28);
  * 	// now, my_string == "Age: 28\n"
  */
-int str_printf(string_t *s, const char *mode, const char *fmt, ...);
+int string_printf(string_t *s, const char *mode, const char *fmt, ...);
 
 /**
  * Description:
@@ -83,12 +83,17 @@ int str_printf(string_t *s, const char *mode, const char *fmt, ...);
  * 	Use `mode` as defined above in "String Ops Modes" section.
  *
  * Example:
- * 	str_copy(&my_string, "c", "Hello", 5);
+ * 	string_copy(&my_string, "c", "Hello", 5);
  * 	// now, my_string == "Hello"
- * 	str_copy(&my_string, "a", " World", 6);
+ * 	string_copy(&my_string, "a", " World", 6);
  * 	// now, my_string == "Hello World"
  */
-int str_copy(string_t *s, const char *mode, const char *str, size_t len);
+int string_copy(string_t *s, const char *mode, const char *str, size_t len);
+
+void string_create(string_t *s, const char *buf, size_t len);
+void string_destroy(string_t *s);
+int string_resize(string_t *s, size_t new_len);
+int string_merge(string_t *primary, string_t *secondary);
 
 /* macro helpers */
 
@@ -97,7 +102,7 @@ int str_copy(string_t *s, const char *mode, const char *str, size_t len);
 		(s)->buf[0] = 0;	\
 		(s)->len = 0;		\
 	} while(0)
-#define str_const_copy(s, str)		str_copy(s, "c", str, strlen(s))
-#define str_const_append(s, str)	str_copy(s, "a", str, strlen(str))
+#define str_const_copy(s, str)		string_copy(s, "c", str, strlen(s))
+#define str_const_append(s, str)	string_copy(s, "a", str, strlen(str))
 
 #endif /* _UTIL_STRLIB_H_ */
