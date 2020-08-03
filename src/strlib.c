@@ -14,7 +14,7 @@
 
 void string_create(string_t *s, const char *buf, size_t len)
 {
-	s->buf = safe_zalloc(sizeof(char) * (len + 1));
+	s->buf = safe_malloc(sizeof(char) * (len + 1));
 	s->len = 0;
 	s->max_len = len;
 	s->flags = STRING_ALLOCATED;
@@ -32,16 +32,10 @@ void string_clone(string_t *dest, const string_t *src)
 
 int string_resize(string_t *s, size_t new_len)
 {
-	char *temp;
-
 	if (!(s->flags & STRING_ALLOCATED))
 		return -1;
 
-	temp = realloc(s->buf, new_len + 1);
-	if (temp == NULL) {
-		return -1;
-	}
-	s->buf = temp;
+	s->buf = safe_realloc(s->buf, new_len + 1);
 	s->max_len = new_len;
 	if (s->len > new_len) {
 		s->len = new_len;

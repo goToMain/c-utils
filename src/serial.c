@@ -29,6 +29,7 @@
 #include <errno.h>
 
 #include <utils/serial.h>
+#include <utils/utils.h>
 
 struct serial *serial_open(const char *device, int baud, const char *mode)
 {
@@ -92,12 +93,7 @@ struct serial *serial_open(const char *device, int baud, const char *mode)
 		cflags |= CSTOPB;
 	}
 
-	ctx = calloc(1, sizeof(struct serial));
-	if (ctx == NULL) {
-		printf("failed to alloc struct serial_port\n");
-		return NULL;
-	}
-
+	ctx = safe_calloc(1, sizeof(struct serial));
 	ctx->fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
 	if (ctx->fd == -1) {
 		perror("unable to open comport");
@@ -159,7 +155,7 @@ struct serial *serial_open(const char *device, int baud, const char *mode)
 error:
 	if (ctx->fd != 0 && ctx->fd != -1)
 		flock(ctx->fd, LOCK_UN);
-	free(ctx);
+	safe_free(ctx);
 	return NULL;
 }
 
@@ -185,7 +181,7 @@ void serial_close(struct serial *ctx)
 	close(ctx->fd);
 	flock(ctx->fd, LOCK_UN);
 
-	free(ctx);
+	safe_free(ctx);
 }
 
 int serial_read(struct serial *ctx, unsigned char *buf, int size)

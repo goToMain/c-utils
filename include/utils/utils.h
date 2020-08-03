@@ -38,18 +38,21 @@
         ((type *)(((char *)(ptr)) - OFFSET_OF(type, field)))
 
 /**
- * @brief Check p to be not NULL before calling free()
+ * @brief Check p to be not NULL before calling safe_free()
  *
  * @param p pointer to be free-ed
  */
 void safe_free(void *p);
 
 /**
- * @brief Allocates a zero initialized chunk of memory and exit()'s on failures
- * so a check on the return of this mehtod is not needed.
- *
- * @return Allocated pointer that must be free-ed.
+ * @brief safe_* variants of the standard alloc methods do a check on the
+ * returned pointer and will call exit() if any of the returned NULL. The
+ * safe_free() method will check if pointer is NULL before calling safe_free().
  */
-void *safe_zalloc(size_t size);
+void  safe_free(void *p);
+void *safe_malloc(size_t size);
+void *safe_calloc(size_t count, size_t size);
+void *safe_realloc(void *data, size_t size);
+void *safe_strdup(const char *s);
 
 #endif /* _UTILS_UTILS_H_ */

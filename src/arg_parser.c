@@ -12,6 +12,7 @@
 #include <assert.h>
 
 #include <utils/arg_parser.h>
+#include <utils/utils.h>
 
 #define is_lower_alpha(x) (x >= 97 && x <= 122)
 
@@ -98,7 +99,7 @@ int ap_parse(int argc, char *argv[], struct ap_option *ap_opts, void *data)
 		ap_opt++;
 	}
 
-	opts = malloc(sizeof (struct option) * (opts_len + 3));
+	opts = safe_malloc(sizeof (struct option) * (opts_len + 3));
 	if (opts == NULL) {
 		printf("Error: alloc error\n");
 		exit(-1);
@@ -174,7 +175,7 @@ int ap_parse(int argc, char *argv[], struct ap_option *ap_opts, void *data)
 			break;
 		case AP_TYPE_STR:
 			cval = (char **)(((char *)data) + ap_opts[i].offset);
-			*cval = strdup(optarg);
+			*cval = safe_strdup(optarg);
 			break;
 		case AP_TYPE_INT:
 			ival = (int *)((char *)data + ap_opts[i].offset);
@@ -194,7 +195,7 @@ int ap_parse(int argc, char *argv[], struct ap_option *ap_opts, void *data)
 		}
 		ap_opts[i].flags |= AP_OPT_SEEN;
 	}
-	free(opts);
+	safe_free(opts);
 
 	ap_opt = ap_opts;
 	while (ap_opt->short_name != '\0') {

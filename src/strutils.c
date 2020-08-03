@@ -141,35 +141,25 @@ void remove_all(char *str, char c)
 
 int split_string(char *buf, char *sep, char ***tokens)
 {
-	char *tok, *rest, **temp, **toks = NULL;
+	char *tok, *rest, **toks = NULL;
 	size_t length = 0, size = 0;
 	int chunk = 16;
 
 	tok = strtok_r(buf, sep, &rest);
 	while (tok != NULL) {
 		if (length >= size) {
-			temp = realloc(toks, sizeof(char *) * (size + chunk));
-			if (temp == NULL) {
-				safe_free(toks);
-				return -1;
-			}
-			toks = temp;
+			toks = safe_realloc(toks, sizeof(char *) * (size + chunk));
 			size += chunk;
 			chunk <<= 2;
 		}
-		toks[length] = strdup(tok);
+		toks[length] = safe_strdup(tok);
 		length += 1;
 		tok = strtok_r(NULL, sep, &rest);
 	}
 	if (toks == NULL) {
 		return -1;
 	}
-	temp = realloc(toks, sizeof(char *) * (length + 1));
-	if (temp == NULL) {
-		safe_free(toks);
-		return -1;
-	}
-	toks = temp;
+	toks = safe_realloc(toks, sizeof(char *) * (length + 1));
 	toks[length] = NULL;
 	*tokens = toks;
 	return 0;
