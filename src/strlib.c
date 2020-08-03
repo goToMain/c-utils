@@ -25,6 +25,11 @@ void string_create(string_t *s, const char *buf, size_t len)
 	s->buf[len] = '\0'; /* Make sure there is always a terminating null */
 }
 
+void string_clone(string_t *dest, const string_t *src)
+{
+	string_create(dest, src->buf, src->len);
+}
+
 int string_resize(string_t *s, size_t new_len)
 {
 	char *temp;

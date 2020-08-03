@@ -95,6 +95,7 @@ int string_printf(string_t *s, const char *mode, const char *fmt, ...);
 int string_copy(string_t *s, const char *mode, const char *str, size_t len);
 
 void string_create(string_t *s, const char *buf, size_t len);
+void string_clone(string_t *dest, const string_t *src);
 void string_destroy(string_t *s);
 int string_resize(string_t *s, size_t new_len);
 int string_merge(string_t *primary, string_t *secondary);
