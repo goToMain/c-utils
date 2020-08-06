@@ -9,6 +9,7 @@
 
 #include <stdint.h>
 #include <string.h>
+#include <stdbool.h>
 
 /*
  * atohstr() - Converts an array of bytes to its hexadecimal string
@@ -56,13 +57,24 @@ int safe_atoi(const char *a, int *i);
  */
 char *safe_strncpy(char* dest, const char* src, size_t size);
 
-/*
- * rstrip(), lstrip(), strip() - String space trim methods, as defined
+/**
+ * @brief rstrip(), lstrip(), strip() - String space trim methods, as defined
  * in python3 programming language.
+ *
+ * @return returns the length of the modifid string. In the case of lstrip(),
+ * if the string was not modified, -ve error is returned to indicate this. This
+ * is done to avoid a needless O(N) strlen() call.
  */
-void rstrip(char *str);
-void lstrip(char *str);
-void strip(char *str);
+int rstrip(char *str);
+int lstrip(char *str);
+int  strip(char *str);
+
+/**
+ * @brief lstrip() without shifting chars but looses the passed pointer. This
+ * can be used on local non-alloced refs.
+ */
+#define lstrip_soft(p) \
+	do { if (p) while (*p != '\0' && *p == ' ') p++; } while (0)
 
 /**
  * @brief Remove all occurrence of of c in str
@@ -84,5 +96,23 @@ void remove_all(char *str, char c);
  * @return  0 on success
  */
 int split_string(char *buf, char *sep, char ***tokens);
+
+/**
+ * @brief Return the number of times c occurs in null terminated string s.
+ */
+int strcntchr(char *s, char c);
+
+/**
+ * @brief Checks if string poited to by s is empty.
+ *
+ * This functions evaluates to true under the following conditions:
+ *   - pointer s is NULL
+ *   - s[0] == '\0'
+ *   - s has only whitespace chars followed by a '\0'
+ *
+ * @returns 1 when s is empty (see conditions)
+ * @returns 0 when string has other non-whitespace chars
+ */
+int strisempty(char *s);
 
 #endif /* _UTIL_STRUTIL_H_ */

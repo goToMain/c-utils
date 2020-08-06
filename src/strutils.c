@@ -5,6 +5,7 @@
  */
 
 #include <stdlib.h>
+#include <ctype.h>
 
 #include <utils/strutils.h>
 #include <utils/utils.h>
@@ -97,35 +98,42 @@ int trim_suffix(char *str, const char *suffix)
 	return str[i] = '\0';
 }
 
-void rstrip(char *str)
+int rstrip(char *str)
 {
 	int i;
 
 	i = strlen(str);
-	while (str[--i] == ' ')
-		str[i] = '\0';
+	while (str[i - 1] == ' ') {
+		str[i - 1] = '\0';
+		i -= 1;
+	}
+	return i;
 }
 
-void lstrip(char *str)
+/* Note: can return -ve */
+int lstrip(char *str)
 {
 	int i = 0, j = 0;
 
 	while (str[i] && str[i] == ' ')
 		i++;
-
-	while (i && str[i]) {
+	if (i == 0)
+		return -1;
+	while (str[i]) {
 		str[j] = str[i];
-		i++; j++;
+		i += 1; j += 1;
 	}
-
-	if (j != 0)
-		str[j] = '\0';
+	str[j] = '\0';
+	return (j > 0) ? j - 1 : 0;
 }
 
-void strip(char *str)
+int strip(char *str)
 {
-	lstrip(str);
-	rstrip(str);
+	int rs_len, ls_len;
+
+	rs_len = rstrip(str);
+	ls_len = lstrip(str); /* can be -ve */
+	return (ls_len > 0) ? ls_len : rs_len;
 }
 
 void remove_all(char *str, char c)
@@ -163,4 +171,24 @@ int split_string(char *buf, char *sep, char ***tokens)
 	toks[length] = NULL;
 	*tokens = toks;
 	return 0;
+}
+
+int strcntchr(char *s, char c)
+{
+	int i = 0, count = 0;
+
+	while (s[i]) {
+		if (s[i] == c)
+			count += 1;
+		i += 1;
+	}
+	return count;
+}
+
+int strisempty(char *s)
+{
+	while (s && *s != '\0' && isspace(*s))
+		s++;
+
+	return s == NULL || *s == '\0';
 }
