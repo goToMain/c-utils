@@ -21,26 +21,12 @@ typedef struct {
 
 /**
  * Description:
- * 	Defines a local instance string_t of specified length.
- *
- * Example:
- * 	LOCAL_STRING_DEF(my_string, 100);
- */
-#define LOCAL_STRING_DEF(str, length)	\
-	string_t str;			\
-	char str ## _buf[length+1]={0}; \
-	str.buf = str ## _buf;		\
-	str.len = 0;			\
-	str.max_len = length;
-
-/**
- * Description:
- * 	Defines a global instance string_t of specified length.
+ * 	Defines a instance of string_t of specified length.
  *
  * Example:
  * 	GLOBAL_STRING_DEF(my_string, 100);
  */
-#define GLOBAL_STRING_DEF(str, length)	\
+#define STRING_DEF(str, length)	        \
 	char str ## _buf[length+1]={0};	\
 	string_t str = {		\
 		.buf = str ## _buf,	\

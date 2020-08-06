@@ -20,11 +20,11 @@ static void die_oom(const char *msg, size_t count, size_t size)
 void safe_free(void *p)
 {
 	if (p != NULL) {
-		safe_free(p);
+		free(p);
 	}
 }
-
 void *safe_malloc(size_t size)
+
 {
 	void *p;
 

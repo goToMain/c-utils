@@ -26,6 +26,9 @@
 
 #define ARG_UNUSED(x)                  (void)(x)
 
+#define STR(x) #x
+#define XSTR(x) STR(x)
+
 #define ARRAY_SIZEOF(x) \
 	(sizeof(x) / sizeof(x[0]))
 
