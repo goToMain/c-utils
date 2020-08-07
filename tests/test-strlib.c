@@ -13,7 +13,7 @@
 
 #include "test.h"
 
-GLOBAL_STRING_DEF(test_str, 8);
+STRING_DEF(test_str, 8);
 
 void test_print_info_string(const char *msg, string_t *s)
 {
