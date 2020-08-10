@@ -9,6 +9,7 @@
 #define _UTILS_LIST_H_
 
 typedef struct node_s node_t;
+
 struct node_s {
 	node_t *next;
 	node_t *prev;
@@ -20,6 +21,9 @@ struct list_s {
 };
 
 typedef struct list_s list_t;
+
+#define LIST_FOREACH(list, node) \
+	for(node_t *node = (list)->head; node != NULL; node = node->next)
 
 void list_init(list_t *list);
 void list_append(list_t *list, node_t *node);
