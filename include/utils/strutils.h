@@ -115,4 +115,13 @@ int strcntchr(char *s, char c);
  */
 int strisempty(char *s);
 
+/**
+ * @brief Compute a 32 bit hash value for str upto len chars or upto the
+ * null char. Trick: for computing hash for null terminated strings len can
+ * be set to -ve instead of passing strlen(s) explicitly.
+ *
+ * @return 32-bit hash code
+ */
+uint32_t hash32(const char *str, int len);
+
 #endif /* _UTIL_STRUTIL_H_ */

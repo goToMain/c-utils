@@ -192,3 +192,14 @@ int strisempty(char *s)
 
 	return s == NULL || *s == '\0';
 }
+
+uint32_t hash32(const char *str, int len)
+{
+	int c;
+	uint32_t hash = 5381;
+
+	while ((c = *str++) && len-- != 0) {
+		hash = ((hash << 5) + hash) ^ c; /* hash * 33 ^ c */
+	}
+	return hash;
+}

@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include <utils/utils.h>
+#include <utils/strutils.h>
 #include <utils/hashmap.h>
 
 #define HASH_MAP_BASE_SIZE            32
@@ -9,17 +10,6 @@
 #define HASH_MAP_GROWTH_FACTOR        2
 #define MAP_DENSITY(map) \
 		((double)(map)->occupancy / (double)(map)->capacity)
-
-static uint32_t hash32(const char *str)
-{
-	int c;
-	uint32_t hash = 5381;
-
-	while ((c = *str++)) {
-		hash = ((hash << 5) + hash) ^ c; /* hash * 33 ^ c */
-	}
-	return hash;
-}
 
 static void hash_map_rehash(hash_map_t *map)
 {
@@ -93,7 +83,7 @@ void hash_map_insert(hash_map_t *map, const char *key, void *val)
 	if (MAP_DENSITY(map) > HASH_MAP_DENSITY_FACTOR)
 		hash_map_rehash(map);
 
-	hash = hash32(key);
+	hash = hash32(key, -1);
 	item = prev = map->pool[hash % map->capacity];
 	while (item != NULL) {
 		if (item->hash == hash && strcmp(item->key, key) == 0) {
@@ -123,7 +113,7 @@ void *hash_map_get(hash_map_t *map, const char *key)
 	uint32_t hash;
 	hash_map_item_t *item;
 
-	hash = hash32(key);
+	hash = hash32(key, -1);
 	item = map->pool[hash % map->capacity];
 	while (item != NULL) {
 		if (item->hash == hash && strcmp(item->key, key) == 0)
@@ -139,7 +129,7 @@ void *hash_map_delete(hash_map_t *map, const char *key)
 	uint32_t hash;
 	hash_map_item_t *prev = NULL, *item;
 
-	hash = hash32(key);
+	hash = hash32(key, -1);
 	item = map->pool[hash % map->capacity];
 	while (item != NULL) {
 		if (item->hash == hash && strcmp(item->key, key) == 0)
