@@ -7,6 +7,8 @@
 #ifndef _UTILS_UTILS_H_
 #define _UTILS_UTILS_H_
 
+#include <stddef.h>
+
 #ifndef NULL
 #define NULL                           ((void *)0)
 #endif

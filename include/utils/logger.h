@@ -17,7 +17,7 @@ typedef struct {
 	FILE *file;
 } logger_t;
 
-enum log_levels_e {
+enum log_levels {
 	LOG_EMERG,
 	LOG_ALERT,
 	LOG_CRIT,

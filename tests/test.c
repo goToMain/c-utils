@@ -17,10 +17,12 @@ char date_time[DATE_TIME_STR_LEN];
 
 void do_test_circular_buffer(test_result_t *result);
 void do_test_strlib(test_result_t *result);
+void do_test_hashmap(test_result_t *result);
 
 test_module_t c_utils_test_modules[] = {
     {"Circular Buffers", do_test_circular_buffer },
     {"String Library", do_test_strlib },
+    {"Hash Map", do_test_hashmap },
     {NULL, NULL}
 };
 
@@ -46,6 +48,9 @@ int main(int argc, char *argv[])
 {
     test_module_t *tm;
     test_t test;
+
+    (void)argc;
+    (void)argv;
 
     // Test header
     printf("\n");
