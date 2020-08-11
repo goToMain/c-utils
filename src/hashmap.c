@@ -57,15 +57,16 @@ void hash_map_init(hash_map_t *map)
 void hash_map_free(hash_map_t *map, hash_map_callback_t callback)
 {
 	size_t pos = 0;
-	hash_map_item_t *item;
+	hash_map_item_t *item, *next;
 
 	while (pos < map->capacity) {
 		item = map->pool[pos];
 		while (item != NULL) {
 			callback(map->pool[pos]->key, map->pool[pos]->val);
+			next = item->next;
 			safe_free(item->key);
 			safe_free(item);
-			item = item->next;
+			item = next;
 		}
 		pos += 1;
 	}
@@ -139,12 +140,12 @@ void *hash_map_delete(hash_map_t *map, const char *key)
 	}
 	if (item != NULL) { /* key found */
 		val = item->val;
-		safe_free(item->key);
-		safe_free(item);
 		if (prev != NULL)
 			prev->next = item->next;
 		else
 			map->pool[hash % map->capacity] = item->next;
+		safe_free(item->key);
+		safe_free(item);
 		map->occupancy -= 1;
 	}
 	return val;
@@ -158,7 +159,7 @@ void hash_map_foreach(hash_map_t *map, hash_map_callback_t callback)
 	while (pos < map->capacity) {
 		item = map->pool[pos];
 		while (item != NULL) {
-			callback(map->pool[pos]->key, map->pool[pos]->val);
+			callback(item->key, item->val);
 			item = item->next;
 		}
 		pos += 1;

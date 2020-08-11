@@ -31,6 +31,8 @@
 #define STR(x) #x
 #define XSTR(x) STR(x)
 
+#define MATH_MOD(a, b)                 (((a % b) + b) % b)
+
 #define ARRAY_SIZEOF(x) \
 	(sizeof(x) / sizeof(x[0]))
 

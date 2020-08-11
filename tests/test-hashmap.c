@@ -39,13 +39,14 @@ void free_test_hashmap_value(const char *key, void *val)
 {
 	struct test_hashmap *p = val;
 
+	ARG_UNUSED(key);
 	safe_free(p->key);
 	safe_free(p);
 }
 
 int test_insert(hash_map_t *map)
 {
-	int i = 0;
+	size_t i = 0;
 	struct test_hashmap *p;
 
 	while (test_hash_key[i] != NULL) {
