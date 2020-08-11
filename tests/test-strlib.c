@@ -80,7 +80,7 @@ int test_str_copy()
 
 	ret = string_copy(&test_str, "a", "123", 3);
 	if (ret != -1) {
-		test_print_info_string("Apend after full", &test_str);
+		test_print_info_string("Append after full", &test_str);
 		return -1;
 	}
 

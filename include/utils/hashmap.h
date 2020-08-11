@@ -22,7 +22,7 @@ struct hash_map_item_s {
 typedef struct {
 	hash_map_item_t **pool;
 	size_t capacity;
-	size_t occupancy;
+	size_t count;
 } hash_map_t;
 
 typedef void (*hash_map_callback_t)(const char *key, void *val);

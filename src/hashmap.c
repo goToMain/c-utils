@@ -6,18 +6,18 @@
 #include <utils/hashmap.h>
 
 #define HASH_MAP_BASE_SIZE            32
-#define HASH_MAP_DENSITY_FACTOR       0.75
+#define HASH_MAP_DENSITY_FACTOR       0.8
 #define MAP_DENSITY(map) \
-		((double)(map)->occupancy / (double)(map)->capacity)
+		((double)(map)->count / (double)(map)->capacity)
 #define GET_POOL_POS(map, hash) \
 		(hash & (map->capacity - 1))
 
 static size_t hash_map_count(hash_map_t *map)
 {
+	size_t i, count = 0;
 	hash_map_item_t *item;
-	size_t count = 0;
 
-	for (size_t i = 0; i < map->capacity; i++) {
+	for (i = 0; i < map->capacity; i++) {
 		item = map->pool[i];
 		while (item) {
 			count += 1;
@@ -32,7 +32,7 @@ static void hash_map_lint(hash_map_t *map)
 	size_t count;
 
 	count = hash_map_count(map);
-	assert(count == map->occupancy);
+	assert(count == map->count);
 }
 
 static void hash_map_rehash(hash_map_t *map)
@@ -40,13 +40,13 @@ static void hash_map_rehash(hash_map_t *map)
 	size_t pivot, target, old_capacity;
 	hash_map_item_t *temp, *prev, *item;
 
-	/* grow pool */
 	old_capacity = map->capacity;
 	map->capacity <<= 1; /* double capacity each time */
 	map->pool = safe_realloc_zero(map->pool,
 			old_capacity  * sizeof(hash_map_item_t *),
 			map->capacity * sizeof(hash_map_item_t *));
-	/* re-hash */
+
+	/* spread out the hashes in the range [0 .. old_capacity] */
 	for (pivot = 0; pivot < old_capacity; pivot++) {
 		prev = NULL;
 		item = map->pool[pivot];
@@ -80,7 +80,7 @@ void hash_map_init(hash_map_t *map)
 	size = round_up_pow2(HASH_MAP_BASE_SIZE);
 	map->pool = safe_calloc(size, sizeof(hash_map_item_t *));
 	map->capacity = size;
-	map->occupancy = 0;
+	map->count = 0;
 }
 
 void hash_map_free(hash_map_t *map, hash_map_callback_t callback)
@@ -136,7 +136,7 @@ void hash_map_insert(hash_map_t *map, const char *key, void *val)
 		prev->next = item;
 	else
 		map->pool[pos] = item;
-	map->occupancy += 1;
+	map->count += 1;
 }
 
 void *hash_map_get(hash_map_t *map, const char *key)
@@ -178,7 +178,7 @@ void *hash_map_delete(hash_map_t *map, const char *key)
 			map->pool[pos] = item->next;
 		safe_free(item->key);
 		safe_free(item);
-		map->occupancy -= 1;
+		map->count -= 1;
 	}
 	return val;
 }

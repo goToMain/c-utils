@@ -58,8 +58,9 @@ int test_insert(hash_map_t *map)
 		}
 		i += 1;
 	}
-	if (map->occupancy != i) {
-		mod_printf("Error occupancy: %zu", map->occupancy);
+	if (map->count != i) {
+		mod_printf("Error hash_map count mismatch: "
+			   "%zu/%zu", i, map->count);
 		return -1;
 	}
 	return 0;

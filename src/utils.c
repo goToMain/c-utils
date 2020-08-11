@@ -23,6 +23,7 @@ void safe_free(void *p)
 		free(p);
 	}
 }
+
 void *safe_malloc(size_t size)
 
 {
