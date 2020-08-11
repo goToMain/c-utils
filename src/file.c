@@ -13,6 +13,9 @@
 #include <string.h>
 #include <libgen.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+
 #include <utils/file.h>
 #include <utils/utils.h>
 
@@ -105,40 +108,58 @@ char *get_working_directory(void)
 	return p;
 }
 
+int is_regular_file(const char *path)
+{
+	struct stat path_stat;
+	stat(path, &path_stat);
+	return S_ISREG(path_stat.st_mode);
+}
+
 int path_extract(const char *path, char **dir_name, char **base_name)
 {
-	char *dname = NULL, *bname = NULL, *rpath = NULL;
+	int ret = -1;
+	char *dname = NULL, *dname_copy = NULL;
+	char *bname = NULL, *bname_copy = NULL, *rpath;
 
-	if (path == NULL)
+	if (!path || !is_regular_file(path))
 		return -1;
+
+	if (dir_name) *dir_name = NULL;
+	if (base_name) *base_name = NULL;
 
 	rpath = safe_malloc(sizeof(char) * PATH_MAX);
 	if (realpath(path, rpath) == NULL) {
-		safe_free(rpath);
-		return -1;
+		perror("realpath");
+		goto error;
 	}
-
 	if (dir_name) {
-		dname = safe_malloc(sizeof(char) * PATH_MAX);
-		if (dirname_r(rpath, dname) == NULL) {
-			safe_free(rpath);
-			safe_free(dname);
-			return -1;
+		dname_copy = safe_strdup(rpath);
+		dname = dirname(rpath);
+		if (dname == NULL) {
+			perror("dirname");
+			goto error;
 		}
-		*dir_name = dname;
+		*dir_name = safe_strdup(dname);
 	}
-
 	if (base_name) {
-		bname = safe_malloc(sizeof(char) * PATH_MAX);
-		if (basename_r(rpath, bname) == NULL) {
-			safe_free(rpath);
-			safe_free(bname);
-			safe_free(dname);
-			return -1;
+		bname_copy = safe_strdup(rpath);
+		bname = basename(bname_copy);
+		if (bname == NULL) {
+			perror("basename");
+			goto error;
 		}
-		*base_name = bname;
+		*base_name = safe_strdup(bname);
 	}
-
+	ret = 0;
+cleanup:
 	safe_free(rpath);
-	return 0;
+	safe_free(dname_copy);
+	safe_free(bname_copy);
+	return ret;
+error:
+	if (dir_name)
+		safe_free(*dir_name);
+	if (base_name)
+		safe_free(*base_name);
+	goto cleanup;
 }
