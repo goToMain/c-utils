@@ -8,6 +8,7 @@
 #define _UTILS_UTILS_H_
 
 #include <stddef.h>
+#include <stdint.h>
 
 #ifndef NULL
 #define NULL                           ((void *)0)
@@ -32,6 +33,8 @@
 #define XSTR(x) STR(x)
 
 #define MATH_MOD(a, b)                 (((a % b) + b) % b)
+
+#define IS_POW2(n)                     ((n) & ((n) - 1))
 
 #define ARRAY_SIZEOF(x) \
 	(sizeof(x) / sizeof(x[0]))
@@ -61,5 +64,12 @@ void *safe_malloc(size_t size);
 void *safe_calloc(size_t count, size_t size);
 void *safe_realloc(void *data, size_t size);
 void *safe_strdup(const char *s);
+void *safe_realloc_zero(void *data, size_t old_size, size_t new_size);
+
+/**
+ * @brief Rounds up 32-bit v to nearest power of 2. If v is already a power
+ * of 2 it is returned unmodified.
+ */
+uint32_t round_up_pow2(uint32_t v);
 
 #endif /* _UTILS_UTILS_H_ */

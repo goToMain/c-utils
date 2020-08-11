@@ -70,3 +70,25 @@ void *safe_realloc(void *data, size_t size)
 
 	return p;
 }
+
+void *safe_realloc_zero(void *data, size_t old_size, size_t new_size)
+{
+	void *p;
+
+	p = safe_realloc(data, new_size);
+	memset((unsigned char *)p + old_size, 0, new_size - old_size);
+	return p;
+}
+
+uint32_t round_up_pow2(uint32_t v)
+{
+	/* from the bit-twiddling hacks */
+	v -= 1;
+	v |= v >> 1;
+	v |= v >> 2;
+	v |= v >> 4;
+	v |= v >> 8;
+	v |= v >> 16;
+	v += 1;
+	return v;
+}
