@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 #include <utils/utils.h>
 
 static void die_oom(const char *msg, size_t count, size_t size)
@@ -76,8 +77,12 @@ void *safe_realloc_zero(void *data, size_t old_size, size_t new_size)
 {
 	void *p;
 
+	assert(old_size != new_size);
+
 	p = safe_realloc(data, new_size);
-	memset((unsigned char *)p + old_size, 0, new_size - old_size);
+	if (new_size > old_size) {
+		memset((unsigned char *)p + old_size, 0, new_size - old_size);
+	}
 	return p;
 }
 
