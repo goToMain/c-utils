@@ -124,4 +124,9 @@ int strisempty(char *s);
  */
 uint32_t hash32(const char *str, int len);
 
+/**
+ * @brief A strsep() clone. See `man 3 strsep` for more details.
+ */
+char *str_sep(char **str, const char *sep);
+
 #endif /* _UTIL_STRUTIL_H_ */

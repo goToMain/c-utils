@@ -203,3 +203,22 @@ uint32_t hash32(const char *str, int len)
 	}
 	return hash;
 }
+
+char *str_sep(char **str, const char *sep)
+{
+	char *start, *end;
+
+	if (str == NULL || *str == NULL || *str[0] == '\0')
+		return NULL;
+
+	start = *str;
+	while (*start && strchr(sep, *start))
+		start++;
+	end = start;
+	while (*end && !strchr(sep, *end))
+		end++;
+	if (*end != '\0')
+		*end++ = '\0';
+	*str = end;
+	return start;
+}
