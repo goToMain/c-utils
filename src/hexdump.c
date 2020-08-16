@@ -13,7 +13,7 @@
 void hexdump(const char *head, const uint8_t *data, size_t len)
 {
 	size_t i;
-	char str[16];
+	char str[16 + 1] = {0};
 
 	printf("%s [%zu] =>\n    0000  %02x ", head, len, data[0]);
 	str[0] = isprint(data[0]) ? data[0] : '.';
