@@ -222,3 +222,28 @@ char *str_sep(char **str, const char *sep)
 	*str = end;
 	return start;
 }
+
+int str_sep_count(const char *str, const char *sep)
+{
+	int count = 0;
+	const char *p;
+
+	if (str == NULL || str[0] == '\0')
+		return 0;
+	if (sep == NULL)
+		return 1;
+	if (*sep == '\0')
+		return strlen(str);
+
+	p = str;
+	while (*p) {
+		while (*p && strchr(sep, *p))
+			p++;
+		if (*p == '\0')
+			break;
+		count++;
+		while(*p && !strchr(sep, *p))
+			p++;
+	}
+	return count;
+}

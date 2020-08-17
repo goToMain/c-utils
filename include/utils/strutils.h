@@ -125,8 +125,16 @@ int strisempty(char *s);
 uint32_t hash32(const char *str, int len);
 
 /**
- * @brief A strsep() clone. See `man 3 strsep` for more details.
+ * @brief A strsep() clone. See `man 3 strsep` for more details. str_sep() is
+ * cloned here because strsep() is not guaranteed to be available everywhere.
  */
 char *str_sep(char **str, const char *sep);
+
+/**
+ * @brief Return a count of tokens in `str` when split by chars in `sep`. A
+ * token is as it is defined (and returned) by tokenizing method such as
+ * strtok() or strsep().
+ */
+int str_sep_count(const char *str, const char *sep);
 
 #endif /* _UTIL_STRUTIL_H_ */
