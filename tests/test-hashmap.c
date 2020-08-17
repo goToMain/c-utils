@@ -90,18 +90,17 @@ int test_delete(hash_map_t *map)
 	return not_found * -1;
 }
 
-void do_test_hashmap(test_result_t *result)
+TEST_DEF(hashmap)
 {
 	hash_map_t map;
-	int total=0, pass=0;
+	TEST_MOD_INIT();
 
 	hash_map_init(&map);
 
-	if (test_insert(&map) == 0) pass++; total++;
-	if (test_delete(&map) == 0) pass++; total++;
+	TEST_MOD_EXEC(test_insert(&map));
+	TEST_MOD_EXEC(test_delete(&map));
 
 	hash_map_free(&map, free_test_hashmap_value);
 
-	result->pass = pass;
-	result->total = total;
+	TEST_MOD_REPORT();
 }

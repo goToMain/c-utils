@@ -15,15 +15,17 @@
 
 char date_time[DATE_TIME_STR_LEN];
 
-void do_test_circular_buffer(test_result_t *result);
-void do_test_strlib(test_result_t *result);
-void do_test_hashmap(test_result_t *result);
+TEST_DEF(circular_buffer);
+TEST_DEF(strlib);
+TEST_DEF(hashmap);
+TEST_DEF(strutils);
 
 test_module_t c_utils_test_modules[] = {
-    {"Circular Buffers", do_test_circular_buffer },
-    {"String Library", do_test_strlib },
-    {"Hash Map", do_test_hashmap },
-    {NULL, NULL}
+    TEST_MOD(circular_buffer),
+    TEST_MOD(strlib),
+    TEST_MOD(hashmap),
+    TEST_MOD(strutils),
+    TEST_MOD_SENTINEL,
 };
 
 void test_execute(test_t *t, test_module_t *tm)

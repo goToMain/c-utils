@@ -99,13 +99,12 @@ int test_probabilistic()
     return 0;
 }
 
-void do_test_circular_buffer(test_result_t *result)
+TEST_DEF(circular_buffer)
 {
-    int total=0, pass=0;
+	TEST_MOD_INIT();
 
-    if (test_boundary() == 0) pass++; total++;
-    if (test_probabilistic() == 0) pass++; total++;
+	TEST_MOD_EXEC(test_boundary());
+	TEST_MOD_EXEC(test_probabilistic());
 
-    result->pass = pass;
-    result->total = total;
+	TEST_MOD_REPORT();
 }
