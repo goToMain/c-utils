@@ -8,6 +8,8 @@
 #ifndef _UTILS_LIST_H_
 #define _UTILS_LIST_H_
 
+#include <stddef.h>
+
 typedef struct node_s node_t;
 
 struct node_s {
@@ -35,5 +37,28 @@ void list_remove_node(list_t *list, node_t *node);
 int list_remove_nodes(list_t *list, node_t *start, node_t *end);
 void list_insert_node(list_t *list, node_t *after, node_t *new);
 int list_insert_nodes(list_t *list, node_t *after, node_t *start, node_t *end);
+
+/*--- singly-linked list ---*/
+
+typedef struct snode_s snode_t;
+
+struct snode_s {
+	snode_t *next;
+};
+
+struct slist_s {
+	snode_t *head;
+};
+
+typedef struct slist_s slist_t;
+
+void slist_init(slist_t *list);
+void slist_append(slist_t *list, snode_t *after, snode_t *node);
+void slist_appendleft(slist_t *list, snode_t *node);
+int slist_pop(slist_t *list, snode_t *after, snode_t **node);
+int slist_popleft(slist_t *list, snode_t **node);
+
+int slist_remove_node(slist_t *list, snode_t *node);
+void slist_insert_node(slist_t *list, snode_t *after, snode_t *new);
 
 #endif /* _UTILS_LIST_H_ */

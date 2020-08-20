@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include <stddef.h>
 #include <stdbool.h>
 
 #include <utils/list.h>
@@ -204,4 +203,94 @@ int list_insert_nodes(list_t *list, node_t *after, node_t *start, node_t *end)
 	}
 
 	return 0;
+}
+
+/*--- singly-linked list ---*/
+
+void slist_init(slist_t *list)
+{
+	list->head = NULL;
+}
+
+void slist_append(slist_t *list, snode_t *after, snode_t *node)
+{
+	snode_t *p;
+
+	p = after ? after : list->head;
+	if (p == NULL) {
+		list->head = node;
+	} else {
+		while (p && p->next)
+			p = p->next;
+		p->next = node;
+	}
+	node->next = NULL;
+}
+
+void slist_appendleft(slist_t *list, snode_t *node)
+{
+	node->next = list->head;
+	list->head = node;
+}
+
+int slist_pop(slist_t *list, snode_t *after, snode_t **node)
+{
+	snode_t *n1, *n2;
+
+	if (list->head == NULL)
+		return -1;
+	if (list->head->next == NULL) {
+		*node = list->head;
+		list->head = NULL;
+	} else {
+		n1 = after ? after : list->head;
+		n2 = n1->next;
+		while (n2 && n2->next) {
+			n1 = n1->next; n2 = n2->next;
+		}
+		n1->next = NULL;
+		*node = n2;
+	}
+	return 0;
+}
+
+int slist_popleft(slist_t *list, snode_t **node)
+{
+	if (list->head == NULL)
+		return -1;
+
+	*node = list->head;
+	list->head = list->head->next;
+	return 0;
+}
+
+int slist_remove_node(slist_t *list, snode_t *node)
+{
+	snode_t *prev = NULL, *cur;
+
+	cur = list->head;
+	while (cur && cur != node) {
+		prev = cur;
+		cur = cur->next;
+	}
+	if (cur == NULL)
+		return -1;
+	if (prev == NULL)
+		list->head = cur->next;
+	else
+		prev->next = cur->next;
+	return 0;
+}
+
+void slist_insert_node(slist_t *list, snode_t *after, snode_t *new)
+{
+	if (after == NULL) {
+		/* same as append left */
+		new->next = list->head;
+		list->head = new;
+	} else {
+		/* assert after in list here? */
+		new->next = after->next;
+		after->next = new;
+	}
 }
