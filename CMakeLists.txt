@@ -17,7 +17,10 @@ set_target_properties(${LIB_UTILS} PROPERTIES PUBLIC_HEADER "${LIB_UTILS_INC}")
 
 # check target
 set(TEST_BIN test-utils)
-file(GLOB TEST_SRC ${CMAKE_CURRENT_SOURCE_DIR}/tests/*.c)
+file(GLOB TEST_SRC
+	${CMAKE_CURRENT_SOURCE_DIR}/tests/*.c
+	${CMAKE_CURRENT_SOURCE_DIR}/tests/*.h
+)
 add_executable(${TEST_BIN} ${TEST_SRC})
 target_link_libraries(${TEST_BIN} ${LIB_UTILS})
 target_include_directories(${TEST_BIN} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

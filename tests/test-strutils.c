@@ -30,18 +30,6 @@ int test_str_sep()
 	int retval = -1;
 	char *empty = "", *tc01[] = { "1", "2", "3", "4", "5" };
 
-	/* base cases */
-	if (str_sep(NULL, NULL) != NULL)
-		return -1;
-	if (str_sep(NULL, ", .|") != NULL)
-		return -1;
-	if (str_sep(&empty, NULL) != NULL)
-		return -1;
-	if (str_sep(&empty, "") != NULL)
-		return -1;
-	if (str_sep(&empty, ",01") != NULL)
-		return -1;
-
 	do {
 		_test_sep_pos("1,2,3,4,5", ",", tc01);
 		_test_sep_pos(",, 1 ,2  , ,3 ,  4,5  ", ", ", tc01);
@@ -65,7 +53,7 @@ int test_str_sep_count()
 		return -1;
 	if (str_sep_count(",,,,,,  1 2 3 4 5", " ,") != 5)
 		return -1;
-	if (str_sep_count("1 2 3 4 5", "") != 9)
+	if (str_sep_count("1 2 3 4 5", ",") != 1)
 		return -1;
 	return 0;
 }

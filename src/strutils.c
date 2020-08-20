@@ -208,8 +208,8 @@ char *str_sep(char **str, const char *sep)
 {
 	char *start, *end;
 
-	if (str == NULL || *str == NULL || *str[0] == '\0')
-		return NULL;
+	if (*str == NULL || *str[0] == '\0')
+		return *str;
 
 	start = *str;
 	while (*start && strchr(sep, *start))
@@ -232,8 +232,6 @@ int str_sep_count(const char *str, const char *sep)
 		return 0;
 	if (sep == NULL)
 		return 1;
-	if (*sep == '\0')
-		return strlen(str);
 
 	p = str;
 	while (*p) {
