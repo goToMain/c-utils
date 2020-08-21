@@ -47,6 +47,14 @@
 #define CONTAINER_OF(ptr, type, field) \
         ((type *)(((char *)(ptr)) - OFFSET_OF(type, field)))
 
+/* config_enabled() from the kernel */
+#define __IS_ENABLED1(x)             __IS_ENABLED2(__XXXX ## x)
+#define __XXXX1                       __YYYY,
+#define __IS_ENABLED2(y)             __IS_ENABLED3(y 1, 0)
+#define __IS_ENABLED3(_i, val, ...)   val
+
+#define IS_ENABLED(x)                 __IS_ENABLED1(x)
+
 /**
  * @brief Check p to be not NULL before calling safe_free()
  *
