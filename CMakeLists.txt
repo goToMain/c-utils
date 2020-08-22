@@ -25,8 +25,24 @@ add_executable(${TEST_BIN} ${TEST_SRC})
 target_link_libraries(${TEST_BIN} ${LIB_UTILS})
 target_include_directories(${TEST_BIN} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set_target_properties(${TEST_BIN} PROPERTIES EXCLUDE_FROM_ALL TRUE)
+
+function(download_file URL FILE_PATH)
+	message("Downloading ${FILE_PATH}..")
+	file(DOWNLOAD ${URL} ${FILE_PATH} STATUS DOWNLOAD_RESULT)
+	list(GET DOWNLOAD_RESULT 0 DOWNLOAD_RESULT_CODE)
+	if(NOT DOWNLOAD_RESULT_CODE EQUAL 0)
+		message(FATAL_ERROR "Failed downloading ${URL}! Error: ${DOWNLOAD_RESULT}.")
+	endif()
+endfunction()
+
+## Fetch test input files
+download_file(
+	"https://github.com/dwyl/english-words/raw/master/words_alpha.txt"
+	"${CMAKE_BINARY_DIR}/input/words_alpha.txt"
+)
+
 add_custom_target(check_utils
-	COMMAND ${CMAKE_BINARY_DIR}/${TEST_BIN}
+	COMMAND ${CMAKE_BINARY_DIR}/${TEST_BIN} -i"${CMAKE_CURRENT_BINARY_DIR}/input"
 	COMMAND rm ${CMAKE_BINARY_DIR}/${TEST_BIN}
 	DEPENDS ${TEST_BIN}
 )

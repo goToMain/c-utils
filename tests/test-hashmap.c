@@ -4,34 +4,18 @@
 
 #include "test.h"
 
-const char *test_hash_key[] = {
-	"ambivert", "calcspar", "deaness", "equity", "grades", "monkeydom",
-	"outclimbed", "outdared", "pistoleers", "redbugs", "snake-line",
-	"subrules", "subtrends", "torture", "undefined", "endeavor", "stuff",
-	"dissuade", "ecstatic", "properly", "saw", "entirely", "laughter",
-	"jointure", "horrible", "margaret", "suitable", "followed", "stairs",
-	"speedily.", "Indeed", "vanity", "excuse", "lovers", "offer", "pointed",
-	"blush", "Sang", "lose", "hour", "then", "left", "find", "scale",
-	"arrival", "entered", "drawing", "request", "daughters", "promotion",
-	"knowledge", "contented.", "winter", "law", "behind", "number",
-	"garret", "excuse.", "Minuter", "natural", "conduct", "gravity",
-	"immediate", "unwilling", "attempted", "admitting", "disposing",
-	"handsome", "opinions", "ladyship",
-	NULL
-};
-
 struct test_hashmap {
-	int off;
+	size_t off;
 	char *key;
 };
 
-struct test_hashmap *new_test_hashmap_value(int i)
+struct test_hashmap *new_test_hashmap_value(size_t offset, const char *key)
 {
 	struct test_hashmap *p;
 
 	p = safe_malloc(sizeof(struct test_hashmap));
-	p->off = i;
-	p->key = safe_strdup(test_hash_key[i]);
+	p->off = offset;
+	p->key = safe_strdup(key);
 	return p;
 }
 
@@ -44,63 +28,69 @@ void free_test_hashmap_value(const char *key, void *val)
 	safe_free(p);
 }
 
-int test_insert(hash_map_t *map)
-{
-	size_t i = 0;
-	struct test_hashmap *p;
+#define SEP "\n\r \t"
 
-	while (test_hash_key[i] != NULL) {
-		if (hash_map_get(map, test_hash_key[i]) == NULL) {
-			p = new_test_hashmap_value(i);
-			hash_map_insert(map, test_hash_key[i], p);
-		} else {
-			mod_printf("repeated word '%s'", test_hash_key[i]);
-		}
-		i += 1;
+int test_dict_insert(hash_map_t *map, char *buf)
+{
+	size_t count = 0;
+	struct test_hashmap *p;
+	char *word, *state;
+
+	word = strtok_r(buf, SEP, &state);
+	while (word != NULL) {
+		p = new_test_hashmap_value(count, word);
+		hash_map_insert(map, word, p);
+		count++;
+		word = strtok_r(NULL, SEP, &state);
 	}
-	if (map->count != i) {
-		mod_printf("Error hash_map count mismatch: "
-			   "%zu/%zu", i, map->count);
-		return -1;
-	}
+	mod_printf("Inserted %zu items", count);
 	return 0;
 }
 
-int test_delete(hash_map_t *map)
+int test_dict_delete(hash_map_t *map, char *buf)
 {
-	int not_found = 0;
-	int i = 0;
+	size_t i = 0, not_found = 0;
 	struct test_hashmap *p;
+	char *word, *state;
 
-	while (test_hash_key[i] != NULL) {
-		p = hash_map_delete(map, test_hash_key[i]);
+	word = strtok_r(buf, SEP, &state);
+	while (word != NULL) {
+		p = hash_map_delete(map, word, 0);
 		if (p == NULL) {
 			not_found += 1;
-			mod_printf("word '%s' not found", test_hash_key[i]);
+			mod_printf("word '%s' not found", word);
 		} else {
-			if (p->off != i || strcmp(p->key, test_hash_key[i])) {
+			if (p->off != i || strcmp(p->key, word)) {
 				not_found += 1;
-				mod_printf("word '%s' invalid offset %d",
-					   test_hash_key[i], i);
+				mod_printf("Err: word '%s' off: %zu", word, i);
 			}
 			free_test_hashmap_value(NULL, p);
 		}
-		i += 1;
+		i++;
+		word = strtok_r(NULL, SEP, &state);
 	}
 	return not_found * -1;
 }
 
 TEST_DEF(hashmap)
 {
+	char *buf_insert, *buf_delete;
+	size_t size;
 	hash_map_t map;
 	TEST_MOD_INIT();
 
+	TEST_MOD_READ_FILE("words_alpha.txt", &buf_insert, &size);
+	buf_delete = safe_strdup(buf_insert);
+
 	hash_map_init(&map);
 
-	TEST_MOD_EXEC(test_insert(&map));
-	TEST_MOD_EXEC(test_delete(&map));
+	TEST_MOD_EXEC(test_dict_insert(&map, buf_insert));
+	TEST_MOD_EXEC(test_dict_delete(&map, buf_delete));
+	TEST_MOD_EXEC(map.count);
 
 	hash_map_free(&map, free_test_hashmap_value);
 
+	safe_free(buf_insert);
+	safe_free(buf_delete);
 	TEST_MOD_REPORT();
 }

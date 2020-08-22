@@ -116,14 +116,17 @@ int strcntchr(char *s, char c);
 int strisempty(char *s);
 
 /**
- * @brief Compute a 32 bit hash value for str upto len chars or upto the
+ * @brief Compute a 32/64 bit hash value for str upto len chars or upto the
  * null char. Trick: for computing hash for null terminated strings len can
  * be set to -ve instead of passing strlen(s) explicitly.
  *
  * @return 32-bit hash code
  */
-uint32_t hash32(const char *str, int len);
-
+uint32_t hash32_djb2(const char *str, int len);
+uint32_t hash32_fnv(const char *str, int len);
+uint64_t poly_hash(const char *str, int len);
+#define hash32 hash32_djb2
+#define hash64 poly_hash
 /**
  * @brief A strsep() clone. See `man 3 strsep` for more details. str_sep() is
  * cloned here because strsep() is not guaranteed to be available everywhere.
@@ -136,5 +139,12 @@ char *str_sep(char **str, const char *sep);
  * strtok() or strsep().
  */
 int str_sep_count(const char *str, const char *sep);
+
+/**
+ * @brief Transform the input null-terminated string to upper/lower case.
+ * Only alphapbets are transformed other characters are left as-is.
+ */
+void to_upper(char *s);
+void to_lower(char *s);
 
 #endif /* _UTIL_STRUTIL_H_ */

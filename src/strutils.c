@@ -193,13 +193,42 @@ int strisempty(char *s)
 	return s == NULL || *s == '\0';
 }
 
-uint32_t hash32(const char *str, int len)
+uint32_t hash32_djb2(const char *str, int len)
 {
 	int c;
 	uint32_t hash = 5381;
 
 	while ((c = *str++) && len-- != 0) {
-		hash = ((hash << 5) + hash) ^ c; /* hash * 33 ^ c */
+		hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+	}
+	return hash;
+}
+
+uint32_t hash32_fnv(const char *str, int len)
+{
+	uint32_t hval = 0;
+	unsigned char *s = (unsigned char *)str; /* unsigned string */
+
+	/* FNV-1 hash */
+	while (*s && len-- != 0) {
+		/* multiply by the 32 bit FNV magic prime mod 2^32 */
+		hval += (hval<<1) + (hval<<4) + (hval<<7) + (hval<<8) + (hval<<24);
+		hval ^= (uint32_t)*s++;
+	}
+	return hval;
+}
+
+uint64_t poly_hash(const char *str, int len)
+{
+	int c;
+	const int p = 31;
+	const int m = 1e9 + 9;
+	uint64_t hash = 0;
+	uint64_t p_pow = 1;
+
+	while ((c = *str++) && len-- != 0) {
+		hash = (hash + (c - 'a' + 1) * p_pow) % m;
+		p_pow = (p_pow * p) % m;
 	}
 	return hash;
 }
@@ -244,4 +273,22 @@ int str_sep_count(const char *str, const char *sep)
 			p++;
 	}
 	return count;
+}
+
+void to_upper(char *s)
+{
+	while (*s) {
+		if (isalpha(*s))
+			*s &= ~0x20;
+		s++;
+	}
+}
+
+void to_lower(char *s)
+{
+	while (*s) {
+		if (isalpha(*s))
+			*s |= 0x20;
+		s++;
+	}
 }

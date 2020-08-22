@@ -1,9 +1,12 @@
 #include <assert.h>
 #include <string.h>
+#include <stdio.h>
 
 #include <utils/utils.h>
 #include <utils/strutils.h>
 #include <utils/hashmap.h>
+
+#define hash_fn hash32_djb2
 
 #define HASH_MAP_BASE_SIZE            32
 #define HASH_MAP_DENSITY_FACTOR       0.8
@@ -11,6 +14,15 @@
 		((double)(map)->count / (double)(map)->capacity)
 #define GET_POOL_POS(map, hash) \
 		(hash & (map->capacity - 1))
+
+#if 0
+#define hash_check_key(m, i, k) \
+	if (strcmp(i->key, k) != 0) { \
+		printf("Error: Hash collusion in %s for %s/%s\n", m, k, i->key); \
+	}
+#else
+#define hash_check_key(m, i, k)
+#endif
 
 static size_t hash_map_count(hash_map_t *map)
 {
@@ -105,22 +117,26 @@ void hash_map_free(hash_map_t *map, hash_map_callback_t callback)
 	map->capacity = 0;
 }
 
-void hash_map_insert(hash_map_t *map, const char *key, void *val)
+hash_t hash_map_insert(hash_map_t *map, const char *key, void *val)
 {
-	uint32_t hash, pos;
+	hash_t hash;
+	size_t pos;
 	hash_map_item_t *prev, *item;
 
 	if (MAP_DENSITY(map) > HASH_MAP_DENSITY_FACTOR)
 		hash_map_rehash(map);
 
-	hash = hash32(key, -1);
+	hash = hash_fn(key, -1);
 	pos = GET_POOL_POS(map, hash);
 	item = prev = map->pool[pos];
 	while (item != NULL) {
-		if (item->hash == hash && strcmp(item->key, key) == 0) {
+		if (item->hash == hash) {
 			/* key already exists update it */
-			item->val = val;
-			return;
+			hash_check_key("insert", item, key);
+			if (strcmp(item->key, key) == 0) {
+				item->val = val;
+				return item->hash;
+			}
 		}
 		prev = item;
 		item = item->next;
@@ -137,36 +153,47 @@ void hash_map_insert(hash_map_t *map, const char *key, void *val)
 	else
 		map->pool[pos] = item;
 	map->count += 1;
+	return item->hash;
 }
 
-void *hash_map_get(hash_map_t *map, const char *key)
+void *hash_map_get(hash_map_t *map, const char *key, hash_t key_hash)
 {
-	uint32_t hash, pos;
+	hash_t hash;
+	size_t pos;
 	hash_map_item_t *item;
 
-	hash = hash32(key, -1);
+	hash = key ? hash_fn(key, -1) : key_hash;
 	pos = GET_POOL_POS(map, hash);
 	item = map->pool[pos];
 	while (item != NULL) {
-		if (item->hash == hash && strcmp(item->key, key) == 0)
-			return item->val;
+		if (item->hash == hash) {
+			hash_check_key("get", item, key);
+			if (strcmp(item->key, key) == 0) {
+				return item->val;
+			}
+		}
 		item = item->next;
 	}
 	return NULL;
 }
 
-void *hash_map_delete(hash_map_t *map, const char *key)
+void *hash_map_delete(hash_map_t *map, const char *key, hash_t key_hash)
 {
 	void *val = NULL;
-	uint32_t hash, pos;
+	hash_t hash;
+	size_t pos;
 	hash_map_item_t *prev = NULL, *item;
 
-	hash = hash32(key, -1);
+	hash = key ? hash_fn(key, -1) : key_hash;
 	pos = GET_POOL_POS(map, hash);
 	item = map->pool[pos];
 	while (item != NULL) {
-		if (item->hash == hash && strcmp(item->key, key) == 0)
-			break;
+		if (item->hash == hash) {
+			hash_check_key("delete", item, key);
+			if (strcmp(item->key, key) == 0) {
+				break;
+			}
+		}
 		prev = item;
 		item = item->next;
 	}
