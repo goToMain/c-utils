@@ -23,7 +23,7 @@ typedef struct {
                      .top = 0, \
                      .elem_size = sizeof(type),\
                      .max_size = sz \
-                    }; \
+                  }; \
 
 #define FILO_DEF(name, type, sz) \
     __FILO_DEF(name, type, sz) \
@@ -31,25 +31,30 @@ typedef struct {
     { \
         return filo_push(&name, (void *)elem); \
     } \
-    int __## name ## _pop(const type *elem) \
+    int __## name ## _pop(type *elem) \
     { \
         return filo_pop(&name, (void *)elem, true); \
     } \
-    int __## name ## _peek(const type *elem) \
+    int __## name ## _peek(type *elem) \
     { \
         return filo_pop(&name, (void *)elem, false); \
     } \
-    unsigned __## name ## _get_count(const type *elem) \
+    unsigned __## name ## _get_count(void) \
     { \
         return filo_get_count(&name); \
     } \
-    void __## name ## _reset(const type *elem) \
+    void __## name ## _reset(void) \
     { \
         filo_reset(&name); \
-    } \
+    }
 
-#define FILO_EXTERN(name) \
-    extern filo_t name;
+#define FILO_EXTERN(name, type) \
+    extern filo_t name; \
+    int __## name ## _push(const type *elem); \
+    int __## name ## _pop(type *elem); \
+    int __## name ## _peek(type *elem); \
+    unsigned __## name ## _get_count(void); \
+    void __## name ## _reset(void);
 
 
 /**
