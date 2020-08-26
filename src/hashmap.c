@@ -210,17 +210,32 @@ void *hash_map_delete(hash_map_t *map, const char *key, hash_t key_hash)
 	return val;
 }
 
-void hash_map_foreach(hash_map_t *map, hash_map_callback_t callback)
+void hash_map_it_init(hash_map_iterator_t *it, hash_map_t *map)
 {
-	size_t pos = 0;
-	hash_map_item_t *item;
+	it->map = map;
+	it->item = NULL;
+	it->pos = 0;
+}
 
-	while (pos < map->capacity) {
-		item = map->pool[pos];
-		while (item != NULL) {
-			callback(item->key, item->val);
-			item = item->next;
-		}
-		pos += 1;
+int hash_map_it_next(hash_map_iterator_t *it, char **key, void **val)
+{
+	hash_map_item_t *cur;
+
+	if (it->item != NULL) {
+		cur = it->item;
+		it->item = cur->next;
+	} else {
+		while (it->pos < it->map->capacity &&
+		       it->map->pool[it->pos] == NULL)
+			it->pos++;
+		if (it->pos >= it->map->capacity ||
+		    it->map->pool[it->pos] == NULL)
+			return -1;
+		cur = it->map->pool[it->pos];
+		it->item = cur->next;
+		it->pos++;
 	}
+	*key = cur->key;
+	*val = cur->val;
+	return 0;
 }

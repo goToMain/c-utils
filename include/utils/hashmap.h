@@ -33,6 +33,21 @@ void hash_map_free(hash_map_t *map, hash_map_callback_t cb);
 hash_t hash_map_insert(hash_map_t *map, const char *key, void *val);
 void *hash_map_get(hash_map_t *map, const char *key, hash_t key_hash);
 void *hash_map_delete(hash_map_t *map, const char *key, hash_t key_hash);
-void hash_map_foreach(hash_map_t *map, hash_map_callback_t cb);
+
+/* --- iterators --- */
+
+typedef struct {
+	size_t pos;
+	void *item;
+	hash_map_t *map;
+} hash_map_iterator_t;
+
+void hash_map_it_init(hash_map_iterator_t *it, hash_map_t *map);
+int hash_map_it_next(hash_map_iterator_t *it, char **key, void **val);
+
+#define HASH_MAP_FOREACH(map, key_ref, val_ref)                               \
+		hash_map_iterator_t it;                                       \
+		hash_map_it_init(&it, map);                                   \
+		while (hash_map_it_next(&it, key_ref, (void **)val_ref) == 0)
 
 #endif /* _HASHMAP_H_ */
