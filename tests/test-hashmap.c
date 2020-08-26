@@ -59,8 +59,10 @@ int test_dict_iterator(hash_map_t *map, const char * const *words, size_t count)
 		}
 		ndx++;
 	}
+	if (ndx != count || mismatch)
+		return -1;
 	mod_printf("Iterated over %zu items", ndx);
-	return mismatch * -1;
+	return 0;
 }
 
 int test_dict_delete(hash_map_t *map, const char * const *words, size_t count)
