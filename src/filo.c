@@ -5,7 +5,7 @@
 #include <utils/utils.h>
 
 
-void filo_init(filo_t *pfilo, void *buffer, unsigned elem_size, unsigned max_size)
+void filo_init(filo_t *pfilo, void *buffer, size_t elem_size, size_t max_size)
 {
     pfilo->buffer = buffer;
     pfilo->elem_size = elem_size;
@@ -18,7 +18,7 @@ void filo_reset(filo_t *pfilo)
     pfilo->top = 0;
 }
 
-filo_t *filo_alloc(unsigned elem_size, unsigned max_size)
+filo_t *filo_alloc(size_t elem_size, size_t max_size)
 {
     filo_t *pfilo = safe_malloc(sizeof(filo_t));
     void *buffer = safe_malloc(elem_size * max_size);
@@ -43,7 +43,7 @@ int filo_push(filo_t *pfilo, void *elem)
 
 int filo_pop(filo_t *pfilo, void *elem, bool remove)
 {
-    if (pfilo->top <= 0)
+    if (pfilo->top == 0)
         return -1;
     memcpy(elem, pfilo->buffer + (pfilo->elem_size * (pfilo->top - 1)), pfilo->elem_size);
     if (remove)
@@ -51,7 +51,12 @@ int filo_pop(filo_t *pfilo, void *elem, bool remove)
     return 0;
 }
 
-unsigned filo_get_count(filo_t *pfilo)
+size_t filo_get_count(filo_t *pfilo)
 {
     return pfilo->top;
+}
+
+size_t filo_get_free_space(filo_t *pfilo)
+{
+    return pfilo->max_size - pfilo->top;
 }
