@@ -23,6 +23,7 @@ TEST_DEF(strlib);
 TEST_DEF(hashmap);
 TEST_DEF(strutils);
 TEST_DEF(filo);
+TEST_DEF(slab);
 
 test_module_t c_utils_test_modules[] = {
 	TEST_MOD(circular_buffer),
@@ -30,6 +31,7 @@ test_module_t c_utils_test_modules[] = {
 	TEST_MOD(hashmap),
 	TEST_MOD(strutils),
 	TEST_MOD(filo),
+	TEST_MOD(slab),
 	TEST_MOD_SENTINEL,
 };
 
