@@ -252,9 +252,9 @@ char *str_sep(char **str, const char *sep)
 	return start;
 }
 
-int str_sep_count(const char *str, const char *sep)
+size_t str_sep_count(const char *str, const char *sep)
 {
-	int count = 0;
+	size_t count = 0;
 	const char *p;
 
 	if (str == NULL || str[0] == '\0')

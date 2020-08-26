@@ -138,7 +138,7 @@ char *str_sep(char **str, const char *sep);
  * token is as it is defined (and returned) by tokenizing method such as
  * strtok() or strsep().
  */
-int str_sep_count(const char *str, const char *sep);
+size_t str_sep_count(const char *str, const char *sep);
 
 /**
  * @brief Transform the input null-terminated string to upper/lower case.
