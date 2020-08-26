@@ -12,41 +12,45 @@
 
 typedef struct {
     void *buffer;
-    unsigned top;
-    unsigned elem_size;
-    unsigned max_size;
+    size_t top;
+    size_t elem_size;
+    size_t max_size;
 } filo_t;
 
-#define FILO_DEF(type, name, sz) \
-    type name_##buffer[sz]; \
+#define __FILO_DEF(name, type, sz) \
+    type name ## _buffer[sz]; \
     filo_t name = { .buffer = name ## _buffer, \
                      .top = 0, \
                      .elem_size = sizeof(type),\
                      .max_size = sz \
                     }; \
 
-#define FILO_GLOB_DEF(type, name, sz) \
-    FILO_DEF(type, name, sz) \
-    int name ## _push(const type *elem) \
+#define FILO_DEF(name, type, sz) \
+    __FILO_DEF(name, type, sz) \
+    int __## name ## _push(const type *elem) \
     { \
         return filo_push(&name, (void *)elem); \
     } \
-    int name ## _pop(const type *elem) \
+    int __## name ## _pop(const type *elem) \
     { \
         return filo_pop(&name, (void *)elem, true); \
     } \
-    int name ## _peek(const type *elem) \
+    int __## name ## _peek(const type *elem) \
     { \
         return filo_pop(&name, (void *)elem, false); \
     } \
-    unsigned name ## _get_count(const type *elem) \
+    unsigned __## name ## _get_count(const type *elem) \
     { \
         return filo_get_count(&name); \
     } \
-    int name ## _reset(const type *elem) \
+    void __## name ## _reset(const type *elem) \
     { \
-        return filo_reset(&name); \
+        filo_reset(&name); \
     } \
+
+#define FILO_EXTERN(name) \
+    extern filo_t name;
+
 
 /**
  * Description:
@@ -54,7 +58,7 @@ typedef struct {
  *
  * Returns: None
  */
-void filo_init(filo_t *pfilo, void *buffer, unsigned elem_size, unsigned max_size);
+void filo_init(filo_t *pfilo, void *buffer, size_t elem_size, size_t max_size);
 
 /**
  * Description:
@@ -76,9 +80,20 @@ int filo_push(filo_t *pfilo, void *elem);
 
 /**
  * Description:
- *   Removes the element at top from filo `pfilo` and makes it
- *   available at `elem`. This is read-write method, occupancy count reduces
- *   by one.
+ *   Pushes element pointed to by `elem` at the top of filo `name`.
+ *   This is read-write method, occupancy count increases by one.
+ *
+ * Returns (int):
+ *   0 - Success
+ *  -1 - Out of space
+ */
+#define FILO_PUSH(name, elem)             __## name ## _push(elem)
+
+/**
+ * Description:
+ *   Removes (if remove is true) the element at top from filo `pfilo` and makes it
+ *   available at `elem`. This is read-write method (if remove is true, 
+ *   otherwise it is just read method), occupancy count reduces by one.
  *
  * Returns (int):
  *   0 - Success
@@ -86,17 +101,59 @@ int filo_push(filo_t *pfilo, void *elem);
  */
 int filo_pop(filo_t *pfilo, void *elem, bool remove);
 
+/**
+ * Description:
+ *   Peeks the element at top from filo `name` and makes it
+ *   available at `elem`.
+ *
+ * Returns (int):
+ *   0 - Success
+ *  -1 - Empty
+ */
+#define FILO_PEEK(name, elem)             __## name ## _peek(elem)
 
 /**
  * Description:
- *   Returns the occupancy count of filo 'pfilo'
- *   by one.
+ *   Removes the element at top from filo `name` and makes it
+ *   available at `elem`. This is read-write method, 
+ *   occupancy count reduces by one.
+ *
+ * Returns (int):
+ *   0 - Success
+ *  -1 - Empty
+ */
+#define FILO_POP(name, elem)              __## name ## _pop(elem)
+
+
+/**
+ * Description:
+ *   Returns the occupancy count of filo 'pfilo'.
  *
  * Returns (int):
  *   0 - Success
  *   0..N - number of slots occupied.
  */
-unsigned filo_get_count(filo_t *pfilo);
+size_t filo_get_count(filo_t *pfilo);
+
+/**
+ * Description:
+ *   Returns the occupancy count of filo 'name'.
+ *
+ * Returns (int):
+ *   0 - Success
+ *   0..N - number of slots occupied.
+ */
+#define FILO_GET_COUNT(name)                     __## name ## _get_count()
+
+/**
+ * Description:
+ *   Returns the number of free slots of filo 'pfilo'.
+ *
+ * Returns (int):
+ *   0 - Success
+ *   0..N - number of slots free.
+ */
+size_t filo_get_free_space(filo_t *pfilo);
 
 /**
  * Description:
@@ -107,7 +164,7 @@ unsigned filo_get_count(filo_t *pfilo);
  *   0 - Success
  *   0..N - number of slots occupied.
  */
-filo_t *filo_alloc(unsigned elem_size, unsigned max_size);
+filo_t *filo_alloc(size_t elem_size, size_t max_size);
 
 /**
  * Description:
