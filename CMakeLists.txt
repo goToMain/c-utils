@@ -35,14 +35,8 @@ function(download_file URL FILE_PATH)
 	endif()
 endfunction()
 
-## Fetch test input files
-download_file(
-	"https://github.com/dwyl/english-words/raw/master/words_alpha.txt"
-	"${CMAKE_BINARY_DIR}/input/words_alpha.txt"
-)
-
 add_custom_target(check_utils
-	COMMAND ${CMAKE_BINARY_DIR}/${TEST_BIN} -i"${CMAKE_CURRENT_BINARY_DIR}/input"
+	COMMAND ${CMAKE_BINARY_DIR}/${TEST_BIN} -i"${CMAKE_CURRENT_SOURCE_DIR}/tests/input"
 	COMMAND rm ${CMAKE_BINARY_DIR}/${TEST_BIN}
 	DEPENDS ${TEST_BIN}
 )
