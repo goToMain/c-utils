@@ -9,11 +9,12 @@
 
 #include <utils/slab.h>
 
-int slab_init(slab_t *slab, size_t block_size, size_t num_blocks)
+int slab_init(slab_t *slab, size_t size, size_t count)
 {
-	slab->block_size = round_up_pow2(block_size);
-	slab->blob = safe_calloc(num_blocks, slab->block_size);
-	slab->alloc_map = safe_calloc((num_blocks + 31) / 32, sizeof(uint32_t));
+	slab->size = round_up_pow2(size);
+	slab->blob = safe_calloc(count, slab->size);
+	slab->alloc_map = safe_calloc((count + 31) / 32, sizeof(uint32_t));
+	slab->count = count;
 	return 0;
 }
 
@@ -24,37 +25,34 @@ void slab_del(slab_t *slab)
 	memset(slab, 0, sizeof(slab_t));
 }
 
-int slab_alloc(slab_t *slab, void **block)
+int slab_alloc(slab_t *slab, void **p)
 {
-	void *p;
-
 	size_t i = 0, offset = 0;
 
-	while (i < slab->num_blocks &&
+	while (i < slab->count &&
 	       slab->alloc_map[offset] & (1L << (i & 0x1f)))
 	{
 		if ((i & 0x1f) == 0x1f)
 			offset++;
 		i++;
 	}
-	if (i >= slab->num_blocks)
+	if (i >= slab->count)
 		return -1;
 	slab->alloc_map[offset] |= 1L << (i & 0x1f);
-	p = slab->blob + (slab->blob_size * i);
-	memset(p, 0, slab->block_size);
-	*block = p;
+	*p = slab->blob + (slab->size * i);
+	memset(*p, 0, slab->size);
 	return 0;
 }
 
-int slab_free(slab_t *slab, void *block)
+int slab_free(slab_t *slab, void *p)
 {
 	size_t i;
 
-	for (i = 0; i < slab->num_blocks; i++) {
-		if ((slab->blob + i) == block)
+	for (i = 0; i < slab->count; i++) {
+		if ((slab->blob + i) == p)
 			break;
 	}
-	if (i >= slab->num_blocks)
+	if (i >= slab->count)
 		return -1;
 	if (!(slab->alloc_map[i / 32] & (1L << (i & 0x1f))))
 		return -2;

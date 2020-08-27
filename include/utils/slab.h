@@ -15,26 +15,65 @@
 
 typedef struct {
 	uint8_t *blob;
-	size_t blob_size;
-	size_t block_size;
-	size_t num_blocks;
+	size_t size;
+	size_t count;
 	uint32_t *alloc_map;
 } slab_t;
 
-#define SLAB_DEF(name, type, count)                            \
-	uint8_t name ## _slab_blob[sizeof(type) * count];      \
-	uint32_t name ## _slab_alloc_map[(count + 31) / 32];   \
+/**
+ * @brief Macro helper for seting up global/local non-alloced instance of
+ * stab_t. This is useful when dynamic allocation as done by slab_init() is
+ * not possible/acceptable. A stab_t instance created with this macro, does
+ * not need to slab_del().
+ *
+ * @note When using this macro, the blocks are not aligned and the user must
+ * make sure the `type` param is properly aligned.
+ */
+#define SLAB_DEF(name, type, num)                              \
+	uint8_t name ## _slab_blob[sizeof(type) * num];        \
+	uint32_t name ## _slab_alloc_map[(num + 31) / 32];     \
 	slab_t name = {                                        \
 		.blob = name ## _slab_blob,                    \
-		.blob_size = sizeof(type),                     \
-		.num_blocks = count,                           \
+		.size = sizeof(type),                          \
+		.count = num,                                  \
 		.alloc_map = name ## _slab_alloc_map,          \
 	};
 
-int slab_init(slab_t *slab, size_t block_size, size_t num_blocks);
+/**
+ * @brief Initializes a resource pool of `count` slabs of at-least
+ * `size` bytes long. This method dynamically allocates resources
+ * and must be paired with a call to slab_del() when the slab_t is
+ * no longer needed.
+ *
+ * @return -1 on errors
+ * @return  0 on success
+ */
+int slab_init(slab_t *slab, size_t size, size_t count);
+
+/**
+ * @brief Releases the entire allocation pool held by slab_t. All
+ * previously issued slabs are invalid after this call.
+ */
 void slab_del(slab_t *slab);
 
-int slab_alloc(slab_t *s, void **block);
+/**
+ * @brief Allocates a slab of memory from the resource pool held at
+ * slab_t. The allocated block is at least `size` bytes large is
+ * guaranteed to be aligned to a power the nearest power of 2.
+ *
+ * @return -1 on errors
+ * @return  0 on success
+ */
+int slab_alloc(slab_t *slab, void **p);
+
+/**
+ * @brief Releases a slab that was previously allocated by a call
+ * to slab_alloc(). This method can fail if the pointer passed did
+ * not belong to the slab pool of slab_t.
+ *
+ * @return -1 on errors
+ * @return  0 on success
+ */
 int slab_free(slab_t *slab, void *block);
 
 #endif /* _UTILS_SLAB_H_ */
