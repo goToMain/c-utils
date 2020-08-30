@@ -44,7 +44,7 @@ static void hash_map_lint(hash_map_t *map)
 	size_t count;
 
 	count = hash_map_count(map);
-	(void)count; /* for release builds */
+	ARG_UNUSED(count); /* for release builds */
 	assert(count == map->count);
 }
 

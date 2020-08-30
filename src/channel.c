@@ -12,8 +12,10 @@
 #include <sys/ipc.h>
 #include <sys/msg.h>
 
+#include <utils/utils.h>
 #include <utils/serial.h>
 #include <utils/channel.h>
+#include <stdint.h>
 
 struct msgbuf {
 	long mtype;		/* message type, must be > 0 */
@@ -264,13 +266,16 @@ int channel_close(struct channel_manager *ctx, const char *device)
 		return CHANNEL_ERR_NOT_OPEN;
 
 	g_channel_ops[c->type].teardown(c->data);
-
+	hash_map_delete(&ctx->open_channels, device, 0);
+	free(c->device);
+	free(c);
 	return CHANNEL_ERR_NONE;
 }
 
 void channel_hash_map_callback(const char *key, void *val)
 {
 	struct channel *c = val;
+	ARG_UNUSED(key);
 
 	free(c->device);
 	free(c);
