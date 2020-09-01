@@ -50,6 +50,9 @@ int list_pop(list_t *list, node_t **node)
 	if (list->tail) {
 		list->tail->next = NULL;
 	}
+	else {
+		list->head = NULL;
+	}
 	return 0;
 }
 
@@ -62,6 +65,9 @@ int list_popleft(list_t *list, node_t **node)
 	list->head = list->head->next;
 	if (list->head) {
 		list->head->prev = NULL;
+	}
+	else {
+		list->tail = NULL;
 	}
 	return 0;
 }

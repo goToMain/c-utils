@@ -19,7 +19,7 @@ void queue_enqueue(queue_t *queue, queue_node_t *node)
 
 int queue_dequeue(queue_t *queue, queue_node_t **node)
 {
-	return list_pop(&queue->list, node);
+	return list_popleft(&queue->list, node);
 }
 
 int queue_peek_last(queue_t *queue, queue_node_t **node)
