@@ -29,14 +29,14 @@ typedef struct {
  * @note When using this macro, the blocks are not aligned and the user must
  * make sure the `type` param is properly aligned.
  */
-#define SLAB_DEF(name, type, num)                              \
-	uint8_t name ## _slab_blob[sizeof(type) * num];        \
-	uint32_t name ## _slab_alloc_map[(num + 31) / 32];     \
-	slab_t name = {                                        \
-		.blob = name ## _slab_blob,                    \
-		.size = sizeof(type),                          \
-		.count = num,                                  \
-		.alloc_map = name ## _slab_alloc_map,          \
+#define SLAB_DEF(name, type, num)					\
+	uint8_t name ## _slab_blob[sizeof(type) * num];			\
+	uint32_t name ## _slab_alloc_map[(num + 31) / 32] = { 0 };	\
+	slab_t name = {							\
+		.blob = name ## _slab_blob,				\
+		.size = sizeof(type),					\
+		.count = num,						\
+		.alloc_map = name ## _slab_alloc_map,			\
 	};
 
 /**

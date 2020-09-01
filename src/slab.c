@@ -49,7 +49,7 @@ int slab_free(slab_t *slab, void *p)
 	size_t i;
 
 	for (i = 0; i < slab->count; i++) {
-		if ((slab->blob + i) == p)
+		if ((slab->blob + (slab->size * i)) == p)
 			break;
 	}
 	if (i >= slab->count)
