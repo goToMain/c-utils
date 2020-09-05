@@ -232,6 +232,10 @@ int channel_open(struct channel_manager *ctx, enum channel_type type, char *devi
 		return CHANNEL_ERR_OPEN_FAILED;
 	}
 
+	if (g_channel_ops[type].flush) {
+		g_channel_ops[type].flush(c->data);
+	}
+
 	hash_map_insert(&ctx->open_channels, c->device, c);
 
 	return CHANNEL_ERR_NONE;
