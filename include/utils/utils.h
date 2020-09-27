@@ -81,17 +81,15 @@ void *safe_realloc_zero(void *data, size_t old_size, size_t new_size);
 uint32_t round_up_pow2(uint32_t v);
 
 /**
- * Description:
- * 	Dumps an array of bytes in HEX and ASCII formats for
- * 	debugging. `head` is string that is printed before the
- * 	actual bytes are dumped.
+ * @brief Dumps an array of bytes in HEX and ASCII formats for debugging. `head`
+ * is string that is printed before the actual bytes are dumped.
  *
  * Example:
  * 	int len;
  * 	uint8_t data[MAX_LEN];
  * 	len = get_data_from_somewhere(data, MAX_LEN);
- * 	hexdump("Data From Somewhere", data, len);
+ * 	hexdump(data, len, "Data From Somewhere");
  */
-void hexdump(const char *head, const uint8_t *data, size_t len);
+void hexdump(const uint8_t *data, size_t len, const char *fmt, ...);
 
 #endif /* _UTILS_UTILS_H_ */

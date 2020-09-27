@@ -7,6 +7,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include <string.h>
 #include <assert.h>
 #include <ctype.h>
@@ -100,15 +101,16 @@ uint32_t round_up_pow2(uint32_t v)
 	return v;
 }
 
-void hexdump(const char *head, const uint8_t *data, size_t len)
+void hexdump(const uint8_t *data, size_t len, const char *fmt, ...)
 {
 	size_t i;
+	va_list args;
 	char str[16 + 1] = {0};
 
-	if (head) {
-		printf("%s ", head);
-	}
-	printf("[%zu] =>\n    0000  %02x ", len, data[0]);
+	va_start(args, fmt);
+	vprintf(fmt, args);
+	va_end(args);
+	printf(" [%zu] =>\n    0000  %02x ", len, data[0]);
 	str[0] = isprint(data[0]) ? data[0] : '.';
 	for (i = 1; i < len; i++) {
 		if ((i & 0x0f) == 0) {
