@@ -54,6 +54,7 @@ typedef int (*channel_send_fn_t)(void *data, uint8_t *buf, int len);
 typedef void (*channel_flush_fn_t)(void *data);
 
 struct channel {
+	int id;
 	int speed;
 	char *device;
 	int is_server;
@@ -62,7 +63,8 @@ struct channel {
 };
 
 struct channel_manager {
-	hash_map_t open_channels;
+	int open_channels;
+	hash_map_t channels;
 };
 
 void channel_manager_init(struct channel_manager *ctx);
@@ -73,7 +75,7 @@ int channel_open(struct channel_manager *ctx, enum channel_type type, char *devi
 		 int speed, int is_server);
 
 int channel_get(struct channel_manager *ctx, const char *device,
-		void **data,
+		int *id, void **data,
 		channel_send_fn_t *send,
 		channel_receive_fn_t *recv,
 		channel_flush_fn_t *flush);

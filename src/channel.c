@@ -190,7 +190,7 @@ struct channel_ops g_channel_ops[CHANNEL_TYPE_SENTINEL] = {
 
 void channel_manager_init(struct channel_manager *ctx)
 {
-	hash_map_init(&ctx->open_channels);
+	hash_map_init(&ctx->channels);
 }
 
 enum channel_type channel_guess_type(const char *desc)
@@ -215,7 +215,7 @@ int channel_open(struct channel_manager *ctx, enum channel_type type, char *devi
 	if (type <= CHANNEL_TYPE_ERR || type >= CHANNEL_TYPE_SENTINEL)
 		return CHANNEL_ERR_UNKNOWN_TYPE;
 
-	if (hash_map_get(&ctx->open_channels, device, 0) != NULL)
+	if (hash_map_get(&ctx->channels, device, 0) != NULL)
 		return CHANNEL_ERR_ALREADY_OPEN;
 
 	c = calloc(1, sizeof(struct channel));
@@ -235,28 +235,35 @@ int channel_open(struct channel_manager *ctx, enum channel_type type, char *devi
 	if (g_channel_ops[type].flush) {
 		g_channel_ops[type].flush(c->data);
 	}
-
-	hash_map_insert(&ctx->open_channels, c->device, c);
+	ctx->open_channels++;
+	c->id = ctx->open_channels;
+	hash_map_insert(&ctx->channels, c->device, c);
 
 	return CHANNEL_ERR_NONE;
 }
 
 int channel_get(struct channel_manager *ctx, const char *device,
-		void **data,
+		int *id, void **data,
 		channel_send_fn_t *send,
 		channel_receive_fn_t *receive,
 		channel_flush_fn_t *flush)
 {
 	struct channel *c;
 
-	c = hash_map_get(&ctx->open_channels, device, 0);
+	c = hash_map_get(&ctx->channels, device, 0);
 	if (c == NULL)
 		return CHANNEL_ERR_NOT_OPEN;
 
-	*data = c->data;
-	*send = g_channel_ops[c->type].send;
-	*receive = g_channel_ops[c->type].receive;
-	*flush = g_channel_ops[c->type].flush;
+	if(id != NULL)
+		*id = c->id;
+	if (data != NULL)
+		*data = c->data;
+	if (send != NULL)
+		*send = g_channel_ops[c->type].send;
+	if (receive != NULL)
+		*receive = g_channel_ops[c->type].receive;
+	if (flush != NULL)
+		*flush = g_channel_ops[c->type].flush;
 
 	return CHANNEL_ERR_NONE;
 }
@@ -265,12 +272,13 @@ int channel_close(struct channel_manager *ctx, const char *device)
 {
 	struct channel *c;
 
-	c = hash_map_get(&ctx->open_channels, device, 0);
+	c = hash_map_get(&ctx->channels, device, 0);
 	if (c == NULL)
 		return CHANNEL_ERR_NOT_OPEN;
 
 	g_channel_ops[c->type].teardown(c->data);
-	hash_map_delete(&ctx->open_channels, device, 0);
+	hash_map_delete(&ctx->channels, device, 0);
+	ctx->open_channels--;
 	free(c->device);
 	free(c);
 	return CHANNEL_ERR_NONE;
@@ -290,9 +298,9 @@ void channel_manager_teardown(struct channel_manager *ctx)
 	char *device;
 	struct channel *c;
 
-	HASH_MAP_FOREACH(&ctx->open_channels, &device, &c) {
+	HASH_MAP_FOREACH(&ctx->channels, &device, &c) {
 		channel_close(ctx, device);
 	}
 
-	hash_map_free(&ctx->open_channels, channel_hash_map_callback);
+	hash_map_free(&ctx->channels, channel_hash_map_callback);
 }
