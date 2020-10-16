@@ -47,6 +47,18 @@
 #define CONTAINER_OF(ptr, type, field) \
         ((type *)(((char *)(ptr)) - OFFSET_OF(type, field)))
 
+#define MAX(a,b) ({ \
+		__typeof__ (a) _a = (a); \
+		__typeof__ (b) _b = (b); \
+		_a > _b ? _a : _b; \
+	})
+
+#define MIN(a,b) ({ \
+		__typeof__ (a) _a = (a); \
+		__typeof__ (b) _b = (b); \
+		_a > _b ? _b : _a; \
+	})
+
 /* config_enabled() from the kernel */
 #define __IS_ENABLED1(x)             __IS_ENABLED2(__XXXX ## x)
 #define __XXXX1                       __YYYY,
