@@ -67,6 +67,19 @@
 
 #define IS_ENABLED(x)                 __IS_ENABLED1(x)
 
+/* gcc attribute shorthands */
+#ifndef __fallthrough
+#if __GNUC__ >= 7
+#define __fallthrough        __attribute__((fallthrough))
+#else
+#define __fallthrough
+#endif
+#endif
+
+#ifndef __packed
+#define __packed        __attribute__((__packed__))
+#endif
+
 /**
  * @brief Check p to be not NULL before calling safe_free()
  *
