@@ -129,6 +129,9 @@ void hexdump(const uint8_t *data, size_t len, const char *fmt, ...)
 			str[i++] = ' ';
 		}
 		printf(" |%16s|", str);
+	} else {
+		printf(" |%16s|", str);
 	}
+
 	printf("\n");
 }
