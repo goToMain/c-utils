@@ -80,6 +80,9 @@
 #define __packed        __attribute__((__packed__))
 #endif
 
+#undef __weak
+#define __weak          __attribute__((weak))
+
 /**
  * @brief Check p to be not NULL before calling safe_free()
  *
