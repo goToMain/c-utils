@@ -10,7 +10,7 @@
 #include <stdlib.h>
 
 #include <utils/strlib.h>
-#include <utils/utils.h>
+#include <utils/memory.h>
 
 void string_create(string_t *s, const char *buf, size_t len)
 {

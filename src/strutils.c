@@ -8,7 +8,7 @@
 #include <ctype.h>
 
 #include <utils/strutils.h>
-#include <utils/utils.h>
+#include <utils/memory.h>
 
 static inline int hex2int(char ch)
 {

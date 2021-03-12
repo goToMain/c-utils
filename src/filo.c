@@ -2,7 +2,7 @@
 #include <string.h>
 
 #include <utils/filo.h>
-#include <utils/utils.h>
+#include <utils/memory.h>
 
 
 void filo_init(filo_t *pfilo, void *buffer, size_t elem_size, size_t max_size)

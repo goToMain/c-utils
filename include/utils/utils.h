@@ -7,7 +7,6 @@
 #ifndef _UTILS_UTILS_H_
 #define _UTILS_UTILS_H_
 
-#include <stddef.h>
 #include <stdint.h>
 
 #ifndef NULL
@@ -82,25 +81,6 @@
 
 #undef __weak
 #define __weak          __attribute__((weak))
-
-/**
- * @brief Check p to be not NULL before calling safe_free()
- *
- * @param p pointer to be free-ed
- */
-void safe_free(void *p);
-
-/**
- * @brief safe_* variants of the standard alloc methods do a check on the
- * returned pointer and will call exit() if any of the returned NULL. The
- * safe_free() method will check if pointer is NULL before calling safe_free().
- */
-void  safe_free(void *p);
-void *safe_malloc(size_t size);
-void *safe_calloc(size_t count, size_t size);
-void *safe_realloc(void *data, size_t size);
-void *safe_strdup(const char *s);
-void *safe_realloc_zero(void *data, size_t old_size, size_t new_size);
 
 /**
  * @brief Rounds up 32-bit v to nearest power of 2. If v is already a power

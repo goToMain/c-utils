@@ -12,7 +12,7 @@
 #include <assert.h>
 
 #include <utils/arg_parser.h>
-#include <utils/utils.h>
+#include <utils/memory.h>
 
 #define is_lower_alpha(x) (x >= 97 && x <= 122)
 

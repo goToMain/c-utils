@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #include <utils/utils.h>
+#include <utils/memory.h>
 #include <utils/strutils.h>
 #include <utils/hashmap.h>
 

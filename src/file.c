@@ -17,7 +17,7 @@
 #include <sys/stat.h>
 
 #include <utils/file.h>
-#include <utils/utils.h>
+#include <utils/memory.h>
 
 int file_read_all(FILE *in, char **dataptr, size_t *sizeptr)
 {

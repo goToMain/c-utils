@@ -7,6 +7,7 @@
 
 #include <string.h>
 
+#include <utils/memory.h>
 #include <utils/slab.h>
 
 int slab_init(slab_t *slab, size_t size, size_t count)

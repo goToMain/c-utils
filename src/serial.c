@@ -29,7 +29,7 @@
 #include <errno.h>
 
 #include <utils/serial.h>
-#include <utils/utils.h>
+#include <utils/memory.h>
 
 struct serial *serial_open(const char *device, int baud, const char *mode)
 {
