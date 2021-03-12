@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <getopt.h>
 #include <utils/file.h>
+#include <utils/memory.h>
 
 #include "test.h"
 
