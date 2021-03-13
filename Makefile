@@ -9,7 +9,7 @@ SRC     := $(wildcard src/*.c)
 OBJ     := $(SRC:src/%.c=$(O)/src/%.o)
 CCFLAGS ?= -Wall -Wextra -O3
 
-ifeq ($(VERBOSE),)
+ifeq ($(V),)
 Q    := @
 else
 Q    :=
