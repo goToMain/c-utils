@@ -9,6 +9,8 @@
 #include <stddef.h>
 #include <ctype.h>
 
+#include <sys/time.h>
+
 #include <utils/utils.h>
 
 uint32_t round_up_pow2(uint32_t v)
@@ -58,4 +60,17 @@ void hexdump(const uint8_t *data, size_t len, const char *fmt, ...)
 	}
 
 	printf("\n");
+}
+
+int64_t millis_now()
+{
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+	return (int64_t) ((tv.tv_sec) * 1000L + (tv.tv_usec) / 1000L);
+}
+
+int64_t millis_since(int64_t last)
+{
+	return millis_now() - last;
 }

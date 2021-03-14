@@ -100,4 +100,15 @@ uint32_t round_up_pow2(uint32_t v);
  */
 void hexdump(const uint8_t *data, size_t len, const char *fmt, ...);
 
+/**
+ * @brief Get the time in milli seconds.
+ */
+int64_t millis_now();
+
+/**
+ * @brief Get time elapsed in milli seconds since `last`. Used along with
+ * millis_now().
+ */
+int64_t millis_since(int64_t last);
+
 #endif /* _UTILS_UTILS_H_ */
