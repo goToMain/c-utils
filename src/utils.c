@@ -26,11 +26,12 @@ uint32_t round_up_pow2(uint32_t v)
 	return v;
 }
 
-void hexdump(const uint8_t *data, size_t len, const char *fmt, ...)
+void hexdump(const void *p, size_t len, const char *fmt, ...)
 {
 	size_t i;
 	va_list args;
 	char str[16 + 1] = {0};
+	const uint8_t *data = p;
 
 	va_start(args, fmt);
 	vprintf(fmt, args);

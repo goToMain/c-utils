@@ -98,7 +98,7 @@ uint32_t round_up_pow2(uint32_t v);
  * 	len = get_data_from_somewhere(data, MAX_LEN);
  * 	hexdump(data, len, "Data From Somewhere");
  */
-void hexdump(const uint8_t *data, size_t len, const char *fmt, ...);
+void hexdump(const void *data, size_t len, const char *fmt, ...);
 
 /**
  * @brief Get the time in milli seconds.
