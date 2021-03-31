@@ -14,23 +14,27 @@ int test_slab_alloc_free()
 {
 	int i = 0;
 	struct test_slab_blocks *p[TEST_SLAB_COUNT + 1];
-	SLAB_DEF(slab, struct test_slab_blocks, TEST_SLAB_COUNT);
+	uint8_t slab_space[(sizeof(struct test_slab_blocks) + 8) * TEST_SLAB_COUNT];
+	slab_t slab;
+
+	slab_init(&slab, sizeof(struct test_slab_blocks),
+		  slab_space, sizeof(slab_space));
 
 	while (i < TEST_SLAB_COUNT) {
 		if (slab_alloc(&slab, (void **)&p[i]))
 			return -1;
-        i++;
+		i++;
 	}
 
 	if (slab_alloc(&slab, (void **)&p[i]) == 0)
 		return -1;
 
 	while (--i < 0) {
-		if (slab_free(&slab, p[i]))
+		if (slab_free(p[i]))
 			return -1;
 	}
 
-	if (slab_free(&slab, (void **)&p[0]) == 0)
+	if (slab_free((void **)&p[0]) == 0)
 		return -1;
 
 	return 0;

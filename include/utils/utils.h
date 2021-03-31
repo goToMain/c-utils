@@ -31,6 +31,8 @@
 #define STR(x) #x
 #define XSTR(x) STR(x)
 
+#define ROUND_UP(x, y) ((x + y - 1) & ~ (y - 1))
+
 #define MATH_MOD(a, b)                 (((a % b) + b) % b)
 
 #define IS_POW2(n)                     ((n) & ((n) - 1))

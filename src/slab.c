@@ -6,57 +6,58 @@
  */
 
 #include <string.h>
+#include <stdbool.h>
 
-#include <utils/memory.h>
 #include <utils/slab.h>
 
-int slab_init(slab_t *slab, size_t size, size_t count)
-{
-	slab->size = round_up_pow2(size);
-	slab->blob = safe_calloc(count, slab->size);
-	slab->alloc_map = safe_calloc((count + 31) / 32, sizeof(uint32_t));
-	slab->count = count;
-	return 0;
-}
+struct slab_unit {
+	uint32_t leased;
+	uint32_t canary;
+	uint8_t data[0];
+} __packed;
 
-void slab_del(slab_t *slab)
+ssize_t slab_init(slab_t *slab, size_t slab_size,
+		  uint8_t *blob, size_t blob_size)
 {
-	safe_free(slab->blob);
-	safe_free(slab->alloc_map);
-	memset(slab, 0, sizeof(slab_t));
-}
+	slab->size = ROUND_UP(slab_size, sizeof(void *)) +
+		     sizeof(struct slab_unit);
 
-int slab_alloc(slab_t *slab, void **p)
-{
-	size_t i = 0, offset = 0;
-
-	while (i < slab->count &&
-	       slab->alloc_map[offset] & (1L << (i & 0x1f)))
-	{
-		if ((i & 0x1f) == 0x1f)
-			offset++;
-		i++;
-	}
-	if (i >= slab->count)
+	if (slab->size > blob_size)
 		return -1;
-	slab->alloc_map[offset] |= 1L << (i & 0x1f);
-	*p = slab->blob + (slab->size * i);
-	memset(*p, 0, slab->size);
-	return 0;
+
+	slab->count = blob_size / slab->size;
+	memset(blob, 0, blob_size);
+	slab->blob = blob;
+
+	return slab->count;
 }
 
-int slab_free(slab_t *slab, void *p)
+int slab_alloc(slab_t *slab, void **block)
 {
 	size_t i;
+	struct slab_unit *p;
 
 	for (i = 0; i < slab->count; i++) {
-		if ((slab->blob + (slab->size * i)) == p)
-			break;
+		p = (struct slab_unit *)(slab->blob + (i * slab->size));
+		if (!p->leased) {
+			p->leased = true;
+			p->canary = 0xdeadbeaf;
+			*block = p->data;
+			return 0;
+		}
 	}
-	if (i >= slab->count)
+
+	return -1;
+}
+
+int slab_free(void *block)
+{
+	struct slab_unit *p = CONTAINER_OF(block, struct slab_unit, data);
+
+	if (p->canary != 0xdeadbeaf)
 		return -1;
-	if (!(slab->alloc_map[i / 32] & (1L << (i & 0x1f))))
-		return -2;
-	slab->alloc_map[i / 32] &= ~(1L << (i & 0x1f));
+
+	p->leased = false;
+
 	return 0;
 }
