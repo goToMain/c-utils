@@ -26,8 +26,8 @@ typedef struct {
  * @return -1 on errors
  * @return number of slabs issuable from `blob` on success
  */
-ssize_t slab_init(slab_t *slab, size_t slab_size,
-		  uint8_t *blob, size_t blob_size);
+int slab_init(slab_t *slab, size_t slab_size,
+	      uint8_t *blob, size_t blob_size);
 
 /**
  * @brief Allocates a slab of memory from the resource pool held at

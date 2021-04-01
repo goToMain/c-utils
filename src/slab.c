@@ -16,8 +16,8 @@ struct slab_unit {
 	uint8_t data[0];
 } __packed;
 
-ssize_t slab_init(slab_t *slab, size_t slab_size,
-		  uint8_t *blob, size_t blob_size)
+int slab_init(slab_t *slab, size_t slab_size,
+	      uint8_t *blob, size_t blob_size)
 {
 	slab->size = ROUND_UP(slab_size, sizeof(void *)) +
 		     sizeof(struct slab_unit);
@@ -29,7 +29,7 @@ ssize_t slab_init(slab_t *slab, size_t slab_size,
 	memset(blob, 0, blob_size);
 	slab->blob = blob;
 
-	return slab->count;
+	return (int)slab->count;
 }
 
 int slab_alloc(slab_t *slab, void **block)
