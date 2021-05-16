@@ -73,7 +73,7 @@ int bus_server_work_fn(void *arg)
 int bus_server_queue_work(bus_server_t *s, int fd)
 {
 	int i;
-	work_t *work;
+	work_t *work = NULL;
 	struct bus_client_data *client_data;
 
 	for (i = 0; i < s->max_clients; i++) {
