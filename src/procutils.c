@@ -6,10 +6,19 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+#include <ctype.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <dirent.h>
 
 #include <utils/procutils.h>
+#include <utils/memory.h>
+#include <utils/file.h>
+
+#define MAX_PROC_CMDLINE_PATH_SZ			40
+#define MAX_PROC_CMDLINE_ARG_SZ				200
 
 int read_pid(const char *file, int *pid)
 {
@@ -88,4 +97,104 @@ int o_redirect(int mode, const char *file)
 	}
 
 	return has_err;
+}
+
+char *parse_proc_cmdline(unsigned pid, int pos)
+{
+	char buf[MAX_PROC_CMDLINE_PATH_SZ + 1];
+	sprintf(buf, "/proc/%u/cmdline", pid);
+
+	int c = 0, ndx = 0;
+	FILE *fd = fopen(buf, "r");
+	if (fd == NULL)
+		return NULL;
+	while (--pos > 0) {	
+		for (c = fgetc(fd); (c != EOF) && (c != 0); c = fgetc(fd));
+	}
+	if (feof(fd)) {
+		fclose(fd);
+		return NULL;	
+	}
+	char *arg = safe_malloc((MAX_PROC_CMDLINE_ARG_SZ + 1) * sizeof(char));
+	while ((c = fgetc(fd)) != EOF) {
+		arg[ndx++] = c;
+		if ((c == '\0') || (ndx >= MAX_PROC_CMDLINE_ARG_SZ))
+			break;
+	}
+	arg[ndx] = 0;
+	fclose(fd);
+	if (ndx == 1) {
+		safe_free(arg);
+		return NULL;
+	}
+	return arg;
+}
+
+static int pid_cmp_func(const void *a, const void *b)
+{
+   return ( *(int*)a - *(int*)b );
+}
+
+static int pid_bsearch_func(const void *pkey, const void *pelem)
+{
+   return ( *(int*)pkey - *(int*)pelem );
+}
+
+static bool cmp_arg0_basename(const char *arg0, const char *basename)
+{
+	char *ptr = NULL;
+	path_extract(arg0, NULL, &ptr);
+	if (ptr == NULL)
+		return false;
+
+	bool found = strncmp(basename, ptr, MAX_PROC_CMDLINE_ARG_SZ) == 0;
+	safe_free(ptr);
+	return found;
+}
+
+unsigned pid_of(const char* exe_name, unsigned *pomit_arr, size_t arr_len)
+{
+	char *ptr;
+	char buf[200];
+	struct dirent *ent;
+	if (!pomit_arr && arr_len)
+		return 0;
+
+	DIR *dir = opendir("/proc");
+	if (dir == NULL)
+		return 0;
+	if (pomit_arr)
+		qsort(pomit_arr, arr_len, sizeof(*pomit_arr), pid_cmp_func);
+
+	while ((ent = readdir(dir)) != NULL) {
+		if (ent->d_name == NULL)
+			continue;
+		unsigned pid = (unsigned)strtoul(ent->d_name, &ptr, 10);
+		if (*ptr != '\0')
+			continue;
+		if (pomit_arr && 
+			bsearch(&pid, pomit_arr, arr_len, sizeof(*pomit_arr), pid_bsearch_func))
+			continue;
+		char *arg0 = parse_proc_cmdline(pid, 1);
+		if (arg0 == NULL)
+			continue;
+		if (!strcmp(arg0, "/proc/self/exe")) {
+			safe_free(arg0);
+			continue;
+		}
+		if (!cmp_arg0_basename(arg0, exe_name)) {
+			safe_free(arg0);
+			continue;
+		}
+		safe_free(arg0);
+		closedir(dir);
+		return pid;
+	}
+	closedir(dir);
+	return 0;
+}
+
+unsigned any_pid_of(const char* exe_name)
+{
+	return pid_of(exe_name, NULL, 0);
 }
