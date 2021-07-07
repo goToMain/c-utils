@@ -43,4 +43,52 @@ int write_pid(const char *file);
  */
 int o_redirect(int mode, const char *file);
 
+/*
+ * pid_of() - Return the pid of "exe_name"
+ *
+ * Params:
+ *   exe_name  - Name of the executable of which pid should be returned.
+ *   pomit_arr - Array of pid not to be considered.
+ *   arr_len   - Size of pomit_arr
+ * 
+ *  * Returns:
+ *  0   - Failed. No Process with exe_name found
+ *  > 0 - PID of the process having name "exe_name"
+ * 
+ *  Examples:
+ *    pid_of("test-utils", NULL, 0); // return the pid of the test
+ * 
+ *  Limitations:
+ *    Currently, it doesn't work with scripts or kernel threads.
+ */
+unsigned pid_of(const char* exe_name, unsigned *pomit_arr, size_t arr_len);
+
+
+/*
+ * any_pid_of() - Return the pid of one of the process having "exe_name"
+ *
+ * Params:
+ *   exe_name  - Name of the executable of which pid should be returned.
+ * 
+ *  * Returns:
+ *  0   - Failed. No Process with exe_name found
+ *  > 0 - PID of the process having name "exe_name"
+ * 
+ *  Examples:
+ *    any_pid_of("test-utils"); // return the pid of the test
+ * 
+ *  Limitations:
+ *    Currently, it doesn't work with scripts or kernel threads.
+ */
+unsigned any_pid_of(const char* exe_name);
+
+/*
+ * parse_proc_cmdline0() - Return the arg0 of the process having pid 'pid'
+ *
+ * Params:
+ *   pid  - PID of the process for which arg0 will be returned
+ */
+char *parse_proc_cmdline(unsigned pid, int pos);
+
+
 #endif /* _UTIL_PROCUTILS_H_ */
