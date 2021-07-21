@@ -19,7 +19,7 @@
 
 struct msgbuf {
 	long mtype;		/* message type, must be > 0 */
-	uint8_t mtext[1024];	/* message data */
+	uint8_t mtext[512];	/* message data */
 };
 
 struct channel_msgq_s {
