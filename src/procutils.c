@@ -108,12 +108,12 @@ char *parse_proc_cmdline(unsigned pid, int pos)
 	FILE *fd = fopen(buf, "r");
 	if (fd == NULL)
 		return NULL;
-	while (--pos > 0) {	
+	while (--pos > 0) {
 		for (c = fgetc(fd); (c != EOF) && (c != 0); c = fgetc(fd));
 	}
 	if (feof(fd)) {
 		fclose(fd);
-		return NULL;	
+		return NULL;
 	}
 	char *arg = safe_malloc((MAX_PROC_CMDLINE_ARG_SZ + 1) * sizeof(char));
 	while ((c = fgetc(fd)) != EOF) {
@@ -155,7 +155,6 @@ static bool cmp_arg0_basename(const char *arg0, const char *basename)
 unsigned pid_of(const char* exe_name, unsigned *pomit_arr, size_t arr_len)
 {
 	char *ptr;
-	char buf[200];
 	struct dirent *ent;
 	if (!pomit_arr && arr_len)
 		return 0;
@@ -167,12 +166,12 @@ unsigned pid_of(const char* exe_name, unsigned *pomit_arr, size_t arr_len)
 		qsort(pomit_arr, arr_len, sizeof(*pomit_arr), pid_cmp_func);
 
 	while ((ent = readdir(dir)) != NULL) {
-		if (ent->d_name == NULL)
+		if (ent->d_namlen == 0)
 			continue;
 		unsigned pid = (unsigned)strtoul(ent->d_name, &ptr, 10);
 		if (*ptr != '\0')
 			continue;
-		if (pomit_arr && 
+		if (pomit_arr &&
 			bsearch(&pid, pomit_arr, arr_len, sizeof(*pomit_arr), pid_bsearch_func))
 			continue;
 		char *arg0 = parse_proc_cmdline(pid, 1);

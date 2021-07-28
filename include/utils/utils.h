@@ -21,6 +21,8 @@
 #define FALSE                          (0)
 #endif
 
+#define BIT(x)				(1ULL << (x))
+
 #define BYTE_0(x)                      (uint8_t)(((x) >>  0) & 0xFF)
 #define BYTE_1(x)                      (uint8_t)(((x) >>  8) & 0xFF)
 #define BYTE_2(x)                      (uint8_t)(((x) >> 16) & 0xFF)
