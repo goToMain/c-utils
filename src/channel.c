@@ -8,6 +8,11 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include <stdbool.h>
+#include <stdint.h>
+
+#include <sys/fcntl.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
@@ -15,7 +20,7 @@
 #include <utils/utils.h>
 #include <utils/serial.h>
 #include <utils/channel.h>
-#include <stdint.h>
+#include <utils/fdutils.h>
 
 struct msgbuf {
 	long mtype;		/* message type, must be > 0 */
@@ -163,6 +168,139 @@ void channel_uart_teardown(void *data)
 	serial_close(data);
 }
 
+struct channel_fifo {
+	char *fifo0;
+	char *fifo1;
+	bool is_server;
+	int rfd;
+	int wfd;
+};
+
+int channel_fifo_send(void *data, uint8_t *buf, int len)
+{
+	struct channel_fifo *ctx = data;
+
+	return (int)write_loop(ctx->wfd, buf, len);
+}
+
+int channel_fifo_recv(void *data, uint8_t *buf, int max_len)
+{
+	struct channel_fifo *ctx = data;
+
+	return (int)read_loop(ctx->rfd, buf, max_len);
+}
+
+void channel_fifo_flush(void *data)
+{
+	struct channel_fifo *ctx = data;
+
+	flush_fd(ctx->rfd);
+}
+
+int channel_fifo_setup(void **data, struct channel *c)
+{
+	int rc, len;
+	char path[128];
+	struct channel_fifo *ctx;
+
+	len = strlen(c->device);
+	if (len > 120)
+		return -1;
+
+	ctx = calloc(1, sizeof(struct channel_fifo));
+	if (ctx == NULL)
+		return -1;
+	ctx->is_server = c->is_server;
+
+	snprintf(path, 128, "%s-0", c->device);
+	if (ctx->is_server) {
+		unlink(path);
+		rc = mkfifo(path, 0666);
+		if (rc < 0) {
+			perror("Error: mkfifo(0)");
+			goto error;
+		}
+	}
+	ctx->fifo0 = strdup(path);
+
+	snprintf(path, 128, "%s-1", c->device);
+	if (ctx->is_server) {
+		unlink(path);
+		rc = mkfifo(path, 0666);
+		if (rc < 0) {
+			perror("Error: mkfifo(1)");
+			goto error;
+		}
+	}
+	ctx->fifo1 = strdup(path);
+
+	if (ctx->is_server) {
+		ctx->rfd = open(ctx->fifo0, O_RDWR);
+		if (ctx->rfd < 0) {
+			perror("Error: open_fifo(0, r)");
+			goto error;
+		}
+		ctx->wfd = open(ctx->fifo1, O_RDWR);
+		if (ctx->wfd < 0) {
+			perror("Error: open_fifo(1, w)");
+			goto error;
+		}
+	} else {
+		ctx->rfd = open(ctx->fifo1, O_RDWR);
+		if (ctx->rfd < 0) {
+			perror("Error: open_fifo(1, r)");
+			goto error;
+		}
+		ctx->wfd = open(ctx->fifo0, O_RDWR);
+		if (ctx->wfd < 0) {
+			perror("Error: open_fifo(0, w)");
+			goto error;
+		}
+	}
+
+	rc = fcntl_setfl(ctx->rfd, O_NONBLOCK);
+	if (rc < 0)
+		goto error;
+
+	rc = fcntl_setfl(ctx->wfd, O_NONBLOCK);
+	if (rc < 0)
+		goto error;
+
+	*data = (void *)ctx;
+
+	return 0;
+error:
+	if (ctx->rfd > 0)
+		close(ctx->rfd);
+	if (ctx->wfd > 0)
+		close(ctx->rfd);
+	if (ctx->fifo0) {
+		unlink(ctx->fifo0);
+		free(ctx->fifo0);
+	}
+	if (ctx->fifo1) {
+		unlink(ctx->fifo1);
+		free(ctx->fifo1);
+	}
+	free(ctx);
+	return -1;
+}
+
+void channel_fifo_teardown(void *data)
+{
+	struct channel_fifo *ctx = data;
+
+	close(ctx->rfd);
+	close(ctx->wfd);
+	if (ctx->is_server) {
+		unlink(ctx->fifo0);
+		unlink(ctx->fifo1);
+	}
+	free(ctx->fifo0);
+	free(ctx->fifo1);
+	free(ctx);
+}
+
 struct channel_ops {
 	channel_send_fn_t send;
 	channel_receive_fn_t receive;
@@ -186,6 +324,13 @@ struct channel_ops g_channel_ops[CHANNEL_TYPE_SENTINEL] = {
 		.setup = channel_msgq_setup,
 		.teardown = channel_msgq_teardown
 	},
+	[CHANNEL_TYPE_FIFO] = {
+		.send = channel_fifo_send,
+		.receive = channel_fifo_recv,
+		.flush = channel_fifo_flush,
+		.setup = channel_fifo_setup,
+		.teardown = channel_fifo_teardown
+	},
 };
 
 void channel_manager_init(struct channel_manager *ctx)
@@ -203,6 +348,10 @@ enum channel_type channel_guess_type(const char *desc)
 	if (strcmp("msgq", desc) == 0 ||
 	    strcmp("message_queue", desc) == 0)
 	    	return CHANNEL_TYPE_MSGQ;
+
+	if (strcmp("fifo", desc) == 0 ||
+	    strcmp("pipe", desc) == 0)
+		return CHANNEL_TYPE_FIFO;
 
 	return CHANNEL_TYPE_ERR;
 }
