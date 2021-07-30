@@ -166,7 +166,7 @@ unsigned pid_of(const char* exe_name, unsigned *pomit_arr, size_t arr_len)
 		qsort(pomit_arr, arr_len, sizeof(*pomit_arr), pid_cmp_func);
 
 	while ((ent = readdir(dir)) != NULL) {
-		if (ent->d_namlen == 0)
+		if (strlen(ent->d_name) == 0)
 			continue;
 		unsigned pid = (unsigned)strtoul(ent->d_name, &ptr, 10);
 		if (*ptr != '\0')
