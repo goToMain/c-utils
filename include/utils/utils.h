@@ -8,6 +8,7 @@
 #define _UTILS_UTILS_H_
 
 #include <stdint.h>
+#include <stddef.h>
 
 #ifndef NULL
 #define NULL                           ((void *)0)
@@ -61,6 +62,20 @@
 		__typeof__ (b) _b = (b); \
 		_a > _b ? _b : _a; \
 	})
+
+#define SWAP(a,b) { \
+		__typeof__ (*a) _tmp; \
+		_tmp = a; \
+		b = a; \
+		a = _tmp; \
+	}
+
+#define SWAP_REF(a,b) { \
+		__typeof__ (a) _tmp; \
+		_tmp = *a; \
+		*b = *a; \
+		*a = _tmp; \
+	}
 
 /* config_enabled() from the kernel */
 #define __IS_ENABLED1(x)             __IS_ENABLED2(__XXXX ## x)
