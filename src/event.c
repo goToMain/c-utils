@@ -11,7 +11,7 @@
 #include <sys/fcntl.h>
 
 #include <utils/fdutils.h>
-#include <utils/events.h>
+#include <utils/event.h>
 
 int event_init(event_t *e, bool active, bool blocking)
 {
