@@ -13,7 +13,7 @@
 #include <utils/fdutils.h>
 #include <utils/events.h>
 
-int event_init(event_t *e, bool active)
+int event_init(event_t *e, bool active, bool blocking)
 {
 	int fds[2];
 	int ret;
@@ -21,13 +21,14 @@ int event_init(event_t *e, bool active)
 	if (pipe(fds) < 0)
 		return -1;
 
-	ret = fcntl_setfl(fds[0], O_NONBLOCK);
-	if (ret < 0)
-		goto error;
-
-	ret = fcntl_setfl(fds[1], O_NONBLOCK);
-	if (ret < 0)
-		goto error;
+	if (!blocking) {
+		ret = fcntl_setfl(fds[0], O_NONBLOCK);
+		if (ret < 0)
+			goto error;
+		ret = fcntl_setfl(fds[1], O_NONBLOCK);
+		if (ret < 0)
+			goto error;
+	}
 
 	e->rfd = fds[0];
 	e->wfd = fds[1];

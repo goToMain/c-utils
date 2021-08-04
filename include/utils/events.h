@@ -15,7 +15,7 @@ typedef struct {
 	bool initialized;
 } event_t;
 
-int event_init(event_t *e, bool active);
+int event_init(event_t *e, bool active, bool blocking);
 void event_cleanup(event_t *e);
 
 bool event_set(event_t *e);
