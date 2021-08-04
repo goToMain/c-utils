@@ -64,17 +64,10 @@
 	})
 
 #define SWAP(a,b) { \
-		__typeof__ (*a) _tmp; \
+		__typeof__ (a) _tmp; \
 		_tmp = a; \
 		b = a; \
 		a = _tmp; \
-	}
-
-#define SWAP_REF(a,b) { \
-		__typeof__ (a) _tmp; \
-		_tmp = *a; \
-		*b = *a; \
-		*a = _tmp; \
 	}
 
 /* config_enabled() from the kernel */
@@ -118,6 +111,17 @@ uint32_t round_up_pow2(uint32_t v);
  * 	hexdump(data, len, "Data From Somewhere");
  */
 void hexdump(const void *data, size_t len, const char *fmt, ...);
+
+/**
+ * @brief Get the time in micro seconds.
+ */
+int64_t usec_now();
+
+/**
+ * @brief Get time elapsed in micro seconds since `last`. Used along with
+ * usec_now().
+ */
+int64_t usec_since(int64_t last);
 
 /**
  * @brief Get the time in milli seconds.

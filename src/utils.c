@@ -63,12 +63,25 @@ void hexdump(const void *p, size_t len, const char *fmt, ...)
 	printf("\n");
 }
 
-int64_t millis_now()
+int64_t usec_now()
 {
+	int64_t usec;
 	struct timeval tv;
 
 	gettimeofday(&tv, NULL);
-	return (int64_t) ((tv.tv_sec) * 1000L + (tv.tv_usec) / 1000L);
+	usec = tv.tv_sec * 1000L * 1000L + tv.tv_usec;
+
+	return usec;
+}
+
+int64_t usec_since(int64_t last)
+{
+	return usec_now() - last;
+}
+
+int64_t millis_now()
+{
+	return (int64_t)(usec_now() / 1000L);
 }
 
 int64_t millis_since(int64_t last)
