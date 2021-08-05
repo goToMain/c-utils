@@ -8,10 +8,15 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <ctype.h>
-
+#include <stdlib.h>
 #include <sys/time.h>
 
 #include <utils/utils.h>
+
+int randint(int min, int max)
+{
+	return (rand() % (max - min + 1)) + min;
+}
 
 uint32_t round_up_pow2(uint32_t v)
 {
