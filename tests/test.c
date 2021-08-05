@@ -27,6 +27,7 @@ TEST_DEF(filo);
 TEST_DEF(slab);
 TEST_DEF(procutils);
 TEST_DEF(workqueue);
+TEST_DEF(bus_server);
 
 test_module_t c_utils_test_modules[] = {
 	TEST_MOD(circular_buffer),
@@ -37,6 +38,7 @@ test_module_t c_utils_test_modules[] = {
 	TEST_MOD(slab),
 	TEST_MOD(procutils),
 	TEST_MOD(workqueue),
+	TEST_MOD(bus_server),
 	TEST_MOD_SENTINEL,
 };
 
