@@ -11,7 +11,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <sys/fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -301,6 +300,91 @@ void channel_fifo_teardown(void *data)
 	free(ctx);
 }
 
+#include <utils/bus_server.h>
+#include <utils/sockutils.h>
+
+struct channel_unix_bus {
+	int fd;
+	bus_server_t *bus_server;
+};
+
+int channel_unix_bus_send(void *data, uint8_t *buf, int len)
+{
+	struct channel_unix_bus *ctx = data;
+
+	return (int)write_loop(ctx->fd, buf, len);
+}
+
+int channel_unix_bus_recv(void *data, uint8_t *buf, int max_len)
+{
+	struct channel_unix_bus *ctx = data;
+
+	return (int)read_loop(ctx->fd, buf, max_len);
+}
+
+void channel_unix_bus_flush(void *data)
+{
+	struct channel_unix_bus *ctx = data;
+
+	flush_fd(ctx->fd);
+}
+
+int channel_unix_bus_setup(void **data, struct channel *c)
+{
+	int rc, len;
+	struct channel_unix_bus *ctx;
+
+	len = strlen(c->device);
+	if (len > 120)
+		return -1;
+
+	ctx = calloc(1, sizeof(struct channel_unix_bus));
+	if (ctx == NULL)
+		return -1;
+
+	if (access(c->device, F_OK) != 0) {
+		/* start bus server */
+		ctx->bus_server = calloc(1, sizeof(bus_server_t));
+		if (ctx->bus_server == NULL)
+			goto error;
+		rc = bus_server_start(ctx->bus_server, 5, c->device);
+		if (rc < 0)
+			goto error;
+	}
+
+	rc = unix_socket_connect(c->device);
+	if (rc < 0)
+		goto error;
+
+	ctx->fd = rc;
+
+	fcntl_setfl(ctx->fd, O_NONBLOCK);
+
+	*data = ctx;
+	return 0;
+error:
+	if (ctx) {
+		if (ctx->bus_server) {
+			bus_server_stop(ctx->bus_server);
+			free(ctx->bus_server);
+		}
+		free(ctx);
+	}
+	return -1;
+}
+
+void channel_unix_bus_teardown(void *data)
+{
+	struct channel_unix_bus *ctx = data;
+
+	close(ctx->fd);
+	if (ctx->bus_server) {
+		bus_server_stop(ctx->bus_server);
+		free(ctx->bus_server);
+	}
+	free(ctx);
+}
+
 struct channel_ops {
 	channel_send_fn_t send;
 	channel_receive_fn_t receive;
@@ -331,6 +415,13 @@ struct channel_ops g_channel_ops[CHANNEL_TYPE_SENTINEL] = {
 		.setup = channel_fifo_setup,
 		.teardown = channel_fifo_teardown
 	},
+	[CHANNEL_TYPE_UNIX_BUS] = {
+		.send = channel_unix_bus_send,
+		.receive = channel_unix_bus_recv,
+		.flush = channel_unix_bus_flush,
+		.setup = channel_unix_bus_setup,
+		.teardown = channel_unix_bus_teardown
+	},
 };
 
 void channel_manager_init(struct channel_manager *ctx)
@@ -352,6 +443,9 @@ enum channel_type channel_guess_type(const char *desc)
 	if (strcmp("fifo", desc) == 0 ||
 	    strcmp("pipe", desc) == 0)
 		return CHANNEL_TYPE_FIFO;
+
+	if (strcmp("unix_bus", desc) == 0)
+		return CHANNEL_TYPE_UNIX_BUS;
 
 	return CHANNEL_TYPE_ERR;
 }
