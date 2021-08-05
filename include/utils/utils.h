@@ -70,6 +70,18 @@
 		a = _tmp; \
 	}
 
+#define __READ_ONCE(x)	(*(volatile typeof(x) *)&(x))
+#define READ_ONCE(x) ({ \
+		typeof(x) *__xp = &(x); \
+		typeof(x) __x = __READ_ONCE(*__xp); \
+		__x; \
+	})
+
+#define WRITE_ONCE(x, val) do { \
+		typeof(x) *__xp = &(x); \
+		*(volatile typeof(x) *)__xp = (val); \
+	} while (0)
+
 /* config_enabled() from the kernel */
 #define __IS_ENABLED1(x)             __IS_ENABLED2(__XXXX ## x)
 #define __XXXX1                       __YYYY,
