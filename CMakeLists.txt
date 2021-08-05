@@ -22,7 +22,7 @@ file(GLOB TEST_SRC
 	${CMAKE_CURRENT_SOURCE_DIR}/tests/*.h
 )
 add_executable(${TEST_BIN} ${TEST_SRC})
-target_link_libraries(${TEST_BIN} ${LIB_UTILS})
+target_link_libraries(${TEST_BIN} ${LIB_UTILS} pthread)
 target_include_directories(${TEST_BIN} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set_target_properties(${TEST_BIN} PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
