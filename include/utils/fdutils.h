@@ -8,6 +8,7 @@
 #define _UTILS_FDUTILS_H_
 
 #include <unistd.h>
+#include <sys/fcntl.h>
 
 int fcntl_setfl(int fd, int flag);
 
