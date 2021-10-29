@@ -31,6 +31,7 @@ uint32_t round_up_pow2(uint32_t v)
 	return v;
 }
 
+__attribute__((format(printf, 3, 4)))
 void hexdump(const void *p, size_t len, const char *fmt, ...)
 {
 	size_t i;
