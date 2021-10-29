@@ -26,7 +26,7 @@
 
 static const char *log_level_colors[LOG_MAX_LEVEL] = {
 	RED,   RED,   RED,   RED,
-	YEL,   MAG,   GRN,   GRN
+	YEL,   MAG,   GRN,   RESET
 };
 
 static const char *log_level_names[LOG_MAX_LEVEL] = {
