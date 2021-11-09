@@ -29,6 +29,14 @@
 #define BYTE_2(x)                      (uint8_t)(((x) >> 16) & 0xFF)
 #define BYTE_3(x)                      (uint8_t)(((x) >> 24) & 0xFF)
 
+#define BIT(n)                         (1ull << (n))
+#define MASK(n)                        (BIT((n) + 1) - 1)
+#define BIT_IS_SET(m, n)               (bool)((m) & BIT(n))
+#define BIT_SET(m, n)                  ((m) |=  BIT(n))
+#define BIT_CLEAR(m, n)                ((m) &= ~BIT(n))
+#define BIT_FLIP(m, n)                 ((m) ^=  BIT(n))
+#define BIT_TEST_SET(m, n)             ({ BIT_IS_SET(m, n) ? false : (bool) BIT_SET(m, n) })
+
 #define ARG_UNUSED(x)                  (void)(x)
 
 #define STR(x) #x
