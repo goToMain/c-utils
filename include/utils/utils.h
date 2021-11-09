@@ -82,6 +82,8 @@
 		*(volatile typeof(x) *)__xp = (val); \
 	} while (0)
 
+#define ABS(x)		((x) >= 0  ? (x) : -(x))
+
 /* config_enabled() from the kernel */
 #define __IS_ENABLED1(x)             __IS_ENABLED2(__XXXX ## x)
 #define __XXXX1                       __YYYY,
@@ -118,6 +120,11 @@ int randint(int min, int max);
  * of 2 it is returned unmodified.
  */
 uint32_t round_up_pow2(uint32_t v);
+
+/**
+ * @brief Retruns number of digits in a given number in its decimal form.
+ */
+int num_digits_in_number(int num);
 
 /**
  * @brief Dumps an array of bytes in HEX and ASCII formats for debugging. `head`

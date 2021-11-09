@@ -70,6 +70,13 @@ int lstrip(char *str);
 int  strip(char *str);
 
 /**
+ * @brief Removes any tailing \r or \n chars.
+ *
+ * @return Length of modified string.
+ */
+size_t chomp(char *str);
+
+/**
  * @brief lstrip() without shifting chars but looses the passed pointer. This
  * can be used on local non-alloced refs.
  */

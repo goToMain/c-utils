@@ -103,7 +103,7 @@ int rstrip(char *str)
 	int i;
 
 	i = strlen(str);
-	while (str[i - 1] == ' ') {
+	while (i > 0 && str[i - 1] == ' ') {
 		str[i - 1] = '\0';
 		i -= 1;
 	}
@@ -134,6 +134,18 @@ int strip(char *str)
 	rs_len = rstrip(str);
 	ls_len = lstrip(str); /* can be -ve */
 	return (ls_len > 0) ? ls_len : rs_len;
+}
+
+size_t chomp(char *str)
+{
+	size_t i;
+
+	i = strlen(str);
+	while (i > 0 && (str[i - 1] == '\n' || str[i - 1] == '\r')) {
+		str[i - 1] = '\0';
+		i -= 1;
+	}
+	return i;
 }
 
 void remove_all(char *str, char c)
