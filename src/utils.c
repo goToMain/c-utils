@@ -75,7 +75,7 @@ int64_t usec_now()
 	struct timeval tv;
 
 	gettimeofday(&tv, NULL);
-	usec = tv.tv_sec * 1000L * 1000L + tv.tv_usec;
+	usec = tv.tv_sec * 1000LL * 1000LL + tv.tv_usec;
 
 	return usec;
 }
@@ -87,7 +87,7 @@ int64_t usec_since(int64_t last)
 
 int64_t millis_now()
 {
-	return (int64_t)(usec_now() / 1000L);
+	return (int64_t)(usec_now() / 1000LL);
 }
 
 int64_t millis_since(int64_t last)
