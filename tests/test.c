@@ -138,6 +138,9 @@ int main(int argc, char *argv[])
 	memset(&test, 0, sizeof(test_t));
 	process_cli_opts(&test, argc, argv);
 
+	if (!test.inputdir)
+		test.inputdir = safe_strdup("../tests/input");
+
 	// Display test header
 	printf("\n");
 	printf("------------------------------------------\n");

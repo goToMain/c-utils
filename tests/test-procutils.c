@@ -9,7 +9,7 @@ int test_pid_of(void)
 {
 	FILE *pfile = fopen("/proc/self/status", "r");
 	if (pfile == NULL)
-		return -1;
+		return -ENOENT;
 
 	char filename[200] = { 0 };
 	fscanf(pfile, "Name: %199s", filename);
@@ -23,9 +23,11 @@ int test_pid_of(void)
 
 TEST_DEF(procutils)
 {
+	int rc;
 	TEST_MOD_INIT();
 
-	TEST_MOD_EXEC( test_pid_of() );
+	rc = test_pid_of();
+	TEST_MOD_EXEC(rc && rc != -ENOENT);
 
 	TEST_MOD_REPORT();
 }
