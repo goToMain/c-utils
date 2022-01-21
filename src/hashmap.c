@@ -105,7 +105,7 @@ void hash_map_free(hash_map_t *map, hash_map_callback_t callback)
 	while (pos < map->capacity) {
 		item = map->pool[pos];
 		while (item != NULL) {
-			callback(map->pool[pos]->key, map->pool[pos]->val);
+			callback(item->key, item->val);
 			next = item->next;
 			safe_free(item->key);
 			safe_free(item);

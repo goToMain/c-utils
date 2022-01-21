@@ -125,6 +125,7 @@ TEST_DEF(hashmap)
 	TEST_MOD_EXEC( test_dict_delete(&map, words, count) );
 	TEST_MOD_EXEC( map.count );
 
+	TEST_MOD_EXEC( test_dict_insert(&map, words, count) );
 	hash_map_free(&map, free_test_hashmap_value);
 
 	safe_free(buf);
