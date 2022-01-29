@@ -87,9 +87,8 @@ int __circ_gbuf_free_space(circ_gbuf_t *circ_gbuf);
 
 /**
  * Description:
- *   Removes the element at tail from circular buffer `buf` and makes it
- *   available at `elem`. This is read-write method, occupancy count reduces
- *   by one.
+ *   Copies the element at tail of circular buffer `buf` into location pointed
+ *   by `elem`. This method is read-only, does not alter occupancy status.
  *
  * Returns (int):
  *   0 - Success
@@ -99,8 +98,9 @@ int __circ_gbuf_free_space(circ_gbuf_t *circ_gbuf);
 
 /**
  * Description:
- *   Copies the element at tail of circular buffer `buf` into location pointed
- *   by `elem`. This method is read-only, does not later occupancy status.
+ *   Removes the element at tail from circular buffer `buf` and makes it
+ *   available at `elem`. This is read-write method, occupancy count reduces
+ *   by one.
  *
  * Returns (int):
  *   0 - Success
