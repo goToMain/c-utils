@@ -10,6 +10,9 @@
 #include <time.h>
 #include <stdio.h>
 #include <errno.h>
+#include <pthread.h>
+#include <stdbool.h>
+
 #include <utils/utils.h>
 
 #define mod_printf(fmt, ...) fprintf(stdout,"  - "fmt"\n", ## __VA_ARGS__)
