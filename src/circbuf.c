@@ -8,7 +8,7 @@
 
 #include <utils/circbuf.h>
 
-int __circ_gbuf_pop(circ_gbuf_t *circ_buf, void *elem, int read_only)
+int __circbuf_pop(circbuf_t *circ_buf, void *elem, int read_only)
 {
 	int total;
 	char *tail;
@@ -37,7 +37,7 @@ int __circ_gbuf_pop(circ_gbuf_t *circ_buf, void *elem, int read_only)
 	return 0;
 }
 
-int __circ_gbuf_push(circ_gbuf_t *circ_buf, void *elem)
+int __circbuf_push(circbuf_t *circ_buf, void *elem)
 {
 	int total;
 	char *head;
@@ -58,7 +58,7 @@ int __circ_gbuf_push(circ_gbuf_t *circ_buf, void *elem)
 	return 0;
 }
 
-int __circ_gbuf_free_space(circ_gbuf_t *circ_buf)
+int __circbuf_free_space(circbuf_t *circ_buf)
 {
 	int total;
 
