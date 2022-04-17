@@ -458,6 +458,9 @@ int channel_open(struct channel_manager *ctx, enum channel_type type, char *devi
 	if (type <= CHANNEL_TYPE_ERR || type >= CHANNEL_TYPE_SENTINEL)
 		return CHANNEL_ERR_UNKNOWN_TYPE;
 
+	if (!device)
+		return CHANNEL_ERR_OPEN_FAILED;
+
 	if (hash_map_get(&ctx->channels, device, 0) != NULL)
 		return CHANNEL_ERR_ALREADY_OPEN;
 
