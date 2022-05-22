@@ -50,8 +50,9 @@ int slab_alloc(slab_t *slab, void **block)
 	return -1;
 }
 
-int slab_free(void *block)
+int slab_free(slab_t *slab, void *block)
 {
+	ARG_UNUSED(slab);
 	struct slab_unit *p = CONTAINER_OF(block, struct slab_unit, data);
 
 	if (p->canary != 0xdeadbeaf)

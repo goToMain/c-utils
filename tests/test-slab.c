@@ -30,11 +30,11 @@ int test_slab_alloc_free()
 		return -1;
 
 	while (--i < 0) {
-		if (slab_free(p[i]))
+		if (slab_free(&slab, p[i]))
 			return -1;
 	}
 
-	if (slab_free((void **)&p[0]) == 0)
+	if (slab_free(&slab, (void **)&p[0]) == 0)
 		return -1;
 
 	return 0;

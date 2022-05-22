@@ -47,6 +47,6 @@ int slab_alloc(slab_t *slab, void **block);
  * @return -1 on errors
  * @return  0 on success
  */
-int slab_free(void *block);
+int slab_free(slab_t *slab, void *block);
 
 #endif /* _UTILS_SLAB_H_ */
