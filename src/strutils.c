@@ -187,7 +187,7 @@ int strcntchr(char *s, char c)
 
 int strisempty(char *s)
 {
-	while (s && *s != '\0' && isspace(*s))
+	while (s && *s != '\0' && isspace((unsigned char)*s))
 		s++;
 
 	return s == NULL || *s == '\0';
@@ -278,7 +278,7 @@ size_t str_sep_count(const char *str, const char *sep)
 void to_upper(char *s)
 {
 	while (*s) {
-		if (isalpha(*s))
+		if (isalpha((unsigned char)*s))
 			*s &= ~0x20;
 		s++;
 	}
@@ -287,7 +287,7 @@ void to_upper(char *s)
 void to_lower(char *s)
 {
 	while (*s) {
-		if (isalpha(*s))
+		if (isalpha((unsigned char)*s))
 			*s |= 0x20;
 		s++;
 	}
