@@ -10,6 +10,8 @@ enum worker_state_e {
 	WQ_WORKER_STATE_RUNNING,
 };
 
+#define WQ_REQ_CANCEL_WORK		BIT(0)
+
 static inline worker_t *get_worker(workqueue_t *wq, int worker_ndx)
 {
 	return wq->workers + worker_ndx;
@@ -27,6 +29,24 @@ static inline void wakeup_first_free_worker(workqueue_t *wq)
 			break;
 		}
 	}
+}
+
+static void complete_work(work_t *work)
+{
+	work->status = WQ_WORK_COMPLETE;
+	if (work->complete_fn)
+		work->complete_fn(work);
+}
+
+static int do_work(work_t *work)
+{
+	int rc;
+	int64_t slice;
+
+	slice = usec_now();
+	rc = work->work_fn(work->arg);
+	work->slice += usec_since(slice);
+	return rc;
 }
 
 static inline work_t *get_backlog(workqueue_t *wq)
@@ -75,7 +95,6 @@ static inline void flush_backlog(workqueue_t *wq)
 static void *workqueue_factory(void *arg)
 {
 	int rc;
-	int64_t slice;
 	worker_t *w = arg;
 	work_t *work;
 	workqueue_t *wq = w->wq;
@@ -86,19 +105,16 @@ static void *workqueue_factory(void *arg)
 		w->state = WQ_WORKER_STATE_RUNNING;
 
 		while ((work = get_backlog(wq)) != NULL) {
+			if (work->requests & WQ_REQ_CANCEL_WORK)
+				complete_work(work);
 			work->status = WQ_WORK_IN_PROGRESS;
-			slice = usec_now();
-			rc = -1;
-			if (work->work_fn)
-				rc = work->work_fn(work->arg);
-			work->slice += usec_since(slice);
-			if (rc <= 0) {
-				work->status = WQ_WORK_COMPLETE;
-				if (work->complete_fn)
-					work->complete_fn(work);
-			} else {
+
+			rc = do_work(work);
+
+			if (rc <= 0 || work->requests & WQ_REQ_CANCEL_WORK)
+				complete_work(work);
+			else
 				put_backlog(wq, work);
-			}
 		}
 
 		w->state = WQ_WORKER_STATE_IDLE;
@@ -131,11 +147,15 @@ int workqueue_create(workqueue_t *wq, int num_workers)
 	return 0;
 }
 
-void workqueue_add_work(workqueue_t *wq, work_t *work)
+int workqueue_add_work(workqueue_t *wq, work_t *work)
 {
+	if (!wq || !work || !work->work_fn)
+		return -1;
 	work->slice = 0;
+	work->requests = 0;
 	work->status = WQ_WORK_QUEUED;
 	put_backlog(wq, work);
+	return 0;
 }
 
 int workqueue_backlog_count(workqueue_t *wq)
@@ -158,4 +178,16 @@ void workqueue_destroy(workqueue_t *wq)
 	}
 
 	free(wq->workers);
+}
+
+void workqueue_cancel_work(workqueue_t *wq, work_t *work)
+{
+	// TODO: check if work belongs to work queue
+	if (work)
+		work->requests |= WQ_REQ_CANCEL_WORK;
+}
+
+bool workqueue_work_is_complete(workqueue_t *wq, work_t *work)
+{
+	return work->status == WQ_WORK_COMPLETE;
 }

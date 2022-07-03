@@ -23,10 +23,10 @@ int test_work_runner(void *arg)
 		pthread_mutex_lock(&test_lock);
 		num_complete++;
 		pthread_mutex_unlock(&test_lock);
-		return 0;
+		return WORK_DONE;
 	}
 
-	return 1;
+	return WORK_YIELD;
 }
 
 #define NUM_JOBS 20
