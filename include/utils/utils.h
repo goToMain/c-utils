@@ -168,4 +168,6 @@ int64_t millis_now();
  */
 int64_t millis_since(int64_t last);
 
+void dump_trace(void);
+
 #endif /* _UTILS_UTILS_H_ */

@@ -10,6 +10,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <execinfo.h>
 
 #include <utils/utils.h>
 
@@ -104,4 +105,18 @@ int64_t millis_now()
 int64_t millis_since(int64_t last)
 {
 	return millis_now() - last;
+}
+
+void dump_trace(void) {
+	char **strings;
+	size_t i, size;
+	void *array[1024];
+
+	size = backtrace(array, sizeof(array));
+	strings = backtrace_symbols(array, size);
+	for (i = 0; i < size; i++) {
+		printf("\t%s\n", strings[i]);
+	}
+	puts("");
+	free(strings);
 }
