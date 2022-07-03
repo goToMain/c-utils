@@ -51,8 +51,7 @@ void logger_set_log_level(logger_t *ctx, int log_level);
 void logger_set_put_fn(logger_t *ctx, log_puts_fn_t fn);
 void logger_set_file(logger_t *ctx, FILE *f);
 void logger_clear_prefix(logger_t *ctx);
-void logger_set_prefix(logger_t *ctx, const char *fmt, ...);
-void logger_set_prefix_const(logger_t *ctx, const char *prefix);
+void logger_set_prefix(logger_t *ctx, const char *prefix);
 
 #define LOGGER_DEFINE(mod_name, lvl, fl) \
 	logger_t mod_name ## _logger_ctx = { \
@@ -85,8 +84,7 @@ void logger_set_prefix_const(logger_t *ctx, const char *prefix);
 #define LOG_DBG(...)   logger_log(get_current_logger_ctx(), LOG_DEBUG,  LOG_TAG, __VA_ARGS__)
 #define LOG_PRINT(...) logger_log(get_current_logger_ctx(), LOG_INFO,   LOG_TAG, __VA_ARGS__)
 
-#define LOG_SET_PREFIX(...) logger_set_prefix(get_current_logger_ctx(), __VA_ARGS__);
-#define LOG_SET_PREFIX_CONST(str) logger_set_prefix_const(get_current_logger_ctx(), str);
+#define LOG_SET_PREFIX(str) logger_set_prefix(get_current_logger_ctx(), str);
 #define LOG_CLEAR_PREFIX() logger_clear_prefix(get_current_logger_ctx())
 
 #endif /* _LOGGER_H_ */

@@ -36,28 +36,11 @@ static const char *log_level_names[LOG_MAX_LEVEL] = {
 
 void logger_clear_prefix(logger_t *ctx)
 {
-	if (ctx->prefix && (ctx->flags & LOGGER_FLAG_PREFIX_ALLOC))
-		free(ctx->prefix);
 	ctx->prefix = NULL;
-	ctx->flags &= ~(LOGGER_FLAG_PREFIX_ALLOC | LOGGER_FLAG_HAS_PREFIX);
+	ctx->flags &= ~LOGGER_FLAG_HAS_PREFIX;
 }
 
-void logger_set_prefix(logger_t *ctx, const char *fmt, ...)
-{
-	int ret = 0;
-	va_list args;
-
-	logger_clear_prefix(ctx);
-	va_start(args, fmt);
-	ret = vasprintf(&ctx->prefix, fmt, args);
-	assert(ret > 0);
-	ARG_UNUSED(ret); /* squash warning in Release builds */
-	va_end(args);
-	ctx->flags |= LOGGER_FLAG_HAS_PREFIX;
-	ctx->flags |= LOGGER_FLAG_PREFIX_ALLOC;
-}
-
-void logger_set_prefix_const(logger_t *ctx, const char *prefix)
+void logger_set_prefix(logger_t *ctx, const char *prefix)
 {
 	logger_clear_prefix(ctx);
 	ctx->prefix = (char *)prefix;

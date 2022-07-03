@@ -182,6 +182,8 @@ void workqueue_destroy(workqueue_t *wq)
 
 void workqueue_cancel_work(workqueue_t *wq, work_t *work)
 {
+	ARG_UNUSED(wq);
+
 	// TODO: check if work belongs to work queue
 	if (work)
 		work->requests |= WQ_REQ_CANCEL_WORK;
@@ -189,5 +191,7 @@ void workqueue_cancel_work(workqueue_t *wq, work_t *work)
 
 bool workqueue_work_is_complete(workqueue_t *wq, work_t *work)
 {
+	ARG_UNUSED(wq);
+
 	return work->status == WQ_WORK_COMPLETE;
 }
