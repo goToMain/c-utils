@@ -61,13 +61,13 @@ char *safe_strncpy(char* dest, const char* src, size_t size);
  * @brief rstrip(), lstrip(), strip() - String space trim methods, as defined
  * in python3 programming language.
  *
- * @return returns the length of the modifid string. In the case of lstrip(),
+ * @return returns the length of the modified string. In the case of lstrip(),
  * if the string was not modified, -ve error is returned to indicate this. This
  * is done to avoid a needless O(N) strlen() call.
  */
 int rstrip(char *str);
 int lstrip(char *str);
-int  strip(char *str);
+int strip(char *str);
 
 /**
  * @brief Removes any tailing \r or \n chars.

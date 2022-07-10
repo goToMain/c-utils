@@ -43,8 +43,10 @@ void logger_clear_prefix(logger_t *ctx)
 void logger_set_prefix(logger_t *ctx, const char *prefix)
 {
 	logger_clear_prefix(ctx);
-	ctx->prefix = (char *)prefix;
-	ctx->flags |= LOGGER_FLAG_HAS_PREFIX;
+	if (prefix) {
+		ctx->prefix = (char *)prefix;
+		ctx->flags |= LOGGER_FLAG_HAS_PREFIX;
+	}
 }
 
 void logger_set_log_level(logger_t *ctx, int log_level)
