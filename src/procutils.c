@@ -74,25 +74,24 @@ int o_redirect(int mode, const char *file)
 		}
 	}
 
-	if (mode & 0x01) {
-		if (fd != -1) {
-			if (dup2(fd, fileno(stdout)) == -1) {
-				perror("cannot redirect stdout to log_file");
-				has_err = -1;
-			}
-		} else {
-			close(fileno(stdout));
+	if (mode == 3 && file == NULL) {
+		close(fileno(stdin));
+		close(fileno(stdout));
+		close(fileno(stderr));
+		return 0;
+	}
+
+	if (fd != -1 && mode & 0x01) {
+		if (dup2(fd, fileno(stdout)) == -1) {
+			perror("cannot redirect stdout to log_file");
+			has_err = -1;
 		}
 	}
 
-	if (mode & 0x02) {
-		if (fd != -1) {
-			if (dup2(fd, fileno(stderr)) == -1) {
-				perror("cannot redirect stderr to log_file");
-				has_err = -1;
-			}
-		} else {
-			close(fileno(stderr));
+	if (fd != -1 && mode & 0x02) {
+		if (dup2(fd, fileno(stderr)) == -1) {
+			perror("cannot redirect stderr to log_file");
+			has_err = -1;
 		}
 	}
 
