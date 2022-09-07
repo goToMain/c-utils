@@ -15,11 +15,12 @@ else
 Q    :=
 endif
 
+.PHONY: all
 all: $(O)/libutils.a
 	@echo > /dev/null
 
 $(O)/libutils.a: $(OBJ)
-	@echo "  AR $@"
+	@echo "  AR $(@F)"
 	$(Q)$(AR) -qc $@ $^
 
 $(O)/src/%.o: src/%.c
