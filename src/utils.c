@@ -10,7 +10,6 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <sys/time.h>
-#include <execinfo.h>
 
 #include <utils/utils.h>
 
@@ -107,7 +106,10 @@ int64_t millis_since(int64_t last)
 	return millis_now() - last;
 }
 
-void dump_trace(void) {
+#if defined(__linux__) || defined(__APPLE__)
+#include <execinfo.h>
+void dump_trace(void)
+{
 	char **strings;
 	size_t i, size;
 	void *array[1024];
@@ -120,3 +122,9 @@ void dump_trace(void) {
 	puts("");
 	free(strings);
 }
+#else
+void dump_trace(void)
+{
+	puts("Stack trace unavailable!\n");
+}
+#endif
