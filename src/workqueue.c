@@ -193,5 +193,5 @@ bool workqueue_work_is_complete(workqueue_t *wq, work_t *work)
 {
 	ARG_UNUSED(wq);
 
-	return work->status == WQ_WORK_COMPLETE;
+	return READ_ONCE(work->status) == WQ_WORK_COMPLETE;
 }
