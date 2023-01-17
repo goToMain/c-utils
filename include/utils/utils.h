@@ -39,6 +39,7 @@
 
 #define STR(x) #x
 #define XSTR(x) STR(x)
+#define STRINGIFY(x) #x
 
 #define ROUND_UP(x, y) ((x + y - 1) & ~ (y - 1))
 
