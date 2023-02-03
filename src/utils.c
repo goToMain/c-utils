@@ -106,7 +106,7 @@ int64_t millis_since(int64_t last)
 	return millis_now() - last;
 }
 
-#if defined(__linux__) || defined(__APPLE__)
+#if (defined(__linux__) || defined(__APPLE__)) && defined(__GLIBC__)
 #include <execinfo.h>
 void dump_trace(void)
 {
