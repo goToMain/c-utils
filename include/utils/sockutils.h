@@ -7,7 +7,17 @@
 #ifndef _UTILS_SOCKUTILS_H_
 #define _UTILS_SOCKUTILS_H_
 
-int unix_socket_listen(const char *path, int max_clients);
-int unix_socket_connect(const char *path);
+// Provide macros to old function names so as to not break existing
+// users. TODO: remove it in next release.
+#define unix_socket_listen sock_unix_listen
+#define unix_socket_connect sock_unix_connect
+
+int sock_unix_listen(const char *path, int max_clients);
+int sock_unix_connect(const char *path);
+
+int sock_stream_connect(const char *host, int port);
+int sock_stream_listen(int port, int nr_clients);
+int sock_wait(int listening_socket_fd);
+int sock_shutdown(int listening_socket_fd);
 
 #endif /* _UTILS_SOCKUTILS_H_ */

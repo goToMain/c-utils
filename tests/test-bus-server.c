@@ -50,7 +50,7 @@ int test_bus_server()
 	int fd[NUM_CLIENTS];
 
 	for (i = 0; i < NUM_CLIENTS; i++) {
-		fd[i] = unix_socket_connect(TEST_SERVER_PATH);
+		fd[i] = sock_unix_connect(TEST_SERVER_PATH);
 		if (fd[i] < 0) {
 			mod_printf("connect %d failed!", i);
 			return -1;

@@ -354,7 +354,7 @@ int channel_unix_bus_setup(void **data, struct channel *c)
 			goto error;
 	}
 
-	rc = unix_socket_connect(c->device);
+	rc = sock_unix_connect(c->device);
 	if (rc < 0)
 		goto error;
 

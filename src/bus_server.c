@@ -144,9 +144,9 @@ int bus_server_start(bus_server_t *s, int max_clients, const char *path)
 		return -1;
 	}
 
-	rc = unix_socket_listen(path, max_clients);
+	rc = sock_unix_listen(path, max_clients);
 	if (rc < 0) {
-		perror("unix_socket_listen failed");
+		perror("sock_unix_listen failed");
 		return -1;
 	}
 	s->fd = rc;
