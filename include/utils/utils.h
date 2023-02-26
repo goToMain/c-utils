@@ -9,6 +9,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 #ifndef NULL
 #define NULL                           ((void *)0)
@@ -167,6 +168,25 @@ int64_t millis_now();
  */
 int64_t millis_since(int64_t last);
 
+/**
+ * @brief Print the stack trace
+ */
 void dump_trace(void);
+
+static inline bool char_is_space(int c)
+{
+	unsigned char d = c - 9;
+	return (0x80001FU >> (d & 31)) & (1U >> (d >> 5));
+}
+
+static inline bool char_is_digit(int c)
+{
+	return (unsigned int)(('0' - 1 - c) & (c - ('9' + 1))) >> (sizeof(c) * 8 - 1);
+}
+
+static inline bool char_is_alpha(int c)
+{
+	return (unsigned int)(('a' - 1 - (c | 32)) & ((c | 32) - ('z' + 1))) >> (sizeof(c) * 8 - 1);
+}
 
 #endif /* _UTILS_UTILS_H_ */
