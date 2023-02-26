@@ -64,7 +64,7 @@ int sock_unix_connect(const char *path)
 
 int sock_stream_connect(const char *host, int port)
 {
-	int valread, fd;
+	int fd;
 	struct sockaddr_in addr = {
 		.sin_family = AF_INET,
 		.sin_port = htons(port)

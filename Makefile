@@ -5,8 +5,9 @@
 #
 
 O       ?= .
+NAME    ?= utils
 SRC     := $(wildcard src/*.c)
-OBJ     := $(SRC:src/%.c=$(O)/src/%.o)
+OBJ     := $(SRC:src/%.c=$(O)/$(NAME)/%.o)
 CCFLAGS ?= -Wall -Wextra -O3
 
 ifeq ($(V),)
@@ -16,18 +17,18 @@ Q    :=
 endif
 
 .PHONY: all
-all: $(O)/libutils.a
+all: $(O)/lib$(NAME).a
 	@echo > /dev/null
 
-$(O)/libutils.a: $(OBJ)
+$(O)/lib$(NAME).a: $(OBJ)
 	@echo "  AR $(@F)"
 	$(Q)$(AR) -qc $@ $^
 
-$(O)/src/%.o: src/%.c
+$(O)/$(NAME)/%.o: src/%.c
 	@echo "  CC $<"
 	@mkdir -p $(@D)
 	$(Q)$(CC) -c $< $(CCFLAGS) -Iinclude/ -o $@
 
 .PHONY: clean
 clean:
-	$(Q)rm -f $(OBJ) $(O)/libutils.a
+	$(Q)rm -f $(OBJ) $(O)/lib$(NAME).a
