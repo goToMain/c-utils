@@ -117,11 +117,11 @@
 #define __weak          __attribute__((weak))
 
 /**
- * @brief Return random number between `min` and `max` both inclusive.
+ * @brief Return random number between 0 and `limit` both inclusive.
  *
  * Note: the random number generator must be pre-seeded.
  */
-int randint(int min, int max);
+int randint(int limit);
 
 /**
  * @brief Rounds up 32-bit v to nearest power of 2. If v is already a power

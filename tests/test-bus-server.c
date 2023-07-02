@@ -20,7 +20,7 @@ int bus_write_check(int *fd)
 	char buf[128];
 	int i, write_fd;
 
-	write_fd = randint(0, NUM_CLIENTS - 1);
+	write_fd = randint(NUM_CLIENTS - 1);
 	ret = write(fd[write_fd], TEST_MSG, TEST_MSG_LEN);
 	if (ret != TEST_MSG_LEN) {
 		mod_printf("write %d failed!", write_fd);

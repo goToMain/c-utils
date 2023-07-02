@@ -13,9 +13,15 @@
 
 #include <utils/utils.h>
 
-int randint(int min, int max)
+int randint(int limit)
 {
-	return (rand() % (max - min + 1)) + min;
+	int r;
+	int divisor = RAND_MAX / (limit + 1);
+
+	do {
+		r = rand() / divisor;
+	} while (r > limit);
+	return r;
 }
 
 uint32_t round_up_pow2(uint32_t v)
