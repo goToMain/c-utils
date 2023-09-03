@@ -21,12 +21,10 @@
 #include <utils/channel.h>
 #include <utils/fdutils.h>
 
-#if defined(__GLIBC__) || defined(__APPLE__)
 struct msgbuf {
 	long mtype;		/* message type, must be > 0 */
 	uint8_t mtext[512];	/* message data */
 };
-#endif
 
 struct channel_msgq_s {
 	int send_id;
