@@ -32,6 +32,7 @@ logger_t default_logger = {
 	.name = "GLOBAL",
 	.puts = puts,
 	.root_path = NULL,
+	.cb = NULL,
 };
 
 static const char *log_level_colors[LOG_MAX_LEVEL] = {
@@ -101,16 +102,19 @@ int __logger_log(logger_t *ctx, int log_level, const char *file, unsigned long l
 	if (!ctx)
 		ctx = &default_logger;
 
-	if (log_level < LOG_EMERG ||
-	    log_level >= LOG_MAX_LEVEL ||
-	    log_level > ctx->log_level)
-		return 0;
-
-	/* print module and log_level prefix */
-	len = snprintf(buf, LOG_BUF_LEN, "%s: [%s] [%s] %s:%lu: ", ctx->name, get_tstamp(),
-		       log_level_names[log_level], get_rel_path(ctx, file), line);
-	if (len > LOG_BUF_LEN)
-		goto out;
+	if (!ctx->cb) {
+		if (log_level < LOG_EMERG ||
+		    log_level >= LOG_MAX_LEVEL ||
+		    log_level > ctx->log_level)
+			return 0;
+		/* print module and log_level prefix */
+		len = snprintf(buf, LOG_BUF_LEN, "%s: [%s] [%s] %s:%lu: ",
+			       ctx->name, get_tstamp(),
+			       log_level_names[log_level],
+			       get_rel_path(ctx, file), line);
+		if (len > LOG_BUF_LEN)
+			goto out;
+	}
 
 	/* Print the actual message */
 	va_start(args, fmt);
@@ -128,14 +132,16 @@ out:
 		buf[len++] = '\n';
 	buf[len] = '\0';
 
-	logger_log_set_color(ctx, log_level_colors[log_level]);
-
-	if (ctx->file)
-		fputs(buf, ctx->file);
-	else
-		ctx->puts(buf);
-
-	logger_log_set_color(ctx, RESET);
+	if (ctx->cb) {
+		ctx->cb(log_level, get_rel_path(ctx, file), line, buf);
+	} else {
+		logger_log_set_color(ctx, log_level_colors[log_level]);
+		if (ctx->file)
+			fputs(buf, ctx->file);
+		else
+			ctx->puts(buf);
+		logger_log_set_color(ctx, RESET);
+	}
 
 	return len;
 }
@@ -175,9 +181,9 @@ void logger_set_name(logger_t *ctx, const char *name)
 
 int logger_init(logger_t *ctx, int log_level, const char *name,
 		const char *root_path, log_puts_fn_t puts_fn, FILE *file,
-		int flags)
+		log_callback_fn_t cb, int flags)
 {
-	if (!puts_fn && !file)
+	if (!puts_fn && !file && !cb)
 		return -1;
 
 	ctx->log_level = log_level;
@@ -185,6 +191,9 @@ int logger_init(logger_t *ctx, int log_level, const char *name,
 	ctx->puts = puts_fn;
 	ctx->file = file;
 	ctx->flags = flags;
+	ctx->cb = cb;
+	if (ctx->file || ctx->cb)
+		ctx->flags |= LOGGER_FLAG_NO_COLORS;
 	logger_set_name(ctx, name);
 	return 0;
 }

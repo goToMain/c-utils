@@ -22,6 +22,17 @@
  */
 typedef int (*log_puts_fn_t)(const char *buf);
 
+/**
+ * @brief A callback function to be used with external loggers
+ *
+ * @param log_level A syslog style log level. See `enum log_levels`
+ * @param file Relative path to file which produced the log message
+ * @param line Line number in `file` which produced the log message
+ * @param msg The log message
+ */
+typedef void (*log_callback_fn_t)(int log_level, const char *file,
+				 unsigned long line, const char *msg);
+
 typedef struct {
 	char name[LOGGER_NAME_MAXLEN];
 	const char *root_path;
@@ -29,6 +40,7 @@ typedef struct {
 	uint32_t flags;
 	FILE *file;
 	log_puts_fn_t puts;
+	log_callback_fn_t cb;
 } logger_t;
 
 enum log_levels {
@@ -52,7 +64,7 @@ int __logger_log(logger_t *ctx, int log_level, const char *file,
 
 int logger_init(logger_t *ctx, int log_level, const char *name,
 		const char *root_path, log_puts_fn_t puts_fn, FILE *file,
-		int flags);
+		log_callback_fn_t cb, int flags);
 void logger_get_default(logger_t *ctx);
 void logger_set_default(logger_t *logger);
 void logger_set_log_level(logger_t *ctx, int log_level);
