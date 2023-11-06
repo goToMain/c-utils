@@ -28,7 +28,9 @@
 #define BYTE_2(x)                      (uint8_t)(((x) >> 16) & 0xFF)
 #define BYTE_3(x)                      (uint8_t)(((x) >> 24) & 0xFF)
 
+#ifndef BIT
 #define BIT(n)                         (1ull << (n))
+#endif
 #define MASK(n)                        (BIT((n) + 1) - 1)
 #define BIT_IS_SET(m, n)               (bool)((m) & BIT(n))
 #define BIT_SET(m, n)                  ((m) |=  BIT(n))
