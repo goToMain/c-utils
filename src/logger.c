@@ -3,9 +3,6 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-
-#define _GNU_SOURCE		/* See feature_test_macros(7) */
-
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -69,7 +66,7 @@ static const char *get_rel_path(logger_t *ctx, const char *abs_path)
 
 	p = ctx->root_path;
 	q = abs_path;
-	while (*p != '\0' && *q != '\0' && *p == *p) {
+	while (*p != '\0' && *q != '\0' && *p == *q) {
 		p++;
 		q++;
 	}
