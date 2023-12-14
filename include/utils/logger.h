@@ -11,6 +11,10 @@
 #include <stdio.h>
 #include <utils/utils.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define LOGGER_NAME_MAXLEN 16
 
 /**
@@ -84,5 +88,9 @@ void logger_set_name(logger_t *ctx, const char *name);
 #endif
 
 #define LOG_PRINT(...) __logger_log(NULL, LOG_INFO,   __FILE__, __LINE__, __VA_ARGS__)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _LOGGER_H_ */

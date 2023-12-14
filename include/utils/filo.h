@@ -10,6 +10,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
     void *buffer;
     size_t top;
@@ -178,5 +182,9 @@ filo_t *filo_alloc(size_t elem_size, size_t max_size);
 void filo_free(filo_t *pfilo);
 
 
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _UTILS_FILO_H_ */

@@ -10,6 +10,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct hash_map_item_s hash_map_item_t;
 typedef uint32_t hash_t;
 
@@ -49,5 +53,9 @@ int hash_map_it_next(hash_map_iterator_t *it, char **key, void **val);
 		hash_map_iterator_t it;                                       \
 		hash_map_it_init(&it, map);                                   \
 		while (hash_map_it_next(&it, key_ref, (void **)val_ref) == 0)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _HASHMAP_H_ */

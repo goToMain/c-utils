@@ -13,6 +13,10 @@
 
 #include <utils/utils.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
 	uint8_t *blob;
 	size_t size;
@@ -48,5 +52,9 @@ int slab_alloc(slab_t *slab, void **block);
  * @return  0 on success
  */
 int slab_free(slab_t *slab, void *block);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _UTILS_SLAB_H_ */

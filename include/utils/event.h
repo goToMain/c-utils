@@ -9,6 +9,10 @@
 #ifndef _UTILS_EVENTS_H_
 #define _UTILS_EVENTS_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
 	int rfd;
 	int wfd;
@@ -20,5 +24,9 @@ void event_cleanup(event_t *e);
 
 bool event_set(event_t *e);
 bool event_is_set(event_t *e);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _UTILS_EVENTS_H_ */

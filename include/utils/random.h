@@ -11,6 +11,10 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @brief Get the secure random bytes from the systems
  *
@@ -19,5 +23,9 @@
  * @return true if successful, false otherwise.
  */
 bool get_random_bytes(uint8_t *out, size_t len);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

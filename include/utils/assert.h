@@ -10,6 +10,10 @@
 #include <stdio.h>
 #include <utils/utils.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define __ASSERT_PRINT(fmt, ...) printf(fmt, ##__VA_ARGS__)
 
 #define __ASSERT_LOC(test) \
@@ -28,5 +32,9 @@
 			exit(EXIT_FAILURE); \
                 }                                                         \
         } while (0)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _UTILS_ERROR_H_ */

@@ -10,6 +10,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define STRING_ALLOCATED      0x00000001
 
 typedef struct {
@@ -95,5 +99,9 @@ int string_merge(string_t *primary, string_t *secondary);
 	} while(0)
 #define str_const_copy(s, str)		string_copy(s, "c", str, strlen(s))
 #define str_const_append(s, str)	string_copy(s, "a", str, strlen(str))
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _UTIL_STRLIB_H_ */

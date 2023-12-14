@@ -9,6 +9,10 @@
 
 #include <utils/hashmap.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum channel_errors {
 	CHANNEL_ERR_NONE,
 	CHANNEL_ERR_ALREADY_OPEN,
@@ -85,5 +89,9 @@ int channel_get(struct channel_manager *ctx, const char *device,
 int channel_close(struct channel_manager *ctx, const char *device);
 
 void channel_manager_teardown(struct channel_manager *ctx);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _CHANNEL_H_ */

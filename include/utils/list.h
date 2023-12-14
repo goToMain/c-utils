@@ -10,6 +10,10 @@
 
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct node_s node_t;
 
 struct node_s {
@@ -60,5 +64,9 @@ int slist_popleft(slist_t *list, snode_t **node);
 
 int slist_remove_node(slist_t *list, snode_t *node);
 void slist_insert_node(slist_t *list, snode_t *after, snode_t *new);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _UTILS_LIST_H_ */

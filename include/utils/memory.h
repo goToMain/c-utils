@@ -9,6 +9,10 @@
 
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @brief Check p to be not NULL before calling safe_free()
  *
@@ -27,5 +31,9 @@ void *safe_calloc(size_t count, size_t size);
 void *safe_realloc(void *data, size_t size);
 void *safe_strdup(const char *s);
 void *safe_realloc_zero(void *data, size_t old_size, size_t new_size);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _UTILS_MEMORY_H_ */

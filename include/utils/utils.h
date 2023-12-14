@@ -11,6 +11,10 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef NULL
 #define NULL                           ((void *)0)
 #endif
@@ -214,5 +218,9 @@ inline uint32_t u32_bit_reverse(uint32_t x)
 	x = (((x & 0xff00ff00) >> 8) | ((x & 0x00ff00ff) << 8));
 	return ((x >> 16) | (x << 16));
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _UTILS_UTILS_H_ */

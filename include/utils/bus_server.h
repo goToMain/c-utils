@@ -10,6 +10,10 @@
 #include <pthread.h>
 #include <utils/workqueue.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
 	int fd;
 	int max_clients;
@@ -21,5 +25,9 @@ typedef struct {
 
 int bus_server_start(bus_server_t *s, int max_clients, const char *path);
 void bus_server_stop(bus_server_t *s);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _UTILS_BUS_SERVER_H_ */
