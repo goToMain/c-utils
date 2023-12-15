@@ -10,6 +10,10 @@
 
 #include <utils/list.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define queue_node_t node_t
 
 typedef struct {
@@ -21,5 +25,9 @@ void queue_enqueue(queue_t *queue, queue_node_t *node);
 int queue_dequeue(queue_t *queue, queue_node_t **node);
 int queue_peek_last(queue_t *queue, queue_node_t **node);
 int queue_peek_first(queue_t *queue, queue_node_t **node);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _UTILS_QUEUE_H_ */

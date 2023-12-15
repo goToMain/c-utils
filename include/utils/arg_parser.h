@@ -9,6 +9,10 @@
 
 #include <stdlib.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define AP_HELP_SPACING		25
 
 #define AP_OPT_NOFLAG		0x00000000
@@ -55,5 +59,9 @@ struct ap_option {
 void ap_init(const char *app_name, const char *app_desc);
 int ap_parse(int argc, char *argv[], struct ap_option *ap_opts, void *data);
 void ap_print_help(struct ap_option *ap_opts, int exit_code);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _UTIL_ARG_PARSER_H_ */

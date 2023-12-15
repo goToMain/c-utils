@@ -11,6 +11,10 @@
 #include <utils/event.h>
 #include <utils/queue.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef int (*work_fn_t) (void *);
 typedef void (*work_complete_fn_t) (void *work);
 
@@ -108,5 +112,9 @@ void workqueue_cancel_work(workqueue_t *wq, work_t *work);
  * @return true if work is complete
  */
 bool workqueue_work_is_complete(workqueue_t *wq, work_t *work);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _UTILS_WORKQUEUE_H_ */

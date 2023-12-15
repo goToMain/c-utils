@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #if !defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__)
 #  if (defined(__BYTE_ORDER__)  && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__) || \
      (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN) || \
@@ -99,6 +103,10 @@
 #define sys_be64_to_cpu(val) (val)
 #define sys_cpu_to_be64(val) (val)
 
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif /* __BYTEORDER_H_ */

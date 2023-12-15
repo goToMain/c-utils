@@ -9,6 +9,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** --- Internal methods and structures. DON'T USE --------------------------- */
 typedef struct {
 	void * const buffer;
@@ -116,5 +120,9 @@ int __circbuf_free_space(circbuf_t *circbuf);
  *   0..N - number of slots available.
  */
 #define CIRCBUF_FS(buf)                     __circbuf_free_space(&buf)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _UTIL_CIRCBUF_H_ */

@@ -7,6 +7,10 @@
 #ifndef _UTIL_PROCUTILS_H_
 #define _UTIL_PROCUTILS_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * read_pid() - Reads PID from `file`. The file's content must just be
  * be PID number, as written by a call to write_pid(). On success, copies
@@ -90,5 +94,9 @@ unsigned any_pid_of(const char* exe_name);
  */
 char *parse_proc_cmdline(unsigned pid, int pos);
 
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _UTIL_PROCUTILS_H_ */

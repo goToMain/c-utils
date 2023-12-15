@@ -11,6 +11,10 @@
 #include <string.h>
 #include <stdbool.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * atohstr() - Converts an array of bytes to its hexadecimal string
  * representation.
@@ -153,5 +157,9 @@ size_t str_sep_count(const char *str, const char *sep);
  */
 void to_upper(char *s);
 void to_lower(char *s);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _UTIL_STRUTIL_H_ */
