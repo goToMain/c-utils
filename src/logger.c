@@ -86,7 +86,17 @@ static const char *get_tstamp()
 	return time_buf;
 }
 
-#define LOG_BUF_LEN 128
+static int terminate_log_line(char *buf, int len)
+{
+	while (len && buf[--len] == '\0');
+
+	if (buf[len] != '\n')
+		buf[++len] = '\n';
+	buf[++len] = '\0';
+	return len;
+}
+
+#define LOG_BUF_LEN 192
 
 __attribute__((format(printf, 5, 6)))
 int __logger_log(logger_t *ctx, int log_level, const char *file, unsigned long line,
@@ -94,7 +104,7 @@ int __logger_log(logger_t *ctx, int log_level, const char *file, unsigned long l
 {
 	int len = 0;
 	va_list args;
-	char buf[LOG_BUF_LEN + 2]; /* +2 for tailing '\n' and '\0' */
+	char buf[LOG_BUF_LEN + 2] = {0}; /* +2 for tailing '\n' and '\0' */
 
 	if (!ctx)
 		ctx = &default_logger;
@@ -125,9 +135,7 @@ out:
 		len = LOG_BUF_LEN;
 
 	/* If the log line doesn't already end with a new line, add it */
-	if(buf[len - 1] != '\n')
-		buf[len++] = '\n';
-	buf[len] = '\0';
+	len = terminate_log_line(buf, len);
 
 	if (ctx->cb) {
 		ctx->cb(log_level, get_rel_path(ctx, file), line, buf);
