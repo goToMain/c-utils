@@ -45,8 +45,7 @@ int read_binary_file(const char *path, uint8_t **buf, size_t *size)
 	}
 	*size = file_size(fp);
 	*buf = safe_malloc(*size);
-	fread(*buf, *size, 1, fp);
-	if (ferror(fp)) {
+	if (fread(*buf, *size, 1, fp) != 1 || ferror(fp)) {
 		perror("read failed!");
 		rc = -1;
 	}
@@ -134,14 +133,14 @@ char *path_join(const char *p1, const char *p2)
 	p2_len = strlen(p2);
 	path = safe_malloc(sizeof(char) * (p1_len + p2_len + 2));
 	if (p1) {
-		strncpy(path, p1, p1_len);
+		memcpy(path, p1, p1_len);
 	}
 	if (p1_len && path[p1_len - 1] != PATH_SEP) {
 		path[p1_len] = PATH_SEP;
-		strncpy(path + p1_len + 1, p2, p2_len);
+		memcpy(path + p1_len + 1, p2, p2_len);
 		path[p1_len + 1 + p2_len] = '\0';
 	} else {
-		strncpy(path + p1_len, p2, p2_len);
+		memcpy(path + p1_len, p2, p2_len);
 		path[p1_len + p2_len] = '\0';
 	}
 	return path;
