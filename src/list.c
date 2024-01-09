@@ -160,21 +160,21 @@ int list_remove_nodes(list_t *list, node_t *start, node_t *end)
 	return 0;
 }
 
-void list_insert_node(list_t *list, node_t *after, node_t *new)
+void list_insert_node(list_t *list, node_t *after, node_t *newNode)
 {
 	node_t *next;
 
 	if (after == NULL) {
 		/* insert at head */
 		next = list->head;
-		list->head = new;
+		list->head = newNode;
 	} else {
 		next = after->next;
-		after->next = new;
+		after->next = newNode;
 	}
-	new->prev = after;
-	new->next = next;
-	next->prev = new;
+  newNode->prev = after;
+  newNode->next = next;
+	next->prev = newNode;
 }
 
 int list_insert_nodes(list_t *list, node_t *after, node_t *start, node_t *end)
