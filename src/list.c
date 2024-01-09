@@ -288,15 +288,15 @@ int slist_remove_node(slist_t *list, snode_t *node)
 	return 0;
 }
 
-void slist_insert_node(slist_t *list, snode_t *after, snode_t *new)
+void slist_insert_node(slist_t *list, snode_t *after, snode_t *newNode)
 {
 	if (after == NULL) {
 		/* same as append left */
-		new->next = list->head;
-		list->head = new;
+		newNode->next = list->head;
+		list->head = newNode;
 	} else {
 		/* assert after in list here? */
-		new->next = after->next;
-		after->next = new;
+		newNode->next = after->next;
+		after->next = newNode;
 	}
 }

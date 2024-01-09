@@ -63,7 +63,7 @@ int slist_pop(slist_t *list, snode_t *after, snode_t **node);
 int slist_popleft(slist_t *list, snode_t **node);
 
 int slist_remove_node(slist_t *list, snode_t *node);
-void slist_insert_node(slist_t *list, snode_t *after, snode_t *new);
+void slist_insert_node(slist_t *list, snode_t *after, snode_t *newNode);
 
 #ifdef __cplusplus
 }
