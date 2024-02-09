@@ -13,7 +13,7 @@
 struct slab_unit {
 	uint32_t leased;
 	uint32_t canary;
-	uint8_t data[0];
+	uint8_t data[];
 } __packed;
 
 int slab_init(slab_t *slab, size_t slab_size,
