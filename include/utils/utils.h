@@ -169,6 +169,11 @@ int64_t usec_since(int64_t last);
 int64_t millis_now();
 
 /**
+ * @brief Get time in seconds and micro_seconds
+ */
+void get_time(uint32_t *seconds, uint32_t *micro_seconds);
+
+/**
  * @brief Get time elapsed in milli seconds since `last`. Used along with
  * millis_now().
  */

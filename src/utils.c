@@ -97,6 +97,15 @@ int64_t usec_now()
 	return usec;
 }
 
+void get_time(uint32_t *seconds, uint32_t *micro_seconds)
+{
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+	*seconds = tv.tv_sec;
+	*micro_seconds = tv.tv_usec;
+}
+
 int64_t usec_since(int64_t last)
 {
 	return usec_now() - last;
