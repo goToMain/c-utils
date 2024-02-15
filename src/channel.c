@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021 Siddharth Chandrasekaran <sidcha.dev@gmail.com>
+ * Copyright (c) 2019-2024 Siddharth Chandrasekaran <sidcha.dev@gmail.com>
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -21,7 +21,7 @@
 #include <utils/channel.h>
 #include <utils/fdutils.h>
 
-struct msgbuf {
+struct channel_msgbuf {
 	long mtype;		/* message type, must be > 0 */
 	uint8_t mtext[512];	/* message data */
 };
@@ -34,7 +34,7 @@ struct channel_msgq_s {
 	int recv_msgid;
 };
 
-struct msgbuf send_buf, recv_buf;
+struct channel_msgbuf send_buf, recv_buf;
 
 int channel_msgq_send(void *data, uint8_t *buf, int len)
 {

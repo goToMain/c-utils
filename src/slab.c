@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Siddharth Chandrasekaran <sidcha.dev@gmail.com>
+ * Copyright (c) 2020-2024 Siddharth Chandrasekaran <sidcha.dev@gmail.com>
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -13,7 +13,7 @@
 struct slab_unit {
 	uint32_t leased;
 	uint32_t canary;
-	uint8_t data[0];
+	uint8_t data[];
 } __packed;
 
 int slab_init(slab_t *slab, size_t slab_size,
