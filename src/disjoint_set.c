@@ -49,8 +49,12 @@ void disjoint_set_union(struct disjoint_set *set, int a, int b)
 	if (a == b)
 		return;
 
-	if (set->rank[a] < set->rank[b])
-		SWAP(a, b);
+	if (set->rank[a] < set->rank[b]) {
+		int tmp;
+		tmp = a;
+		a = b;
+		b = tmp;
+	}
 
 	set->parent[b] = a;
 	if (set->rank[a] == set->rank[b])

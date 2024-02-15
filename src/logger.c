@@ -6,10 +6,12 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 #include <assert.h>
 #include <time.h>
+#if (!defined(_WIN32) && !defined(_WIN64))
+#include <unistd.h>
+#endif
 
 #include <utils/logger.h>
 
@@ -98,7 +100,7 @@ static int terminate_log_line(char *buf, int len)
 
 #define LOG_BUF_LEN 192
 
-__attribute__((format(printf, 5, 6)))
+__format_printf(5, 6)
 int __logger_log(logger_t *ctx, int log_level, const char *file, unsigned long line,
 		 const char *fmt, ...)
 {

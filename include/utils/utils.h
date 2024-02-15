@@ -119,8 +119,22 @@ extern "C" {
 #define __packed        __attribute__((__packed__))
 #endif
 
+#ifdef __GNUC__
+#define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
+#endif
+
+#ifdef _MSC_VER
+#define PACK( __Declaration__ ) __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop))
+#endif
+
 #undef __weak
 #define __weak          __attribute__((weak))
+
+#if (defined(_WIN32) || defined(_WIN64))
+#define __format_printf(x, y)
+#else
+#define __format_printf(x, y) __attribute__((format(printf, x, y)))
+#endif
 
 /**
  * @brief Return random number between 0 and `limit` both inclusive.
@@ -193,7 +207,7 @@ void dump_trace(void);
 
 static inline bool char_is_space(int c)
 {
-	unsigned char d = c - 9;
+	unsigned char d = (unsigned char)(c - 9);
 	return (0x80001FU >> (d & 31)) & (1U >> (d >> 5));
 }
 
