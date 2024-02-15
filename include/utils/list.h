@@ -39,7 +39,7 @@ int list_popleft(list_t *list, node_t **node);
 
 void list_remove_node(list_t *list, node_t *node);
 int list_remove_nodes(list_t *list, node_t *start, node_t *end);
-void list_insert_node(list_t *list, node_t *after, node_t *new);
+void list_insert_node(list_t *list, node_t *after, node_t *newNode);
 int list_insert_nodes(list_t *list, node_t *after, node_t *start, node_t *end);
 
 /*--- singly-linked list ---*/
@@ -63,7 +63,7 @@ int slist_pop(slist_t *list, snode_t *after, snode_t **node);
 int slist_popleft(slist_t *list, snode_t **node);
 
 int slist_remove_node(slist_t *list, snode_t *node);
-void slist_insert_node(slist_t *list, snode_t *after, snode_t *new);
+void slist_insert_node(slist_t *list, snode_t *after, snode_t *newNode);
 
 #ifdef __cplusplus
 }

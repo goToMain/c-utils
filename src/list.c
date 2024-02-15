@@ -160,21 +160,21 @@ int list_remove_nodes(list_t *list, node_t *start, node_t *end)
 	return 0;
 }
 
-void list_insert_node(list_t *list, node_t *after, node_t *new)
+void list_insert_node(list_t *list, node_t *after, node_t *newNode)
 {
 	node_t *next;
 
 	if (after == NULL) {
 		/* insert at head */
 		next = list->head;
-		list->head = new;
+		list->head = newNode;
 	} else {
 		next = after->next;
-		after->next = new;
+		after->next = newNode;
 	}
-	new->prev = after;
-	new->next = next;
-	next->prev = new;
+  newNode->prev = after;
+  newNode->next = next;
+	next->prev = newNode;
 }
 
 int list_insert_nodes(list_t *list, node_t *after, node_t *start, node_t *end)
@@ -288,15 +288,15 @@ int slist_remove_node(slist_t *list, snode_t *node)
 	return 0;
 }
 
-void slist_insert_node(slist_t *list, snode_t *after, snode_t *new)
+void slist_insert_node(slist_t *list, snode_t *after, snode_t *newNode)
 {
 	if (after == NULL) {
 		/* same as append left */
-		new->next = list->head;
-		list->head = new;
+		newNode->next = list->head;
+		list->head = newNode;
 	} else {
 		/* assert after in list here? */
-		new->next = after->next;
-		after->next = new;
+		newNode->next = after->next;
+		after->next = newNode;
 	}
 }
