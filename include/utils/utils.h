@@ -174,6 +174,13 @@ int64_t millis_now();
 void get_time(uint32_t *seconds, uint32_t *micro_seconds);
 
 /**
+ * @brief Addd an ISO 8601 datetime string to `buf` for upto `size` bytes.
+ *
+ * Note: The format is YYYY-MM-DDThh:mm:ssZ, so size must alteast be 21.
+ */
+int add_iso8601_utc_datetime(char *buf, size_t size);
+
+/**
  * @brief Get time elapsed in milli seconds since `last`. Used along with
  * millis_now().
  */

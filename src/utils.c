@@ -9,6 +9,7 @@
 #include <stddef.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <time.h>
 #include <sys/time.h>
 
 #include <utils/utils.h>
@@ -104,6 +105,15 @@ void get_time(uint32_t *seconds, uint32_t *micro_seconds)
 	gettimeofday(&tv, NULL);
 	*seconds = tv.tv_sec;
 	*micro_seconds = tv.tv_usec;
+}
+
+int add_iso8601_utc_datetime(char *buf, size_t size)
+{
+	time_t now;
+
+	// Format: YYYY-MM-DDThh:mm:ssZ
+	time(&now);
+	return strftime(buf, size, "%Y-%m-%dT%H:%M:%SZ", gmtime(&now));
 }
 
 int64_t usec_since(int64_t last)
