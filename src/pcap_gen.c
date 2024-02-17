@@ -31,7 +31,7 @@ struct pcap_record_header {
 	uint32_t orig_len;
 } __packed;
 
-pcap_t *pcap_create(char *path, uint32_t max_packet_size, uint32_t link_type)
+pcap_t *pcap_start(char *path, uint32_t max_packet_size, uint32_t link_type)
 {
 	pcap_t *cap;
 	struct pcap_header header;
@@ -73,22 +73,19 @@ pcap_t *pcap_create(char *path, uint32_t max_packet_size, uint32_t link_type)
 
 static int pcap_flush(pcap_t *cap)
 {
-	int ret;
-
-	ret = fwrite(cap->cache, cap->offset, 1, cap->file);
-	if (!ret)
-		return -1;
-	fflush(cap->file);
-	cap->offset = 0;
-	return 0;
+	if (fwrite(cap->cache, cap->offset, 1, cap->file)) {
+		cap->offset = 0;
+		return fflush(cap->file);
+	}
+	return -1;
 }
 
-int pcap_add_record(pcap_t *cap, uint8_t *capture_data, uint32_t length)
+int pcap_add(pcap_t *cap, uint8_t *capture_data, uint32_t length)
 {
 	struct pcap_record_header header;
 	uint32_t sec, usec;
 
-	if (sizeof(header) + length > PCAP_CACHE_SIZE) {
+	if (cap->offset + sizeof(header) + length > PCAP_CACHE_SIZE) {
 		if (pcap_flush(cap))
 			return -1;
 	}
@@ -107,10 +104,14 @@ int pcap_add_record(pcap_t *cap, uint8_t *capture_data, uint32_t length)
 	return 0;
 }
 
-void pcap_dump(pcap_t *cap)
+int pcap_stop(pcap_t *cap)
 {
-	pcap_flush(cap);
-	fclose(cap->file);
+	int ret = 0;
+
+	ret = pcap_flush(cap);
+	if (ret == 0)
+		ret = fclose(cap->file);
 	free(cap->cache);
 	free(cap);
+	return ret;
 }
