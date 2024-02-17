@@ -18,6 +18,7 @@ typedef struct {
 	FILE *file;
 	size_t offset;
 	void *cache;
+	size_t num_packets;
 } pcap_t;
 
 pcap_t *pcap_start(char *path, uint32_t max_packet_size, uint32_t link_type);

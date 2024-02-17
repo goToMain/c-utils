@@ -55,6 +55,7 @@ pcap_t *pcap_start(char *path, uint32_t max_packet_size, uint32_t link_type)
 	header.link_type = link_type;
 
 	cap->offset = 0;
+	cap->num_packets = 0;
 	cap->file = fopen(path, "wb");
 	if(cap->file == NULL) {
 		free(cap->cache);
@@ -86,8 +87,9 @@ int pcap_add(pcap_t *cap, uint8_t *capture_data, uint32_t length)
 	uint32_t sec, usec;
 
 	if (cap->offset + sizeof(header) + length > PCAP_CACHE_SIZE) {
-		if (pcap_flush(cap))
+		if (pcap_flush(cap)) {
 			return -1;
+		}
 	}
 
 	get_time(&sec, &usec);
@@ -100,7 +102,7 @@ int pcap_add(pcap_t *cap, uint8_t *capture_data, uint32_t length)
 
 	memcpy((char *)cap->cache + cap->offset, capture_data, length);
 	cap->offset += length;
-
+	cap->num_packets++;
 	return 0;
 }
 
