@@ -14,7 +14,7 @@
 #define PCAP_VERSION_MINOR 4
 #define PCAP_CACHE_SIZE (1 << 12)
 
-struct pcap_header {
+PACK(struct pcap_header {
 	uint32_t magic_number;
 	uint16_t version_major;
 	uint16_t version_minor;
@@ -22,14 +22,14 @@ struct pcap_header {
 	int32_t  sigfigs;
 	uint32_t snap_len;
 	uint32_t link_type;
-} __packed;
+});
 
-struct pcap_record_header {
+PACK(struct pcap_record_header {
 	uint32_t ts_sec;
 	uint32_t ts_usec;
 	uint32_t incl_len;
 	uint32_t orig_len;
-} __packed;
+});
 
 pcap_t *pcap_start(char *path, uint32_t max_packet_size, uint32_t link_type)
 {
