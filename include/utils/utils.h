@@ -127,13 +127,16 @@ extern "C" {
 #define PACK( __Declaration__ ) __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop))
 #endif
 
-#undef __weak
-#define __weak          __attribute__((weak))
-
 #if (defined(_WIN32) || defined(_WIN64))
 #define __format_printf(x, y)
+#define __noreturn
+#define __weak
+#define __unreachable()
 #else
-#define __format_printf(x, y) __attribute__((format(printf, x, y)))
+#define __format_printf(x, y)   __attribute__((format(printf, x, y)))
+#define __noreturn              __attribute__((noreturn))
+#define __weak                  __attribute__((weak))
+#define __unreachable()         __builtin_unreachable()
 #endif
 
 /**
