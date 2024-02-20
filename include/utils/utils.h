@@ -127,6 +127,10 @@ extern "C" {
 #define PACK( __Declaration__ ) __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop))
 #endif
 
+#ifdef __weak
+#undef __weak
+#endif
+
 #if (defined(_WIN32) || defined(_WIN64))
 #define __format_printf(x, y)
 #define __noreturn
