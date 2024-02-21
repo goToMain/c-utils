@@ -136,11 +136,15 @@ extern "C" {
 #define __noreturn
 #define __weak
 #define __unreachable()
+#define likely(p) (p)
+#define unlikely(p) (p)
 #else
 #define __format_printf(x, y)   __attribute__((format(printf, x, y)))
 #define __noreturn              __attribute__((noreturn))
 #define __weak                  __attribute__((weak))
 #define __unreachable()         __builtin_unreachable()
+#define likely(p)               __builtin_expect(!!(p), 1)
+#define unlikely(p)             __builtin_expect(!!(p), 0)
 #endif
 
 /**
