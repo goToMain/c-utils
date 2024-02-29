@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-#define LOGGER_NAME_MAXLEN 16
+#define LOGGER_NAME_MAXLEN 32
 
 /**
  * @brief A printf() like method that will be used to write out log lines.
