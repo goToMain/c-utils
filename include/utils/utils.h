@@ -138,6 +138,8 @@ extern "C" {
 #define __unreachable()
 #define likely(p) (p)
 #define unlikely(p) (p)
+#define isatty	_isatty
+#define fileno _fileno
 #else
 #define __format_printf(x, y)   __attribute__((format(printf, x, y)))
 #define __noreturn              __attribute__((noreturn))

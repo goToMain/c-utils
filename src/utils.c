@@ -117,10 +117,38 @@ int gettimeofday(struct timeval * tp, struct timezone * tzp)
 	tp->tv_usec = (long) (system_time.wMilliseconds * 1000);
 	return 0;
 }
-#else
+
+int add_iso8601_utc_datetime(char* buf, size_t size)
+{
+	int r;
+	SYSTEMTIME utcTime;
+	GetSystemTime(&utcTime); // Get the current UTC time
+
+	// Format: YYYY-MM-DDThh:mm:ssZ
+	r = snprintf(buf, size, "%04d-%02d-%02dT%02d:%02d:%02dZ",
+		     utcTime.wYear, utcTime.wMonth, utcTime.wDay,
+		     utcTime.wHour, utcTime.wMinute, utcTime.wSecond);
+	return r;
+}
+
+#else /* WINDOWS */
+
 #include <sys/time.h>
 #include <time.h>
-#endif
+
+int add_iso8601_utc_datetime(char *buf, size_t size)
+{
+	time_t now;
+	struct tm timeinfo;
+
+	// Format: YYYY-MM-DDThh:mm:ssZ
+	time(&now);
+	gmtime_r(&now, &timeinfo);
+
+	return strftime(buf, size, "%Y-%m-%dT%H:%M:%SZ", &timeinfo);
+}
+
+#endif /* WINDOWS */
 
 int64_t usec_now()
 {
@@ -140,15 +168,6 @@ void get_time(uint32_t *seconds, uint32_t *micro_seconds)
 	gettimeofday(&tv, NULL);
 	*seconds = tv.tv_sec;
 	*micro_seconds = tv.tv_usec;
-}
-
-int add_iso8601_utc_datetime(char *buf, size_t size)
-{
-	time_t now;
-
-	// Format: YYYY-MM-DDThh:mm:ssZ
-	time(&now);
-	return strftime(buf, size, "%Y-%m-%dT%H:%M:%SZ", gmtime(&now));
 }
 
 int64_t usec_since(int64_t last)

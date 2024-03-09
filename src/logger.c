@@ -80,11 +80,7 @@ static const char *get_rel_path(logger_t *ctx, const char *abs_path)
 static const char *get_tstamp()
 {
 	static char time_buf[24];
-	struct tm gmt;
-	time_t now = time(NULL);
-
-	gmtime_r(&now, &gmt);
-	strftime(time_buf, sizeof(time_buf), "%Y-%m-%dT%H:%M:%S", &gmt);
+	add_iso8601_utc_datetime(time_buf, sizeof(time_buf));
 	return time_buf;
 }
 
