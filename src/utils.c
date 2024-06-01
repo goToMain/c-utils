@@ -131,7 +131,7 @@ int add_iso8601_utc_datetime(char* buf, size_t size)
 	return r;
 }
 
-#else /* WINDOWS */
+#elif defined(__linux__) || defined(__APPLE__)
 
 #include <sys/time.h>
 #include <time.h>
@@ -148,7 +148,11 @@ int add_iso8601_utc_datetime(char *buf, size_t size)
 	return strftime(buf, size, "%Y-%m-%dT%H:%M:%SZ", &timeinfo);
 }
 
-#endif /* WINDOWS */
+#else
+
+#error Platform test failed
+
+#endif
 
 int64_t usec_now()
 {
