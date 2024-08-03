@@ -3,6 +3,11 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
+
+/* To disable warnings about use of strncpy and suggestions to use the more
+ * secure variant strncpy_s in MSVC */
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,6 +19,14 @@
 #endif
 
 #include <utils/logger.h>
+
+#if (defined(_WIN32) || defined(_WIN64))
+/*
+ * For MSVC, we are expected use _write() and the type of len is unsigned int
+ * instead of size_t in unix.
+ */
+#define write(fd, data, len) _write((fd), (data), (unsigned int)(len))
+#endif
 
 #define RED   "\x1B[31m"
 #define GRN   "\x1B[32m"
@@ -46,7 +59,8 @@ static const char *log_level_names[LOG_MAX_LEVEL] = {
 
 static inline void logger_log_set_color(logger_t *ctx, const char *color)
 {
-	int ret, len;
+	int ret;
+	size_t len;
 
 	if (ctx->flags & LOGGER_FLAG_NO_COLORS)
 		return;
