@@ -135,7 +135,7 @@ extern "C" {
 #define __format_printf(x, y)
 #define __noreturn
 #define __weak
-#define __unreachable()
+#define __unreachable() __assume(0)
 #define likely(p) (p)
 #define unlikely(p) (p)
 #define isatty	_isatty
