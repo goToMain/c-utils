@@ -7,7 +7,7 @@
 O       ?= .
 NAME    ?= utils
 SRC     := $(wildcard src/*.c)
-OBJ     := $(SRC:src/%.c=$(O)/$(NAME)/%.o)
+OBJ     := $(SRC:%.c=%.o)
 CCFLAGS ?= -Wall -Wextra -O3
 
 ifeq ($(V),)
@@ -24,7 +24,7 @@ $(O)/lib$(NAME).a: $(OBJ)
 	@echo "  AR $(@F)"
 	$(Q)$(AR) -qc $@ $^
 
-$(O)/$(NAME)/%.o: src/%.c
+$(O)/src/%.o: src/%.c
 	@echo "  CC $<"
 	@mkdir -p $(@D)
 	$(Q)$(CC) -c $< $(CCFLAGS) -Iinclude/ -o $@
