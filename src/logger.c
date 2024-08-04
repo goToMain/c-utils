@@ -72,24 +72,6 @@ static inline void logger_log_set_color(logger_t *ctx, const char *color)
 	}
 }
 
-static const char *get_rel_path(logger_t *ctx, const char *abs_path)
-{
-	const char *p, *q;
-
-	if (!ctx->root_path || abs_path[0] != '/')
-		return abs_path;
-
-	p = ctx->root_path;
-	q = abs_path;
-	while (*p != '\0' && *q != '\0' && *p == *q) {
-		p++;
-		q++;
-	}
-	while (*q != '\0' && *q == '/')
-		q++;
-	return q;
-}
-
 static const char *get_tstamp()
 {
 	static char time_buf[24];
@@ -120,16 +102,16 @@ int __logger_log(logger_t *ctx, int log_level, const char *file, unsigned long l
 	if (!ctx)
 		ctx = &default_logger;
 
+	file = strrchr(file, PATH_SEPARATOR) + 1;
 	if (!ctx->cb) {
 		if (log_level < LOG_EMERG ||
 		    log_level >= LOG_MAX_LEVEL ||
 		    log_level > ctx->log_level)
 			return 0;
 		/* print module and log_level prefix */
-		len = snprintf(buf, LOG_BUF_LEN, "%s: [%s] [%s] %s:%lu: ",
-			       ctx->name, get_tstamp(),
-			       log_level_names[log_level],
-			       get_rel_path(ctx, file), line);
+		len = snprintf(buf, LOG_BUF_LEN, "%s: %s %11s:%-4lu [%s] ",
+			       ctx->name, get_tstamp(), file, line,
+			       log_level_names[log_level]);
 		if (len > LOG_BUF_LEN)
 			goto out;
 	}
@@ -149,7 +131,7 @@ out:
 	len = terminate_log_line(buf, len);
 
 	if (ctx->cb) {
-		ctx->cb(log_level, get_rel_path(ctx, file), line, buf);
+		ctx->cb(log_level, file, line, buf);
 	} else {
 		logger_log_set_color(ctx, log_level_colors[log_level]);
 		if (ctx->file)
