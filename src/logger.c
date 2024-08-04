@@ -25,7 +25,7 @@
  * For MSVC, we are expected use _write() and the type of len is unsigned int
  * instead of size_t in unix.
  */
-#define write(fd, data, len) _write((fd), (data), (unsigned int)(len))
+#define write(fd, data, len) (size_t)_write((fd), (data), (unsigned int)(len))
 #endif
 
 #define RED   "\x1B[31m"
@@ -59,8 +59,7 @@ static const char *log_level_names[LOG_MAX_LEVEL] = {
 
 static inline void logger_log_set_color(logger_t *ctx, const char *color)
 {
-	int ret;
-	size_t len;
+	size_t ret, len;
 
 	if (ctx->flags & LOGGER_FLAG_NO_COLORS)
 		return;
