@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-#define __ASSERT_PRINT(fmt, ...) printf(fmt, ##__VA_ARGS__)
+#define __ASSERT_PRINT(fmt, ...) __logger_log(NULL, LOG_EMERG,  __FILE__, __LINE__, fmt, ##__VA_ARGS__)
 
 #define __ASSERT_LOC(test) \
         __ASSERT_PRINT("ASSERTION FAIL [%s] @ %s:%d\n", \
