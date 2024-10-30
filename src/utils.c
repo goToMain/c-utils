@@ -148,12 +148,26 @@ int add_iso8601_utc_datetime(char *buf, size_t size)
 	return strftime(buf, size, "%Y-%m-%dT%H:%M:%SZ", &timeinfo);
 }
 
+#elif defined(NO_OS)
+
+int add_iso8601_utc_datetime(char *buf, size_t size)
+{
+	//TODO: Timestamp Generation
+	ARG_UNUSED(buf);
+	ARG_UNUSED(size);
+	return 0;
+}
+
+// Expect user to provide this function
+extern int64_t usec_now();
+
 #else
 
 #error Platform test failed
 
 #endif
 
+#if !defined(NO_OS)
 int64_t usec_now()
 {
 	int64_t usec;
@@ -173,6 +187,7 @@ void get_time(uint32_t *seconds, uint32_t *micro_seconds)
 	*seconds = tv.tv_sec;
 	*micro_seconds = tv.tv_usec;
 }
+#endif
 
 int64_t usec_since(int64_t last)
 {
@@ -204,6 +219,10 @@ void dump_trace(void)
 	}
 	puts("");
 	free(strings);
+}
+#elif defined(NO_OS)
+void dump_trace(void)
+{
 }
 #else
 void dump_trace(void)
