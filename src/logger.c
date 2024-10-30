@@ -42,7 +42,11 @@ logger_t default_logger = {
 	.flags = LOGGER_FLAG_NONE,
 	.log_level = LOG_INFO,
 	.name = "GLOBAL",
+#if defined(NO_OS)
+	.puts = NULL,
+#else
 	.puts = puts,
+#endif
 	.root_path = NULL,
 	.cb = NULL,
 };
@@ -59,6 +63,10 @@ static const char *log_level_names[LOG_MAX_LEVEL] = {
 
 static inline void logger_log_set_color(logger_t *ctx, const char *color)
 {
+#if defined(NO_OS)
+	ARG_UNUSED(ctx);
+	ARG_UNUSED(color);
+#else
 	size_t ret, len;
 
 	if (ctx->flags & LOGGER_FLAG_NO_COLORS)
@@ -70,6 +78,7 @@ static inline void logger_log_set_color(logger_t *ctx, const char *color)
 		assert(ret == len);
 		ARG_UNUSED(ret); /* squash warning in Release builds */
 	}
+#endif
 }
 
 static const char *get_tstamp()
@@ -134,10 +143,17 @@ out:
 		ctx->cb(log_level, file, line, buf);
 	} else {
 		logger_log_set_color(ctx, log_level_colors[log_level]);
+#if defined(NO_OS)
+		if (ctx->puts)
+			ctx->puts(buf);
+		else
+			return -1;
+#else
 		if (ctx->file)
 			fputs(buf, ctx->file);
 		else
 			ctx->puts(buf);
+#endif
 		logger_log_set_color(ctx, RESET);
 	}
 
