@@ -59,17 +59,18 @@ static const char *log_level_names[LOG_MAX_LEVEL] = {
 
 static inline void logger_log_set_color(logger_t *ctx, const char *color)
 {
+#if !defined(__BARE_METAL__)
 	size_t ret, len;
 
 	if (ctx->flags & LOGGER_FLAG_NO_COLORS)
 		return;
-
 	if (ctx->file && isatty(fileno(ctx->file))) {
 		len = strnlen(color, 8);
 		ret = write(fileno(ctx->file), color, len);
 		assert(ret == len);
 		ARG_UNUSED(ret); /* squash warning in Release builds */
 	}
+#endif
 }
 
 static const char *get_tstamp()

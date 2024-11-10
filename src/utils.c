@@ -148,6 +148,29 @@ int add_iso8601_utc_datetime(char *buf, size_t size)
 	return strftime(buf, size, "%Y-%m-%dT%H:%M:%SZ", &timeinfo);
 }
 
+#elif defined(__BARE_METAL__)
+
+struct timeval {
+	long tv_sec;  // seconds since epoch
+	long tv_usec; // microseconds
+};
+
+struct timezone {
+	int tz_minuteswest; // minutes west of UTC
+	int tz_dsttime;     // daylight saving time flag
+};
+
+int gettimeofday(struct timeval * tp, struct timezone * tzp)
+{
+	tp->tv_sec = 0;
+	tp->tv_usec = 0;
+	return 0;
+}
+
+int add_iso8601_utc_datetime(char* buf, size_t size) {
+	return 0;
+}
+
 #else
 
 #error Platform test failed
