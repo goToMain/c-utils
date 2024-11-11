@@ -70,6 +70,9 @@ static inline void logger_log_set_color(logger_t *ctx, const char *color)
 		assert(ret == len);
 		ARG_UNUSED(ret); /* squash warning in Release builds */
 	}
+#else
+	ARG_UNUSED(ctx);
+	ARG_UNUSED(color);
 #endif
 }
 
