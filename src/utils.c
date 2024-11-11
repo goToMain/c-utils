@@ -162,12 +162,15 @@ struct timezone {
 
 int gettimeofday(struct timeval * tp, struct timezone * tzp)
 {
+	ARG_UNUSED(tzp);
 	tp->tv_sec = 0;
 	tp->tv_usec = 0;
 	return 0;
 }
 
 int add_iso8601_utc_datetime(char* buf, size_t size) {
+	ARG_UNUSED(buf);
+	ARG_UNUSED(size);
 	return 0;
 }
 
