@@ -150,15 +150,19 @@ int add_iso8601_utc_datetime(char *buf, size_t size)
 
 #elif defined(__BARE_METAL__)
 
+#ifndef _TIMEVAL_DEFINED
 struct timeval {
 	long tv_sec;  // seconds since epoch
 	long tv_usec; // microseconds
 };
+#endif
 
+#ifndef _TIMEZONE_DEFINED
 struct timezone {
 	int tz_minuteswest; // minutes west of UTC
 	int tz_dsttime;     // daylight saving time flag
 };
+#endif
 
 int gettimeofday(struct timeval * tp, struct timezone * tzp)
 {
