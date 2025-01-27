@@ -106,7 +106,12 @@ int __logger_log(logger_t *ctx, int log_level, const char *file, unsigned long l
 	if (!ctx)
 		ctx = &default_logger;
 
-	file = strrchr(file, PATH_SEPARATOR) + 1;
+	const char *filename = strrchr(file, PATH_SEPARATOR);
+	if (filename)
+	{
+		file = filename + 1;
+	}
+	
 	if (!ctx->cb) {
 		if (log_level < LOG_EMERG ||
 		    log_level >= LOG_MAX_LEVEL ||
