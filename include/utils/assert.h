@@ -14,6 +14,12 @@
 extern "C" {
 #endif
 
+#ifdef __ZEPHYR__
+
+#include <zephyr/sys/__assert.h>
+
+#else /* __ZEPHYR__ */
+
 #define __ASSERT_PRINT(fmt, ...) printf(fmt, ##__VA_ARGS__)
 
 #define __ASSERT_LOC(test) \
@@ -32,6 +38,8 @@ extern "C" {
 			exit(EXIT_FAILURE); \
                 }                                                         \
         } while (0)
+
+#endif /* __ZEPHYR__ */
 
 #ifdef __cplusplus
 }
