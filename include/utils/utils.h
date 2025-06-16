@@ -46,7 +46,10 @@ extern "C" {
 
 #define STR(x) #x
 #define XSTR(x) STR(x)
+
+#ifndef __ZEPHYR__
 #define STRINGIFY(x) #x
+#endif
 
 #define ROUND_UP(x, y) ((x + y - 1) & ~ (y - 1))
 
@@ -132,6 +135,7 @@ extern "C" {
 #endif
 
 #if (defined(_WIN32) || defined(_WIN64))
+
 #include <io.h>
 #define isatty                  _isatty /* from io.h */
 #define fileno                  _fileno
@@ -142,7 +146,17 @@ extern "C" {
 #define likely(p)               (p)
 #define unlikely(p)             (p)
 #define PATH_SEPARATOR          '\\'
+
+#elif defined(__ZEPHYR__)
+
+#include <zephyr/toolchain.h>  // __weak, __builtin_xxx() etc.,
+
+#define PATH_SEPARATOR          '/'
+#define __unreachable()         __builtin_unreachable()
+#define __format_printf(x, y)   __attribute__((format(printf, x, y)))
+
 #else
+
 #define __format_printf(x, y)   __attribute__((format(printf, x, y)))
 #define __noreturn              __attribute__((noreturn))
 #define __weak                  __attribute__((weak))
