@@ -42,7 +42,7 @@
  * CRC32 code derived from work by Gary S. Brown.
  */
 
-#include <utils/crc.h>
+#include <utils/crc32.h>
 
 const uint32_t crc32_tab[] = {
 	0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f,
@@ -747,18 +747,4 @@ uint32_t compute_crc32(uint32_t seed, const uint8_t *buffer, size_t length)
 	} else {
 		return (multitable_crc32c(seed, buffer, length));
 	}
-}
-
-/* --- CRC-16 --- */
-
-uint16_t crc16_itu_t(uint16_t seed, const uint8_t *src, size_t len)
-{
-	for (; len > 0; len--) {
-		seed = (seed >> 8U) | (seed << 8U);
-		seed ^= *src++;
-		seed ^= (seed & 0xffU) >> 4U;
-		seed ^= seed << 12U;
-		seed ^= (seed & 0xffU) << 5U;
-	}
-	return seed;
 }

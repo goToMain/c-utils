@@ -1,5 +1,5 @@
-#ifndef _UTILS_CRC32_H_
-#define _UTILS_CRC32_H_
+#ifndef _UTILS_CRC16_H_
+#define _UTILS_CRC16_H_
 
 #include <stdint.h>
 #include <stddef.h>
@@ -18,10 +18,8 @@ uint16_t crc16_itu_t(uint16_t seed, const uint8_t *src, size_t len);
 
 #endif
 
-uint32_t compute_crc32(uint32_t seed, const uint8_t *buffer, size_t length);
-
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _UTILS_CRC32_H_ */
+#endif /* _UTILS_CRC16_H_ */
