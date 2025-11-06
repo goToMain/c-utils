@@ -164,6 +164,9 @@ struct timezone {
 };
 #endif
 
+int gettimeofday(struct timeval * tp, struct timezone * tzp);
+
+#ifndef __ZEPHYR__
 int gettimeofday(struct timeval * tp, struct timezone * tzp)
 {
 	ARG_UNUSED(tzp);
@@ -171,6 +174,7 @@ int gettimeofday(struct timeval * tp, struct timezone * tzp)
 	tp->tv_usec = 0;
 	return 0;
 }
+#endif
 
 int add_iso8601_utc_datetime(char* buf, size_t size) {
 	ARG_UNUSED(buf);
