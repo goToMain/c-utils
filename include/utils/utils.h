@@ -152,6 +152,7 @@ extern "C" {
 #include <zephyr/toolchain.h>  // __weak, __builtin_xxx() etc.,
 
 #define PATH_SEPARATOR          '/'
+#define __noreturn              FUNC_NORETURN
 #define __unreachable()         __builtin_unreachable()
 #define __format_printf(x, y)   __attribute__((format(printf, x, y)))
 
