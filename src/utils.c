@@ -148,6 +148,36 @@ int add_iso8601_utc_datetime(char *buf, size_t size)
 	return strftime(buf, size, "%Y-%m-%dT%H:%M:%SZ", &timeinfo);
 }
 
+#elif defined(ARDUINO)
+
+#ifndef _TIMEVAL_DEFINED
+struct timeval {
+	long tv_sec;  // seconds since epoch
+	long tv_usec; // microseconds
+};
+#endif
+
+#ifndef _TIMEZONE_DEFINED
+struct timezone {
+	int tz_minuteswest; // minutes west of UTC
+	int tz_dsttime;     // daylight saving time flag
+};
+#endif
+
+int gettimeofday(struct timeval * tp, struct timezone * tzp)
+{
+	ARG_UNUSED(tzp);
+	tp->tv_sec = micros() / 1000000;
+	tp->tv_usec = micros() % 1000000;
+	return 0;
+}
+
+int add_iso8601_utc_datetime(char* buf, size_t size) {
+	ARG_UNUSED(buf);
+	ARG_UNUSED(size);
+	return 0;
+}
+
 #elif defined(__BARE_METAL__)
 
 #ifndef _TIMEVAL_DEFINED
