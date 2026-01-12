@@ -251,14 +251,14 @@ static inline bool char_is_alpha(int c)
 	return (unsigned int)(('a' - 1 - (c | 32)) & ((c | 32) - ('z' + 1))) >> (sizeof(c) * 8 - 1);
 }
 
-inline uint8_t u8_bit_reverse(uint8_t b)
+static inline uint8_t u8_bit_reverse(uint8_t b)
 {
 	b = (((b & 0xaa) >> 1) | ((b & 0x55) << 1));
 	b = (((b & 0xcc) >> 2) | ((b & 0x33) << 2));
 	return ((b >> 4) |  (b << 4));
 }
 
-inline uint16_t u16_bit_reverse(uint16_t x)
+static inline uint16_t u16_bit_reverse(uint16_t x)
 {
 	x = (((x & 0xaaaa) >> 1) | ((x & 0x5555) << 1));
 	x = (((x & 0xcccc) >> 2) | ((x & 0x3333) << 2));
@@ -266,7 +266,7 @@ inline uint16_t u16_bit_reverse(uint16_t x)
 	return((x >> 8) | (x << 8));
 }
 
-inline uint32_t u32_bit_reverse(uint32_t x)
+static inline uint32_t u32_bit_reverse(uint32_t x)
 {
 	x = (((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1));
 	x = (((x & 0xcccccccc) >> 2) | ((x & 0x33333333) << 2));
