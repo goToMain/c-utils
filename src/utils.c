@@ -178,6 +178,10 @@ int add_iso8601_utc_datetime(char* buf, size_t size) {
 	return 0;
 }
 
+#elif defined(__ZEPHYR__)
+
+#include <sys/time.h>
+
 #elif defined(__BARE_METAL__)
 
 #ifndef _TIMEVAL_DEFINED
