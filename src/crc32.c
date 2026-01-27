@@ -211,7 +211,7 @@ singletable_crc32c(uint32_t crc, const void *buf, size_t size)
 
 
 /*
- * Copyright (c) 2004-2025 Intel Corporation - All Rights Reserved
+ * Copyright (c) 2004-2026 Intel Corporation - All Rights Reserved
  *
  *
  * This software program is licensed subject to the BSD License, available at
