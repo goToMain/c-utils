@@ -111,7 +111,7 @@ extern "C" {
 
 /* gcc attribute shorthands */
 #ifndef __fallthrough
-#if __GNUC__ >= 7
+#if __GNUC__ >= 7 || defined(__clang__)
 #define __fallthrough        __attribute__((fallthrough))
 #else
 #define __fallthrough
