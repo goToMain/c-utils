@@ -154,6 +154,9 @@ extern "C" {
 #define PATH_SEPARATOR          '/'
 #define __unreachable()         __builtin_unreachable()
 #define __format_printf(x, y)   __attribute__((format(printf, x, y)))
+#ifndef __noreturn
+#define __noreturn              __attribute__((noreturn))
+#endif
 
 #else
 
