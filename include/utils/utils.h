@@ -166,6 +166,23 @@ extern "C" {
 #define PATH_SEPARATOR          '/'
 #endif
 
+#if defined(__BARE_METAL__) && defined(USE_32BIT_TICK_T)
+/*
+ * Bare-metal timing note:
+ *
+ * When __BARE_METAL__ and USE_32BIT_TICK_T are both enabled, tick_t uses
+ * 32-bit storage. The selected tick source and tick width together define the
+ * maximum delay interval that can be measured safely in the project.
+ *
+ * Example: with a 1 kHz tick source, uint32_t spans about 49.7 days.
+ * Make sure your largest required delay/timeout remains safe for your chosen
+ * tick source and counter width.
+ */
+typedef uint32_t tick_t;
+#else
+typedef uint64_t tick_t;
+#endif
+
 /**
  * @brief Return random number between 0 and `limit` both inclusive.
  *
@@ -199,18 +216,18 @@ void hexdump(const void *data, size_t len, const char *fmt, ...);
 /**
  * @brief Get the time in micro seconds.
  */
-int64_t usec_now();
+tick_t usec_now();
 
 /**
  * @brief Get time elapsed in micro seconds since `last`. Used along with
  * usec_now().
  */
-int64_t usec_since(int64_t last);
+tick_t usec_since(tick_t last);
 
 /**
  * @brief Get the time in milli seconds.
  */
-int64_t millis_now();
+tick_t millis_now();
 
 /**
  * @brief Get time in seconds and micro_seconds
@@ -228,7 +245,7 @@ int add_iso8601_utc_datetime(char *buf, size_t size);
  * @brief Get time elapsed in milli seconds since `last`. Used along with
  * millis_now().
  */
-int64_t millis_since(int64_t last);
+tick_t millis_since(tick_t last);
 
 /**
  * @brief Print the stack trace

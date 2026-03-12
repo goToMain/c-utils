@@ -31,7 +31,7 @@ enum work_status {
 
 typedef struct {
 	queue_node_t node;
-	int64_t slice;
+	tick_t slice;
 	enum work_status status;
 	uint32_t requests;
 
