@@ -41,7 +41,7 @@ static void complete_work(work_t *work)
 static int do_work(work_t *work)
 {
 	int rc;
-	int64_t slice;
+	tick_t slice;
 
 	slice = usec_now();
 	rc = work->work_fn(work->arg);

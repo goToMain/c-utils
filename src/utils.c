@@ -218,15 +218,15 @@ int add_iso8601_utc_datetime(char* buf, size_t size) {
 
 #endif
 
-int64_t usec_now()
+tick_t usec_now()
 {
-	int64_t usec;
+	uint64_t usec;
 	struct timeval tv;
 
 	gettimeofday(&tv, NULL);
 	usec = tv.tv_sec * 1000LL * 1000LL + tv.tv_usec;
 
-	return usec;
+	return (tick_t)usec;
 }
 
 void get_time(uint32_t *seconds, uint32_t *micro_seconds)
@@ -238,17 +238,17 @@ void get_time(uint32_t *seconds, uint32_t *micro_seconds)
 	*micro_seconds = tv.tv_usec;
 }
 
-int64_t usec_since(int64_t last)
+tick_t usec_since(tick_t last)
 {
 	return usec_now() - last;
 }
 
-int64_t millis_now()
+tick_t millis_now()
 {
-	return (int64_t)(usec_now() / 1000LL);
+	return (tick_t)(usec_now() / 1000U);
 }
 
-int64_t millis_since(int64_t last)
+tick_t millis_since(tick_t last)
 {
 	return millis_now() - last;
 }
