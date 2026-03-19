@@ -10,11 +10,11 @@
 
 #include <utils/slab.h>
 
-PACK(struct slab_unit {
+struct slab_unit {
 	uint32_t leased;
 	uint32_t canary;
 	uint8_t data[];
-});
+};
 
 int slab_init(slab_t *slab, size_t slab_size,
 	      uint8_t *blob, size_t blob_size)
