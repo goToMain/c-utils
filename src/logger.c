@@ -95,7 +95,7 @@ static int terminate_log_line(char *buf, int len)
 
 #define LOG_BUF_LEN 192
 
-__format_printf(5, 6)
+__weak __format_printf(5, 6)
 int __logger_log(logger_t *ctx, int log_level, const char *file, unsigned long line,
 		 const char *fmt, ...)
 {
@@ -111,7 +111,7 @@ int __logger_log(logger_t *ctx, int log_level, const char *file, unsigned long l
 	{
 		file = filename + 1;
 	}
-	
+
 	if (!ctx->cb) {
 		if (log_level < LOG_EMERG ||
 		    log_level >= LOG_MAX_LEVEL ||
