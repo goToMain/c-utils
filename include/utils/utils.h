@@ -51,7 +51,9 @@ extern "C" {
 #define STRINGIFY(x) #x
 #endif
 
+#ifndef ROUND_UP
 #define ROUND_UP(x, y) ((x + y - 1) & ~ (y - 1))
+#endif
 
 #define MATH_MOD(a, b)                 (((a % b) + b) % b)
 
@@ -65,20 +67,26 @@ extern "C" {
 
 #define OFFSET_OF(type, field) (size_t)(&((type *)(0))->field)
 
+#ifndef CONTAINER_OF
 #define CONTAINER_OF(ptr, type, field) \
         ((type *)(((char *)(ptr)) - OFFSET_OF(type, field)))
+#endif
 
+#ifndef MAX
 #define MAX(a,b) ({ \
 		__typeof__ (a) _a = (a); \
 		__typeof__ (b) _b = (b); \
 		_a > _b ? _a : _b; \
 	})
+#endif
 
+#ifndef MIN
 #define MIN(a,b) ({ \
 		__typeof__ (a) _a = (a); \
 		__typeof__ (b) _b = (b); \
 		_a > _b ? _b : _a; \
 	})
+#endif
 
 #define SWAP(a,b) { \
 		__typeof__ (a) _tmp; \
@@ -102,12 +110,14 @@ extern "C" {
 #define ABS(x)		((x) >= 0  ? (x) : -(x))
 
 /* config_enabled() from the kernel */
+#ifndef IS_ENABLED
 #define __IS_ENABLED1(x)             __IS_ENABLED2(__XXXX ## x)
 #define __XXXX1                       __YYYY,
 #define __IS_ENABLED2(y)             __IS_ENABLED3(y 1, 0)
 #define __IS_ENABLED3(_i, val, ...)   val
 
 #define IS_ENABLED(x)                 __IS_ENABLED1(x)
+#endif
 
 /* gcc attribute shorthands */
 #ifndef __fallthrough

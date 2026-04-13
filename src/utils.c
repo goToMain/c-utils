@@ -182,6 +182,13 @@ int add_iso8601_utc_datetime(char* buf, size_t size) {
 
 #include <sys/time.h>
 
+int add_iso8601_utc_datetime(char *buf, size_t size)
+{
+	ARG_UNUSED(buf);
+	ARG_UNUSED(size);
+	return 0;
+}
+
 #elif defined(__BARE_METAL__)
 
 #ifndef _TIMEVAL_DEFINED
