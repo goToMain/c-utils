@@ -152,7 +152,11 @@ extern "C" {
 #define __format_printf(x, y)
 #define __noreturn              __declspec(noreturn)
 #define __weak
+#if defined(_MSC_VER)
 #define __unreachable()         __assume(0)
+#else
+#define __unreachable()         __builtin_unreachable()
+#endif
 #define likely(p)               (p)
 #define unlikely(p)             (p)
 #define PATH_SEPARATOR          '\\'
