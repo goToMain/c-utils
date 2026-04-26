@@ -36,7 +36,7 @@ function(download_file URL FILE_PATH)
 endfunction()
 
 add_custom_target(check_utils
-	COMMAND ${CMAKE_BINARY_DIR}/${TEST_BIN} -i"${CMAKE_CURRENT_SOURCE_DIR}/tests/input"
-	COMMAND rm ${CMAKE_BINARY_DIR}/${TEST_BIN}
+	COMMAND $<TARGET_FILE:${TEST_BIN}> -i"${CMAKE_CURRENT_SOURCE_DIR}/tests/input"
 	DEPENDS ${TEST_BIN}
+	USES_TERMINAL
 )
