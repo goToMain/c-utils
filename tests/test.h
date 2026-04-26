@@ -19,7 +19,7 @@
 
 #define TEST_DEF(m)          void do_test_ ## m (test_t *ctx, test_result_t *res)
 #define TEST_MOD_INIT()      test_result_t _test = { 0 , 0 }
-#define TEST_MOD_EXEC(f)     if (f == 0) _test.pass++; _test.total++;
+#define TEST_MOD_EXEC(f)     if ((f) == 0) _test.pass++; _test.total++;
 #define TEST_MOD_REPORT()    res->pass = _test.pass; res->total = _test.total;
 #define TEST_MOD(m)          { STR(m), do_test_ ## m }
 #define TEST_MOD_SENTINEL    { NULL, NULL }
